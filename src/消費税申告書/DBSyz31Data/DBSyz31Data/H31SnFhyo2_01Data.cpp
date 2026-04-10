@@ -3082,22 +3082,20 @@ int CH31SnFhyo2_01Data::ClearDataByRenew(CDBNpSub *pDBNpSub, int type, int Clear
 	m_Arith.l_clear(Sn_F201_20F);
 
 	if( (ClearType&0x01) == 0x00 ){
-//----->[24-0242]('24.06.25 Dell)
-		//m_Arith.l_clear(Sn_F201_21X);
-		//m_Arith.l_clear(Sn_F201_21D);
-		//m_Arith.l_clear(Sn_F201_21E);
-		//m_Arith.l_clear(Sn_F201_21F);
+		m_Arith.l_clear(Sn_F201_21X);
+		m_Arith.l_clear(Sn_F201_21D);
+		m_Arith.l_clear(Sn_F201_21E);
+		m_Arith.l_clear(Sn_F201_21F);
 
-		//m_Arith.l_clear(Sn_F201_22X);
-		//m_Arith.l_clear(Sn_F201_22D);
-		//m_Arith.l_clear(Sn_F201_22E);
-		//m_Arith.l_clear(Sn_F201_22F);
+		m_Arith.l_clear(Sn_F201_22X);
+		m_Arith.l_clear(Sn_F201_22D);
+		m_Arith.l_clear(Sn_F201_22E);
+		m_Arith.l_clear(Sn_F201_22F);
 
-		//m_Arith.l_clear( Sn_F201_26X );
-		//m_Arith.l_clear( Sn_F201_26D );
-		//m_Arith.l_clear( Sn_F201_26E );
-		//m_Arith.l_clear( Sn_F201_26F );
-//<-----
+		m_Arith.l_clear( Sn_F201_26X );
+		m_Arith.l_clear( Sn_F201_26D );
+		m_Arith.l_clear( Sn_F201_26E );
+		m_Arith.l_clear( Sn_F201_26F );
 	}
 
 	//m_Arith.l_clear(Sn_F201_26X);

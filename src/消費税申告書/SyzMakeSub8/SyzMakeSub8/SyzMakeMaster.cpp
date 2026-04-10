@@ -3076,8 +3076,8 @@ int CSyzMakeSubW::ClearSyzShinData(CDBZmSub *pZmsub, int optionflg)
 //	pZmsub->szsnk->Sn_Sign3 = 0;				// 新設サイン③
 //	pZmsub->szsnk->Sn_Sign4 = 0;				// 新設サイン④
 
-	pZmsub->szsnk->Sn_ZKDYS = 0;				// 前年課税期間　自
-	pZmsub->szsnk->Sn_ZKDYE = 0;				// 〝　　　　　　至
+	//pZmsub->szsnk->Sn_ZKDYS = 0;				// 前年課税期間　自 // TISW修正[25-0204] 2026/02/16
+	//pZmsub->szsnk->Sn_ZKDYE = 0;				// 〝　　　　　　至 // TISW修正[25-0204] 2026/02/16
 	pZmsub->szsnk->Sn_ZZDAY = 0;				// 修正等の年月日
 	pZmsub->szsnk->Sn_KTNFZ = _T("0");		// 消費税及び地方消費税の合計納付税額
 	pZmsub->szsnk->Sn_BSMON = 0;				// 月換算　分子

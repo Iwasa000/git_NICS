@@ -3024,22 +3024,20 @@ int CH31SnFhyo2_02Data::ClearDataByRenew( CDBNpSub *pDBNpSub, int type, int Clea
 	m_Arith.l_clear( Sn_F202_20X );
 
 	if( (ClearType&0x01) == 0x00 ){
-//----->[24-0242]('24.06.26 Del)
-		//m_Arith.l_clear( Sn_F202_21A );
-		//m_Arith.l_clear(Sn_F202_21B);
-		//m_Arith.l_clear(Sn_F202_21C);
-		//m_Arith.l_clear(Sn_F202_21X);
+		m_Arith.l_clear( Sn_F202_21A );
+		m_Arith.l_clear(Sn_F202_21B);
+		m_Arith.l_clear(Sn_F202_21C);
+		m_Arith.l_clear(Sn_F202_21X);
 
-		//m_Arith.l_clear(Sn_F202_22A);
-		//m_Arith.l_clear(Sn_F202_22B);
-		//m_Arith.l_clear(Sn_F202_22C);
-		//m_Arith.l_clear(Sn_F202_22X);
+		m_Arith.l_clear(Sn_F202_22A);
+		m_Arith.l_clear(Sn_F202_22B);
+		m_Arith.l_clear(Sn_F202_22C);
+		m_Arith.l_clear(Sn_F202_22X);
 
-		//m_Arith.l_clear(Sn_F202_26A);
-		//m_Arith.l_clear(Sn_F202_26B);
-		//m_Arith.l_clear(Sn_F202_26C);
-		//m_Arith.l_clear(Sn_F202_26X);
-//<-----
+		m_Arith.l_clear(Sn_F202_26A);
+		m_Arith.l_clear(Sn_F202_26B);
+		m_Arith.l_clear(Sn_F202_26C);
+		m_Arith.l_clear(Sn_F202_26X);
 	}
 
 	m_Arith.l_clear( Sn_F202_23A );

@@ -2323,7 +2323,7 @@ bool CDBSyzAccess::Syukei5okuHantei(CDBZmSub* pZmsub, std::vector<SiwakeRec>& pS
 #endif
 
 			//ì‡ê≈ â€ê≈äJénì˙à»ç~ÇÕê≈î≤Ç´.
-			if ((itr->zeikubun == ZEIKUBUN_UTIZEI) && (itr->ddate >= INVOICE_SYZ_YMD)) {
+			if ((itr->zeikubun == ZEIKUBUN_UTIZEI) && (itr->ddate >= to_kz_ymd)) { // TISWèCê≥[24-0381] 2026/02/16
 #if _DEBUG
 				//DbgViewTrace(_T("ÅyDEBUGÅz%d %s() [ì‡ê≈] money_sum:%s + money_zei:%s = "),
 				//	__LINE__, __FUNCTION__,
@@ -2338,7 +2338,7 @@ bool CDBSyzAccess::Syukei5okuHantei(CDBZmSub* pZmsub, std::vector<SiwakeRec>& pS
 			}
 
 			//äOê≈ â€ê≈äJénì˙ÇÊÇËëOÇÕê≈çûÇ›
-			if ((itr->zeikubun == ZEIKUBUN_SOTOZEI) && (itr->ddate < INVOICE_SYZ_YMD)) {
+			if ((itr->zeikubun == ZEIKUBUN_SOTOZEI) && (itr->ddate < to_kz_ymd)) { // TISWèCê≥[24-0381] 2026/02/16
 #if _DEBUG
 				//DbgViewTrace(_T("ÅyDEBUGÅz%d %s() [äOê≈] money_sum:%s - money_zei:%s = "),
 				//	__LINE__, __FUNCTION__,
@@ -2382,7 +2382,7 @@ bool CDBSyzAccess::Syukei5okuHantei(CDBZmSub* pZmsub, std::vector<SiwakeRec>& pS
 #endif
 
 			//äOê≈ â€ê≈äJénì˙ÇÊÇËëOÇÕê≈çûÇ›
-			if ((itr->zeikubun == ZEIKUBUN_SOTOZEI) && (itr->ddate < INVOICE_SYZ_YMD)) {
+			if ((itr->zeikubun == ZEIKUBUN_SOTOZEI) && (itr->ddate < to_kz_ymd)) { // TISWèCê≥[24-0381] 2026/02/16
 #if _DEBUG
 				//DbgViewTrace(_T("ÅyDEBUGÅz%d %s() [äOê≈] money_sum:%s + money_zei:%s = "),
 				//	__LINE__, __FUNCTION__,

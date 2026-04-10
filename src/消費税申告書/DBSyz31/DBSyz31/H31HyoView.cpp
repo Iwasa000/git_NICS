@@ -7077,6 +7077,12 @@ int CH31HyoView::RenewSyzShin( SH_PASTINFO *pPastInfo )
 		else if( (pPastInfo->SKKBN==ID_ICSSH_TYUUKAN) && (m_pSnHeadData->GetKubun()==ID_ICSSH_TYUUKAN_SYUUSEI) ){
 			m_pSnFhyo2_01Data->ClearDataByRenew(m_pZmSub, 0, 0x01);
 		}
+		// TISWC³[24-0242] 2026/02/16 START
+		else if (m_pSnHeadData->GetKubun() == ID_ICSSH_KOUSEI)
+		{
+			m_pSnFhyo2_01Data->ClearDataByRenew(m_pZmSub, 0, 0x01);
+		}
+		// TISWC³[24-0242] 2026/02/16 END
 		else{
 			m_pSnFhyo2_01Data->ClearDataByRenew(m_pZmSub, 0, 0x00);
 		}
@@ -7089,6 +7095,12 @@ int CH31HyoView::RenewSyzShin( SH_PASTINFO *pPastInfo )
 		else if(( pPastInfo->SKKBN == ID_ICSSH_TYUUKAN ) && ( m_pSnHeadData->GetKubun() == ID_ICSSH_TYUUKAN_SYUUSEI )) {
 			m_pSnFhyo2_02Data->ClearDataByRenew( m_pZmSub, 0, 0x01 );
 		}
+		// TISWC³[24-0242] 2026/02/16 START
+		else if (m_pSnHeadData->GetKubun() == ID_ICSSH_KOUSEI)
+		{
+			m_pSnFhyo2_02Data->ClearDataByRenew(m_pZmSub, 0, 0x01);
+		}
+		// TISWC³[24-0242] 2026/02/16 END
 		else{
 			m_pSnFhyo2_02Data->ClearDataByRenew( m_pZmSub, 0, 0x00 );
 		}
