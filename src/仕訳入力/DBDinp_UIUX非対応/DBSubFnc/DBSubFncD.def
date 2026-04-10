@@ -1,0 +1,6 @@
+; DBSubFncD.def : DLL のモジュール パラメータを宣言します。
+
+;LIBRARY      "DBSubFnc8D"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます

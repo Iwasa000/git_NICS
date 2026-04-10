@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZIM15_InpSub", "DBInpSub\DBInpSub.vcxproj", "{C0874EF6-3344-4590-80A1-A0A7432069F4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZIM15_SubFnc", "DBSubFnc\DBSubFnc.vcxproj", "{68DEA35B-4A8A-43D3-A7F3-4896A25C028E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RevTest8", "RevTest8\RevTest8.vcxproj", "{DAFD7125-D2C1-4CDA-ABAD-4BEF9A557629}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBDinp", "DBDinp\DBDinp.vcxproj", "{767BBB29-3F20-4D14-902C-BBCFF7F93826}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C0874EF6-3344-4590-80A1-A0A7432069F4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C0874EF6-3344-4590-80A1-A0A7432069F4}.Release|Win32.ActiveCfg = Release|Win32
+		{68DEA35B-4A8A-43D3-A7F3-4896A25C028E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{68DEA35B-4A8A-43D3-A7F3-4896A25C028E}.Release|Win32.ActiveCfg = Release|Win32
+		{DAFD7125-D2C1-4CDA-ABAD-4BEF9A557629}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DAFD7125-D2C1-4CDA-ABAD-4BEF9A557629}.Release|Win32.ActiveCfg = Release|Win32
+		{767BBB29-3F20-4D14-902C-BBCFF7F93826}.Debug|Win32.ActiveCfg = Debug|Win32
+		{767BBB29-3F20-4D14-902C-BBCFF7F93826}.Debug|Win32.Build.0 = Debug|Win32
+		{767BBB29-3F20-4D14-902C-BBCFF7F93826}.Release|Win32.ActiveCfg = Release|Win32
+		{767BBB29-3F20-4D14-902C-BBCFF7F93826}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B2E21EF-49EA-498F-9F1C-2DA96C4ABC2A}
+	EndGlobalSection
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
+	EndGlobalSection
+EndGlobal

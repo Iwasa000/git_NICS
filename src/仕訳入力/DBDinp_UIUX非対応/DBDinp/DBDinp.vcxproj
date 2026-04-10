@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{767BBB29-3F20-4D14-902C-BBCFF7F93826}</ProjectGuid>
+    <RootNamespace>DBDinp</RootNamespace>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.27625.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>Release15\</OutDir>
+    <IntDir>Release15\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_ICSPEN_;ONFORK;BIGIMG;IMPORT;_NEWFOCUS_;_CPYIMG;_MULTI_INP_;REGDATA;_2KT_BSEL;_SLIP_ACCOUNTS_;_TOKTEI_;_SCANNER_SV_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GENd.lib;ZIM15_Kmseld.lib;ICS15_VolDated.lib;ZIM15_SubFncd.lib;ZIM15_InpSubd.lib;ZIM15_InpRecmdd.lib;ZIM15_ZmSubd.lib;ICSCmnd.lib;ICS15_ARITHd.lib;ICS15_COSELd.lib;ZIM15_Syzd.lib;ZIM15_INPLSTd.lib;ZIM15_Rdsubd.lib;ICS15_GENLd.lib;ZIM15_Zmseld.lib;ICS15_VLCTLd.lib;odbc32.lib;Imm32.lib;ZIM15_NpSubd.lib;KYU15_KyZmconnectModd.lib;ICS15_bkcp8d.lib;ZIM15_Kmatsetd.lib;ZIM15_Recald.lib;ZIM15_ImgMngd.lib;ICS15_JZCHECKd.lib;ICS15_OpeLicd.lib;GEN15_FinancialJournalInputD.lib;GEN15_FinancialJournalPreviewD.lib;ICS15_progress_Modd.lib;ZIM15_ProgTuutiGend.lib;ICS15_Mctld.lib;ZIM15_Gend.lib;ZIM15_DocSubd.lib;ICS15_JZ2CLOUDOPTd.lib;ICS15_Printd.lib;ZIM15_GenpyoScanD.lib;ZIM15_ReadOCRCnvd.lib;ZIM15_TkjourUtild.lib;ZIM15_SyzInvoiceD.lib;ZIM15_CreditOCRUtilD.lib;ZIM15_AddInvDatad.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)D.exe</OutputFile>
+      <DelayLoadDLLs>ZIM15_NpSubd.dll;KYU15_KyZmconnectModD.dll;ICS15_bkcp8d.dll;ZIM15_NpCald.dll;GEN15_FinancialJournalInputD.dll;GEN15_FinancialJournalPreviewD.dll;ZIM15_AddInvDatad.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+    <PostBuildEvent>
+      <Command>copy $(targetpath) E:\ICSDEV\DLL_DEBUG15</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CustomBuildStep>
+      <Command>copy $(targetpath) D:\icswin\cmds\gr1b\JOBS20</Command>
+      <Outputs>DBDinp.exe;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_ICSPEN_;ONFORK;BIGIMG;IMPORT;_NEWFOCUS_;_CPYIMG;_MULTI_INP_;REGDATA;_2KT_BSEL;_SLIP_ACCOUNTS_;_TOKTEI_;_SCANNER_SV_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GEN.lib;ZIM15_Kmsel.lib;ICS15_VolDate.lib;ZIM15_SubFnc.lib;ZIM15_InpSub.lib;ZIM15_InpRecmd.lib;ZIM15_ZmSub.lib;ICSCmn.lib;ICS15_ARITH.lib;ICS15_COSEL.lib;ZIM15_Syz.lib;ZIM15_INPLST.lib;ZIM15_Rdsub.lib;ICS15_GENL.lib;ZIM15_Zmsel.lib;ICS15_VLCTL.lib;odbc32.lib;Imm32.lib;ZIM15_NpSub.lib;KYU15_KyZmconnectMod.lib;ICS15_bkcp8.lib;ZIM15_Kmatset.lib;ZIM15_Recal.lib;ZIM15_ImgMng.lib;ICS15_JZCHECK.lib;ICS15_OpeLic.lib;GEN15_FinancialJournalInput.lib;GEN15_FinancialJournalPreview.lib;ICS15_progress_Mod.lib;ZIM15_ProgTuutiGen.lib;ICS15_Mctl.lib;ZIM15_Gen.lib;ZIM15_DocSub.lib;ICS15_JZ2CLOUDOPT.lib;ICS15_Print.lib;ICS15_Subtool.lib;ZIM15_TkjourUtil.lib;ZIM15_ReadOCRCnv.lib;ZIM15_GenpyoScan.lib;ZIM15_SyzInvoice.lib;ZIM15_CreditOCRUtil.lib;ZIM15_AddInvData.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>ZIM15_NpSub.dll;KYU15_KyZmconnectMod.dll;ICS15_bkcp8.dll;GEN15_FinancialJournalInput.dll;GEN15_FinancialJournalPreview.dll;ZIM15_AddInvData.dll</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>dbdinpmap</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <TerminalServerAware>true</TerminalServerAware>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ACDspOptDlg.cpp" />
+    <ClCompile Include="ACInpSupDlg.cpp" />
+    <ClCompile Include="AutoInp.cpp" />
+    <ClCompile Include="Bit.cpp" />
+    <ClCompile Include="BkInpDlg.cpp" />
+    <ClCompile Include="BlkIns.cpp" />
+    <ClCompile Include="BlockDragWnd.cpp" />
+    <ClCompile Include="BmnNoInp.cpp" />
+    <ClCompile Include="BmpDspWnd.cpp" />
+    <ClCompile Include="brzan.cpp" />
+    <ClCompile Include="CDupliDlg.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="CNPautoDlg.cpp" />
+    <ClCompile Include="ColoredComboDD.cpp" />
+    <ClCompile Include="CRC.cpp" />
+    <ClCompile Include="CStRecordSet.cpp" />
+    <ClCompile Include="DataLine.cpp" />
+    <ClCompile Include="DataListLine.cpp" />
+    <ClCompile Include="DBAbookView.cpp" />
+    <ClCompile Include="DBbaseView.cpp" />
+    <ClCompile Include="DBDinp.cpp" />
+    <ClCompile Include="DBDinpDoc.cpp" />
+    <ClCompile Include="DBDinpView.cpp" />
+    <ClCompile Include="DelDataDlg.cpp" />
+    <ClCompile Include="DenpScan.cpp" />
+    <ClCompile Include="DinpPara.cpp" />
+    <ClCompile Include="dinpsubs.cpp" />
+    <ClCompile Include="DipZmSub.cpp" />
+    <ClCompile Include="DispOptionDlg.cpp" />
+    <ClCompile Include="DnpBaseDlg.cpp" />
+    <ClCompile Include="DnpInView.cpp" />
+    <ClCompile Include="DragStatic.cpp" />
+    <ClCompile Include="EnvDialog.cpp" />
+    <ClCompile Include="font.cpp" />
+    <ClCompile Include="FuriDlg.cpp" />
+    <ClCompile Include="HusenStatic.cpp" />
+    <ClCompile Include="IconOwnerButton.cpp" />
+    <ClCompile Include="icsdbedt.cpp" />
+    <ClCompile Include="icsdiag8ctrl.cpp" />
+    <ClCompile Include="icsdisp.cpp" />
+    <ClCompile Include="icslistinp.cpp" />
+    <ClCompile Include="icssel.cpp" />
+    <ClCompile Include="ImageStatic.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MnthDlg.cpp" />
+    <ClCompile Include="MsgDlg.cpp" />
+    <ClCompile Include="MstRw.cpp" />
+    <ClCompile Include="NSDenpDlg.cpp" />
+    <ClCompile Include="OwnerButton.cpp" />
+    <ClCompile Include="picture.cpp" />
+    <ClCompile Include="RDDnpAddDlg.cpp" />
+    <ClCompile Include="RDdnpBaseDlg.cpp" />
+    <ClCompile Include="RDDnpDlg.cpp" />
+    <ClCompile Include="RdgrpAddDlg.cpp" />
+    <ClCompile Include="RDnpFuriDlg.cpp" />
+    <ClCompile Include="RDnpNSdlg.cpp" />
+    <ClCompile Include="RdregDlg.cpp" />
+    <ClCompile Include="RdremainDlg.cpp" />
+    <ClCompile Include="RDSel.cpp" />
+    <ClCompile Include="RpkeyDlg.cpp" />
+    <ClCompile Include="scan.cpp" />
+    <ClCompile Include="ScanKeyView.cpp" />
+    <ClCompile Include="ScanView.cpp" />
+    <ClCompile Include="SCopyMsgDlg.cpp" />
+    <ClCompile Include="SelDpDlg.cpp" />
+    <ClCompile Include="SelGuideCtrl.cpp" />
+    <ClCompile Include="SelImgDlg.cpp" />
+    <ClCompile Include="SELRNG.cpp" />
+    <ClCompile Include="SelWndDlg.cpp" />
+    <ClCompile Include="SEQ.cpp" />
+    <ClCompile Include="SeqChgDlg.cpp" />
+    <ClCompile Include="SiwkDlg.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SubDataDlg.cpp" />
+    <ClCompile Include="SubDataInp.cpp" />
+    <ClCompile Include="SubFnc.cpp" />
+    <ClCompile Include="SwkCpyJob.cpp" />
+    <ClCompile Include="SwkJob.cpp" />
+    <ClCompile Include="TaiDsp.cpp" />
+    <ClCompile Include="TaiTtl.cpp" />
+    <ClCompile Include="TtlDsp.cpp" />
+    <ClCompile Include="zanask.cpp" />
+    <ClCompile Include="zinpsub.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AcbookRec.h" />
+    <ClInclude Include="ACDspOptDlg.h" />
+    <ClInclude Include="ACInpSupDlg.h" />
+    <ClInclude Include="ACSelDlg.h" />
+    <ClInclude Include="AP.h" />
+    <ClInclude Include="AutoInp.h" />
+    <ClInclude Include="Bit.h" />
+    <ClInclude Include="bkinpdlg.h" />
+    <ClInclude Include="BlockDragWnd.h" />
+    <ClInclude Include="BmnNoInp.h" />
+    <ClInclude Include="BmpDspWnd.h" />
+    <ClInclude Include="CDupliDlg.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="CNPautoDlg.h" />
+    <ClInclude Include="ColoredComboDD.h" />
+    <ClInclude Include="CStRecordSet.h" />
+    <ClInclude Include="DataLine.h" />
+    <ClInclude Include="DataListLine.h" />
+    <ClInclude Include="DBAbookView.h" />
+    <ClInclude Include="DBbaseView.h" />
+    <ClInclude Include="DBDinp.h" />
+    <ClInclude Include="DBDinpDoc.h" />
+    <ClInclude Include="DBDinpView.h" />
+    <ClInclude Include="dbedt_fnc.h" />
+    <ClInclude Include="DelDataDlg.h" />
+    <ClInclude Include="DenpRec.h" />
+    <ClInclude Include="DenpScan.h" />
+    <ClInclude Include="DinpSub.h" />
+    <ClInclude Include="DipZmSub.h" />
+    <ClInclude Include="DispOptionDlg.h" />
+    <ClInclude Include="DnpBaseDlg.h" />
+    <ClInclude Include="DnpInView.h" />
+    <ClInclude Include="DragStatic.h" />
+    <ClInclude Include="EdaRegDlg.h" />
+    <ClInclude Include="EnvDialog.h" />
+    <ClInclude Include="errblk.h" />
+    <ClInclude Include="etcdef.h" />
+    <ClInclude Include="etcmsg.h" />
+    <ClInclude Include="external.h" />
+    <ClInclude Include="font.h" />
+    <ClInclude Include="FuriDlg.h" />
+    <ClInclude Include="HusenStatic.h" />
+    <ClInclude Include="icsdbedt.h" />
+    <ClInclude Include="icsdiag8ctrl.h" />
+    <ClInclude Include="icsdisp.h" />
+    <ClInclude Include="icslistinp.h" />
+    <ClInclude Include="icssel.h" />
+    <ClInclude Include="ImageStatic.h" />
+    <ClInclude Include="input1.h" />
+    <ClInclude Include="Input2.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MessageDef.h" />
+    <ClInclude Include="MnthDlg.h" />
+    <ClInclude Include="MsgDlg.h" />
+    <ClInclude Include="MstRw.h" />
+    <ClInclude Include="NSDenpDlg.h" />
+    <ClInclude Include="ocxdef.h" />
+    <ClInclude Include="OwnerButton.h" />
+    <ClInclude Include="RDDnpAddDlg.h" />
+    <ClInclude Include="RDDnpDlg.h" />
+    <ClInclude Include="RDnpFuriDlg.h" />
+    <ClInclude Include="RDnpNSdlg.h" />
+    <ClInclude Include="RdregDlg.h" />
+    <ClInclude Include="RdremainDlg.h" />
+    <ClInclude Include="RDSel.h" />
+    <ClInclude Include="rdtatbl.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RpkeyDlg.h" />
+    <ClInclude Include="scan.h" />
+    <ClInclude Include="ScanData.h" />
+    <ClInclude Include="ScanKeyView.h" />
+    <ClInclude Include="scansydef.h" />
+    <ClInclude Include="ScanView.h" />
+    <ClInclude Include="SelDpDlg.h" />
+    <ClInclude Include="SelGuideCtrl.h" />
+    <ClInclude Include="SelImgDlg.h" />
+    <ClInclude Include="SELRNG.h" />
+    <ClInclude Include="SelWndDlg.h" />
+    <ClInclude Include="SEQ.h" />
+    <ClInclude Include="SeqChgDlg.h" />
+    <ClInclude Include="SiwkDlg.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SubDataDlg.h" />
+    <ClInclude Include="subfnc.h" />
+    <ClInclude Include="SwkJob.h" />
+    <ClInclude Include="TaiData.h" />
+    <ClInclude Include="TaiDsp.h" />
+    <ClInclude Include="TaiTtl.h" />
+    <ClInclude Include="TtlDsp.h" />
+    <ClInclude Include="zanask.h" />
+    <ClInclude Include="zinpsub.h" />
+    <ClInclude Include="_Font.h" />
+    <ClInclude Include="_Picture.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bitmap4.bmp" />
+    <Image Include="res\bitmap5.bmp" />
+    <Image Include="res\bitmap6.bmp" />
+    <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\bmp00002.bmp" />
+    <Image Include="res\DBDinp.ico" />
+    <Image Include="res\DBDinpDoc.ico" />
+    <Image Include="res\dbdinpty.bmp" />
+    <Image Include="res\docread_icon.ico" />
+    <Image Include="res\ico00001.ico" />
+    <Image Include="res\ico00002.ico" />
+    <Image Include="res\icon1.ico" />
+    <Image Include="res\icon2.ico" />
+    <Image Include="res\scan_icon.ico" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBDinp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\DBDinp.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties _x007B_9B6935F7-0CDC-4909-93BC-7F349165E9D6_x007D_="CIcsdispjob" _x007B_8A8B65FB-AFE2-4D25-A70C-69764E0DC371_x007D_="CICSDiag [2]" RESOURCE_FILE="DBDinp.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

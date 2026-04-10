@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBInpSub", "DBInpSub\DBInpSub.vcproj", "{C0874EF6-3344-4590-80A1-A0A7432069F4}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBSubFnc", "DBSubFnc\DBSubFnc.vcproj", "{68DEA35B-4A8A-43D3-A7F3-4896A25C028E}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RevTest8", "RevTest8\RevTest8.vcproj", "{DAFD7125-D2C1-4CDA-ABAD-4BEF9A557629}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBDinp", "DBDinp\DBDinp.vcproj", "{767BBB29-3F20-4D14-902C-BBCFF7F93826}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C0874EF6-3344-4590-80A1-A0A7432069F4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C0874EF6-3344-4590-80A1-A0A7432069F4}.Release|Win32.ActiveCfg = Release|Win32
+		{68DEA35B-4A8A-43D3-A7F3-4896A25C028E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{68DEA35B-4A8A-43D3-A7F3-4896A25C028E}.Release|Win32.ActiveCfg = Release|Win32
+		{DAFD7125-D2C1-4CDA-ABAD-4BEF9A557629}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DAFD7125-D2C1-4CDA-ABAD-4BEF9A557629}.Release|Win32.ActiveCfg = Release|Win32
+		{767BBB29-3F20-4D14-902C-BBCFF7F93826}.Debug|Win32.ActiveCfg = Debug|Win32
+		{767BBB29-3F20-4D14-902C-BBCFF7F93826}.Debug|Win32.Build.0 = Debug|Win32
+		{767BBB29-3F20-4D14-902C-BBCFF7F93826}.Release|Win32.ActiveCfg = Release|Win32
+		{767BBB29-3F20-4D14-902C-BBCFF7F93826}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
+	EndGlobalSection
+EndGlobal

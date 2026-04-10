@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C0874EF6-3344-4590-80A1-A0A7432069F4}</ProjectGuid>
+    <RootNamespace>DBInpSub</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+    <ProjectName>ZIM15_InpSub</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.27625.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CustomBuildStep>
+      <Command>rem %40echo on
+rem copy $(TargetPath) E:\ICSDEV\DLL_DEBUG15
+rem copy $(OutDir)$(TargetName).lib E:\ICSDEV\LIB15
+
+</Command>
+      <Outputs>$(TargetFileName);%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;_DBINPSUB;_ICSPEN_;_DBKJNAM_;_SLIP_ACCOUNTS_;_TAIKA2_;_TOKTEI_;_DATAZEICALQ_;_SWKDATASUB_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GENd.lib;ICS15_GENLd.lib;ICS15_ARITHd.lib;ICS15_VolDated.lib;ZIM15_InpRecmdd.lib;ZIM15_SubFncd.lib;ZIM15_ZmSubd.lib;ZIM15_Syzd.lib;ICS15_VLCTLd.lib;ZIM15_AnaRecd.lib;ZIM15_Kmseld.lib;ZIM15_PbZmSubd.lib;ZIM15_NpSubd.lib;ICSCmnd.lib;ZIM15_NpHwCalqd.lib;ZIM15_ImgMngd.lib;ZIM15_Gend.lib;ICS15_KaigenInfoD.lib;imm32.lib;legacy_stdio_definitions.lib;ICS15_JZ2CLOUDOPTD.lib;ZIM15_TkjourUtilD.lib;ICS15_AnalyzeAJd.lib;ZIM15_SyZeiD.lib;ZIM15_SyzInvoiceD.lib;Zim15_SyzSykComD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>.\DBInpSubD.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>ZIM15_PbZmsubd.dll;ZIM15_NpSubd.dll;ICS15_JZ2CLOUDOPTD.dll;Zim15_SyzSykComD.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;_DBINPSUB;_ICSPEN_;_DBKJNAM_;_SLIP_ACCOUNTS_;_TAIKA2_;_TOKTEI_;_DATAZEICALQ_;_SWKDATASUB_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GEN.lib;ICS15_GENL.lib;ICS15_ARITH.lib;ICS15_VolDate.lib;ZIM15_InpRecmd.lib;ZIM15_SubFnc.lib;ZIM15_ZmSub.lib;ZIM15_Syz.lib;ICS15_VLCTL.lib;ZIM15_AnaRec.lib;ZIM15_Kmsel.lib;ZIM15_NpSub.lib;ICSCmn.lib;ZIM15_PbZmSub.lib;ZIM15_NpHwCalq.lib;ZIM15_ImgMng.lib;ZIM15_Gen.lib;ICS15_KaigenInfo.lib;imm32.lib;legacy_stdio_definitions.lib;ICS15_JZ2CLOUDOPT.lib;ZIM15_TkjourUtil.lib;ICS15_AnalyzeAJ.lib;ZIM15_SyZei.lib;ZIM15_SyzInvoice.lib;Zim15_SyzSykCom.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>.\DBInpSub.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>ZIM15_PbZmsub.dll;ZIM15_NpSub.dll;ICS15_JZ2CLOUDOPT.dll;ZIM15_SyzSykCom.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>inpsub.map</MapFileName>
+    </Link>
+    <PostBuildEvent>
+      <Command>rem signtool.exe sign /fd sha256 /f E:\ICSDEV\ICSPKI.pfx /p ICSsystem1002 /tr http://timestamp.digicert.com?alg=sha256 $(TargetPath)
+rem %40echo on
+copy $(TargetPath) D:\ICSWIN\OBJS
+rem copy $(TargetPath) E:\ICSDEV\dll_release15
+rem copy $(TargetDir)$(TargetName).lib E:\ICSDEV\Lib15
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="BaseDlg.cpp" />
+    <ClCompile Include="BmnChk.cpp" />
+    <ClCompile Include="BrnTky.cpp" />
+    <ClCompile Include="CSkbnLiteDlg.cpp" />
+    <ClCompile Include="CStRecordSet.cpp" />
+    <ClCompile Include="CTkyDelRepoDlg.cpp" />
+    <ClCompile Include="CSWKDataSub.cpp" />
+    <ClCompile Include="DataZeiCalqSub.cpp" />
+    <ClCompile Include="DBInpSub.cpp" />
+    <ClCompile Include="dbzmgdtsub.cpp" />
+    <ClCompile Include="DenpScan.cpp" />
+    <ClCompile Include="DinpINI.cpp" />
+    <ClCompile Include="DinpRecordSet.cpp" />
+    <ClCompile Include="DInputSub.cpp" />
+    <ClCompile Include="DlgToolBar.cpp" />
+    <ClCompile Include="DnpBaseClass.cpp" />
+    <ClCompile Include="DnpBaseDlg.cpp" />
+    <ClCompile Include="DnpInpDialog.cpp" />
+    <ClCompile Include="EdaRegDlg.cpp" />
+    <ClCompile Include="ExtTab.cpp" />
+    <ClCompile Include="font.cpp" />
+    <ClCompile Include="Forksel.cpp" />
+    <ClCompile Include="FuriDlg.cpp" />
+    <ClCompile Include="HjiyuDlg.cpp" />
+    <ClCompile Include="HjiyuInp.cpp" />
+    <ClCompile Include="HusenCombo.cpp" />
+    <ClCompile Include="HusenDlg.cpp" />
+    <ClCompile Include="HusenInp.cpp" />
+    <ClCompile Include="HusenStatic.cpp" />
+    <ClCompile Include="icsdbedt.cpp" />
+    <ClCompile Include="icsdiag8ctrl.cpp" />
+    <ClCompile Include="icsdisp.cpp" />
+    <ClCompile Include="ICSListBox.cpp" />
+    <ClCompile Include="icslistinp.cpp" />
+    <ClCompile Include="icssel.cpp" />
+    <ClCompile Include="ICSTbarDlg.cpp" />
+    <ClCompile Include="ImageStatic.cpp" />
+    <ClCompile Include="IndkmkDlg.cpp" />
+    <ClCompile Include="KJKKI.cpp" />
+    <ClCompile Include="KJNamRec.cpp" />
+    <ClCompile Include="KJVOL.cpp" />
+    <ClCompile Include="KpubDlg.cpp" />
+    <ClCompile Include="KsrcStr.cpp" />
+    <ClCompile Include="NSDenpDlg.cpp" />
+    <ClCompile Include="OwnerButton.cpp" />
+    <ClCompile Include="picture.cpp" />
+    <ClCompile Include="ScanKey.cpp" />
+    <ClCompile Include="SELDLG.cpp" />
+    <ClCompile Include="select_sub.cpp" />
+    <ClCompile Include="SelGuideCtrl.cpp" />
+    <ClCompile Include="SkbnIn.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SWKselDlg.cpp" />
+    <ClCompile Include="SwlistSelDlg.cpp" />
+    <ClCompile Include="SyogBrn.cpp" />
+    <ClCompile Include="SyzInpSub.cpp" />
+    <ClCompile Include="TkdicDlg.cpp" />
+    <ClCompile Include="TkEdit.cpp" />
+    <ClCompile Include="TkkmkDlg.cpp" />
+    <ClCompile Include="TkregDlg.cpp" />
+    <ClCompile Include="TksrchDlg.cpp" />
+    <ClCompile Include="TKswkCpyMsgDlg.cpp" />
+    <ClCompile Include="TkswkDlg.cpp" />
+    <ClCompile Include="TkyEdaDlg.cpp" />
+    <ClCompile Include="TkySel.cpp" />
+    <ClCompile Include="TkyVer2Dlg.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBInpSub.def" />
+    <None Include="DBInpSubD.def" />
+    <None Include="res\DBInpSub.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BaseDlg.h" />
+    <ClInclude Include="BmnChk.h" />
+    <ClInclude Include="BrnTky.h" />
+    <ClInclude Include="BrnTkyDef.h" />
+    <ClInclude Include="CSkbnLiteDlg.h" />
+    <ClInclude Include="CStRecordSet.h" />
+    <ClInclude Include="CTkyDelRepoDlg.h" />
+    <ClInclude Include="CSWKDataSub.h" />
+    <ClInclude Include="DataZeiCalq.h" />
+    <ClInclude Include="DBInpSub8.h" />
+    <ClInclude Include="DBInpSubFunc.h" />
+    <ClInclude Include="DinpINI.h" />
+    <ClInclude Include="DinpRecordSet.h" />
+    <ClInclude Include="DlgToolBar.h" />
+    <ClInclude Include="edaregdlg.h" />
+    <ClInclude Include="ExtTab.h" />
+    <ClInclude Include="font.h" />
+    <ClInclude Include="Forksel.h" />
+    <ClInclude Include="HjiyuDlg.h" />
+    <ClInclude Include="HusenCombo.h" />
+    <ClInclude Include="HusenDlg.h" />
+    <ClInclude Include="icsdbedt.h" />
+    <ClInclude Include="icsdisp.h" />
+    <ClInclude Include="ICSListBox.h" />
+    <ClInclude Include="icslistinp.h" />
+    <ClInclude Include="icssel.h" />
+    <ClInclude Include="ICSTbarDlg.h" />
+    <ClInclude Include="IndkmkDlg.h" />
+    <ClInclude Include="KJKKI.h" />
+    <ClInclude Include="KJNamRec.h" />
+    <ClInclude Include="KJVOL.h" />
+    <ClInclude Include="KpubDlg.h" />
+    <ClInclude Include="KsrcStr.h" />
+    <ClInclude Include="picture.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ScanKey.h" />
+    <ClInclude Include="scan_item.h" />
+    <ClInclude Include="SELDLG.h" />
+    <ClInclude Include="SelectData.h" />
+    <ClInclude Include="select_sub.h" />
+    <ClInclude Include="SkbnIn.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SWKselDlg.h" />
+    <ClInclude Include="SwkTkyDef.h" />
+    <ClInclude Include="SwlistSelDlg.h" />
+    <ClInclude Include="SyogBrn.h" />
+    <ClInclude Include="SyzInp.h" />
+    <ClInclude Include="TkdicDlg.h" />
+    <ClInclude Include="TkEdit.h" />
+    <ClInclude Include="TkkmkDlg.h" />
+    <ClInclude Include="TkregDlg.h" />
+    <ClInclude Include="TksrchDlg.h" />
+    <ClInclude Include="TKswkCpyMsgDlg.h" />
+    <ClInclude Include="TkswkDlg.h" />
+    <ClInclude Include="TkyEdaDlg.h" />
+    <ClInclude Include="TkySel.h" />
+    <ClInclude Include="TkyVer2Dlg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\Y6634~1.UED\AppData\Local\Temp\htkrfzka.bmp" />
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\toolbar1.bmp" />
+    <Image Include="res\toolbar2.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBInpSub.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="DBInpSub.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
