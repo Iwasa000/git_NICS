@@ -1,0 +1,6 @@
+; DBSyz26.def : DLL のモジュール パラメータを宣言します。
+
+LIBRARY      "ZIM15_Syz26"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます

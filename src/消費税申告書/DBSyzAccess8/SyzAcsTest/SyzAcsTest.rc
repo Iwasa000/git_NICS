@@ -1,0 +1,466 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
+    "LANGUAGE 17, 1\r\n"
+    "#pragma code_page(932)\r\n"
+    "#include ""res\\SyzAcsTest.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // 標準コンポーネント\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\SyzAcsTest.ico"
+
+IDR_SYZACSTESTTYPE      ICON                    "res\\SyzAcsTestDoc.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+IDR_SYZACSTESTTYPE      BITMAP                  "res\\toolbar1.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 32, 32
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_SYZACSTESTTYPE TOOLBAR 32, 32
+BEGIN
+    BUTTON      ID_BUTTON_F2
+    BUTTON      ID_BUTTON_F3
+    BUTTON      ID_BUTTON_F4
+    BUTTON      ID_BUTTON_F5
+    BUTTON      ID_BUTTON_F6
+    BUTTON      ID_BUTTON_F7
+    BUTTON      ID_BUTTON_F8
+    BUTTON      ID_BUTTON_F9
+    BUTTON      ID_BUTTON_F11
+    BUTTON      ID_BUTTON_F12
+    BUTTON      ID_BUTTON_INSERT
+    BUTTON      ID_BUTTON_DELETE
+    BUTTON      ID_BUTTON_HOME
+    SEPARATOR
+    BUTTON      ID_BUTTON_END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "ファイル(&F)"
+    BEGIN
+        MENUITEM "アプリケーションの終了(&X)",             ID_APP_EXIT
+    END
+    POPUP "表示(&V)"
+    BEGIN
+        MENUITEM "ツール バー(&T)",                  ID_VIEW_TOOLBAR
+        MENUITEM "ステータス バー(&S)",                ID_VIEW_STATUS_BAR
+    END
+    POPUP "ヘルプ(&H)"
+    BEGIN
+        MENUITEM "バージョン情報 TEST01(&A)...",       ID_APP_ABOUT
+    END
+END
+
+IDR_SYZACSTESTTYPE MENU
+BEGIN
+    POPUP "ファイル(&F)"
+    BEGIN
+        MENUITEM "アプリケーションの終了(&X)",             ID_APP_EXIT
+    END
+    POPUP "表示(&V)"
+    BEGIN
+        MENUITEM "ツール バー(&T)",                  ID_VIEW_TOOLBAR
+        MENUITEM "ステータス バー(&S)",                ID_VIEW_STATUS_BAR
+    END
+    POPUP "ウィンドウ(&W)"
+    BEGIN
+        MENUITEM "重ねて表示(&C)",                   ID_WINDOW_CASCADE
+        MENUITEM "並べて表示(&T)",                   ID_WINDOW_TILE_HORZ
+    END
+    POPUP "ヘルプ(&H)"
+    BEGIN
+        MENUITEM "バージョン情報 SyzAcsTest(&A)...",   ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    VK_END,         ID_BUTTON_END,          VIRTKEY, NOINVERT
+    VK_F1,          ID_BUTTON_F1,           VIRTKEY, NOINVERT
+    VK_F11,         ID_BUTTON_F11,          VIRTKEY, NOINVERT
+    VK_F12,         ID_BUTTON_F12,          VIRTKEY, NOINVERT
+    VK_F2,          ID_BUTTON_F2,           VIRTKEY, NOINVERT
+    VK_F3,          ID_BUTTON_F3,           VIRTKEY, NOINVERT
+    VK_F4,          ID_BUTTON_F4,           VIRTKEY, NOINVERT
+    VK_F5,          ID_BUTTON_F5,           VIRTKEY, NOINVERT
+    VK_F6,          ID_BUTTON_F6,           VIRTKEY, NOINVERT
+    VK_F7,          ID_BUTTON_F7,           VIRTKEY, NOINVERT
+    VK_F8,          ID_BUTTON_F8,           VIRTKEY, NOINVERT
+    VK_F9,          ID_BUTTON_F9,           VIRTKEY, NOINVERT
+    VK_ESCAPE,      ID_BUTTON_COSEL,        VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "バージョン情報 SyzAcsTest"
+FONT 10, "ＭＳ ゴシック", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "SyzAcsTest Version 1.0",IDC_STATICVERS,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C)日本ICS株式会社 2006",IDC_STATICCPY,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
+END
+
+IDD_SYZACSTEST_FORM DIALOGEX 0, 0, 509, 298
+STYLE DS_SETFONT | WS_CHILD
+FONT 11, "ＭＳ ゴシック", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Open",IDC_BUTTON1,30,26,50,14
+    GROUPBOX        "消費税申告書（金額）",IDC_STATIC01,7,7,99,66
+    PUSHBUTTON      "Close",IDC_BUTTON2,30,47,50,14
+    GROUPBOX        "消費税申告書（割合）",IDC_STATIC02,149,7,99,66
+    PUSHBUTTON      "Open",IDC_BUTTON3,173,26,50,14
+    PUSHBUTTON      "Close",IDC_BUTTON4,173,47,50,14
+    GROUPBOX        "消費税集計サブテーブル(szsyksub)",IDC_STATIC3,12,96,150,66
+    PUSHBUTTON      "Open",IDC_BUTTON5,54,114,50,14
+    PUSHBUTTON      "Close",IDC_BUTTON6,54,135,50,14
+    GROUPBOX        "月別情報毎の税額計算判定関数",IDC_STATIC4,180,97,150,66
+    PUSHBUTTON      "GetSyzZeiCalqForEachMonth",IDC_BUTTON7,197,121,117,14
+    GROUPBOX        "税額計算(仕入)の混合チェック",IDC_STATIC5,338,98,150,66
+    PUSHBUTTON      "CheckSyzZeiCalqSireKonzai",IDC_BUTTON8,355,122,117,14
+    GROUPBOX        "5億円判定",IDC_STATIC6,180,178,150,66
+    PUSHBUTTON      "IsOver5okuYen",IDC_BUTTON9,197,205,117,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041104E4"
+        BEGIN
+            VALUE "CompanyName", "日本ICS株式会社"
+            VALUE "FileDescription", "TODO: <ファイルの説明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "SyzAcsTest.EXE"
+            VALUE "LegalCopyright", "Copyright (C) 日本ICS株式会社 2006. All rights reserved."
+            VALUE "OriginalFilename", "SyzAcsTest.EXE"
+            VALUE "ProductName", "TODO: <製品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x411, 932
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_SYZACSTEST_FORM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 502
+        TOPMARGIN, 7
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_SYZACSTEST_FORM AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "SyzAcsTest"
+    IDR_SYZACSTESTTYPE      "\nSYZACSTEST\nSyzAcsTest\n\n\nSyzAcsTest.Document\nSyzAcsTest.Document"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "SyzAcsTest"
+    AFX_IDS_IDLEMESSAGE     "レディ"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "上書"
+    ID_INDICATOR_REC        "記録"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "新規にファイルを作成\n新規ファイル"
+    ID_FILE_OPEN            "既存のファイルを開く\n開く"
+    ID_FILE_CLOSE           "作業中のファイルを閉じる\n閉じる"
+    ID_FILE_SAVE            "作業中のファイルを上書きして保存\n保存"
+    ID_FILE_SAVE_AS         "作業中のファイルを新しい名前で保存\n名前をつけて保存"
+    ID_BUTTON_F5            "印刷を開始します;印刷を開始します;F5;印　　　刷"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "バージョン情報を表示します\nバージョン情報を表示します\nバージョン"
+    ID_APP_EXIT             "アプリケーションを終了し、ファイルの保存を指示\n終了"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "指定のファイルを開く"
+    ID_FILE_MRU_FILE2       "指定のファイルを開く"
+    ID_FILE_MRU_FILE3       "指定のファイルを開く"
+    ID_FILE_MRU_FILE4       "指定のファイルを開く"
+    ID_FILE_MRU_FILE5       "指定のファイルを開く"
+    ID_FILE_MRU_FILE6       "指定のファイルを開く"
+    ID_FILE_MRU_FILE7       "指定のファイルを開く"
+    ID_FILE_MRU_FILE8       "指定のファイルを開く"
+    ID_FILE_MRU_FILE9       "指定のファイルを開く"
+    ID_FILE_MRU_FILE10      "指定のファイルを開く"
+    ID_FILE_MRU_FILE11      "指定のファイルを開く"
+    ID_FILE_MRU_FILE12      "指定のファイルを開く"
+    ID_FILE_MRU_FILE13      "指定のファイルを開く"
+    ID_FILE_MRU_FILE14      "指定のファイルを開く"
+    ID_FILE_MRU_FILE15      "指定のファイルを開く"
+    ID_FILE_MRU_FILE16      "指定のファイルを開く"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "次のウィンドウに切り替える\n次のペイン"
+    ID_PREV_PANE            "前のウィンドウに切り替える\n前のペイン"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_NEW           "作業中のウィンドウを複写して表示\n新規ウィンドウ"
+    ID_WINDOW_ARRANGE       "ウィンドウの下部にアイコンを整列\nアイコンの整列"
+    ID_WINDOW_CASCADE       "ウィンドウを重ねて表示\n重ねて表示"
+    ID_WINDOW_TILE_HORZ     "ウィンドウを並べて表示\n並べて表示"
+    ID_WINDOW_TILE_VERT     "ウィンドウを並べて表示\n並べて表示"
+    ID_WINDOW_SPLIT         "作業中のウィンドウを分割\n分割"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "選択範囲を消去\n消去"
+    ID_EDIT_CLEAR_ALL       "すべて消去\nすべて消去"
+    ID_EDIT_COPY            "選択範囲をコピーしてクリップボードに保存\n保存"
+    ID_EDIT_CUT             "選択範囲を切り取ってクリップボードに保存\n切り取り"
+    ID_EDIT_FIND            "指定した文字列の検索\n検索"
+    ID_EDIT_PASTE           "クリップボードの内容を貼り付け\n貼り付け"
+    ID_EDIT_REPEAT          "直前に行った動作を繰り返す\n繰り返し"
+    ID_EDIT_REPLACE         "指定した文字列を他の文字列で置換\n置換"
+    ID_EDIT_SELECT_ALL      "ファイル内のすべてを選択\nすべて選択"
+    ID_EDIT_UNDO            "直前に行った動作を元に戻す\n元に戻す"
+    ID_EDIT_REDO            "直前に行った動作を繰り返す\n繰り返す"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_TOOLBAR         "ツール バーの 表示/非表示\nツール バーの表示切り替え"
+    ID_VIEW_STATUS_BAR      "ステータス バーの 表示/非表示\nステータス バーの表示切り替え"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "ウィンドウのサイズを変更"
+    AFX_IDS_SCMOVE          "ウィンドウの位置を変更"
+    AFX_IDS_SCMINIMIZE      "ウィンドウを最小化する"
+    AFX_IDS_SCMAXIMIZE      "ウィンドウを最大化する"
+    AFX_IDS_SCNEXTWINDOW    "次のウィンドウに切り替える"
+    AFX_IDS_SCPREVWINDOW    "前のウィンドウに切り替える"
+    AFX_IDS_SCCLOSE         "作業中のウィンドウを閉じ、変更したファイルの保存を指示"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "ウィンドウを通常のサイズに戻す"
+    AFX_IDS_SCTASKLIST      "タスク一覧をアクティブにする"
+    AFX_IDS_MDICHILD        "ウィンドウをアクティブにする"
+END
+
+STRINGTABLE
+BEGIN
+    ID_SHOW_MDITABS         "タブ表示/非表示を切り替えます;タブ表示/非表示を切り替えます;;タブ表示"
+    ID_BUTTON_F1            ";;F1;"
+    ID_BUTTON_F2            "前の項目へ移動します;前の項目へ移動します;F2;前項目"
+    ID_BUTTON_F3            "印刷結果をExcelファイルへ出力します;印刷結果をExcelファイルへ出力します;F3;Excel出力"
+    ID_BUTTON_F4            "印刷プレビューを表示します;印刷プレビューを表示します;F4;プレビュー"
+    ID_BUTTON_F6            ";;F6;"
+    ID_BUTTON_F7            ";;F7;"
+    ID_BUTTON_F8            ";;F8;"
+    ID_BUTTON_F9            ";;F9;"
+    ID_BUTTON_F11           ";;F11;"
+    ID_BUTTON_F12           ";;F12;"
+END
+
+STRINGTABLE
+BEGIN
+    ID_BUTTON_END           "処理を終了します;処理を終了します;End; 処理終了 "
+    ID_BUTTON_INSERT        ";;Ins;"
+    ID_BUTTON_DELETE        ";;Del;"
+    ID_BUTTON_HOME          ";;Home;"
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE 17, 1
+#pragma code_page(932)
+#include "res\SyzAcsTest.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // 標準コンポーネント
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

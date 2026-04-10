@@ -1,0 +1,44 @@
+// DBSyzShinMainDoc.h : CH31HyoDoc クラスのインターフェイス
+//
+
+#pragma once
+
+#ifdef _SYZ_H31_HYO_EXPORT_CHANGE_
+	#define SYZ_H31_HYO_CLASS_EXPORT __declspec(dllexport)
+#else
+	#define SYZ_H31_HYO_CLASS_EXPORT 
+#endif
+
+class SYZ_H31_HYO_CLASS_EXPORT CH31HyoDoc : public CDocument
+{
+protected: // シリアル化からのみ作成します。
+	CH31HyoDoc();
+	DECLARE_DYNCREATE(CH31HyoDoc)
+
+// 属性
+public:
+
+// 操作
+public:
+
+// オーバーライド
+	public:
+	virtual BOOL OnNewDocument();
+	virtual void Serialize(CArchive& ar);
+
+// 実装
+public:
+	virtual ~CH31HyoDoc();
+#ifdef _DEBUG
+	virtual void AssertValid() const;
+	virtual void Dump(CDumpContext& dc) const;
+#endif
+
+protected:
+
+// 生成された、メッセージ割り当て関数
+protected:
+	DECLARE_MESSAGE_MAP()
+};
+
+

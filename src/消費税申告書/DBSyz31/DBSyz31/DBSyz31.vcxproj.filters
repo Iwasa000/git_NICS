@@ -1,0 +1,645 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\SyzrefundDB">
+      <UniqueIdentifier>{d945454b-740f-48f3-a3d5-ae2ec6185858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\SyzrefundDB">
+      <UniqueIdentifier>{963e9c40-1341-4712-a1ee-1052594563f8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ChangeTaxEx.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DBSyz31.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="H31HyoDoc.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="H31HyoPrint.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="H31HyoView.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="icsdiagctrl.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinCom.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo1_01.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo1_02.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo2_01.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo2_02.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo4_01.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo4_02.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo5_01.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo5_012.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo5_02.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo5_022.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo6.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo6Calq.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinHjnKskEX.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinIppan01.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinIppan02.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKani01.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKjnKskEX.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzBaseDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="RefundBaseDialog.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlKotei.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlMeisai.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlRiyuu.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlShiire.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlShiireHo.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlShiireKo.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlTokusyu.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlTorihiki.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlYsMeisai.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\DiagCtlYusyutsu.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\ShinRefundHjn01.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\ShinRefundHjn02.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\ShinRefundKjn01.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\ShinRefundKjn02.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\H31SnRefundData.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinChskEX.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="icsdisp8ctrl1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PrePrint.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="icsdbedt8ctrl1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKSisanUri.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKsisan_Uri2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKshiire.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangeTaxEx2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangeTax2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangeTax.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo1_03.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo2_03.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo4_03.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo5_03.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo5_032.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo2_11.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo2_12.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CKoujoSelect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKjnKskEX2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinHjnKskEX2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKskRnd2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKskRnd.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinIppan01EX.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKani01EX.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo6_2wari.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo2_03Ex.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo2_11Ex.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinFhyo2_12Ex.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinKani01EX2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShinIppan01EX2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ChkMsg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\ShinRefundHjn02EX.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+    <ClCompile Include="SyzrefundDB\ShinRefundKjn02EX.cpp">
+      <Filter>ソース ファイル\SyzrefundDB</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBSyz31.def">
+      <Filter>ソース ファイル</Filter>
+    </None>
+    <None Include="DBSyz31D.def">
+      <Filter>ソース ファイル</Filter>
+    </None>
+    <None Include="res\DBSyz31.rc2">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="DBSyz31_2017.def">
+      <Filter>ソース ファイル</Filter>
+    </None>
+    <None Include="DBSyz31D_2017.def">
+      <Filter>ソース ファイル</Filter>
+    </None>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ChangeTaxEx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="H31HyoDoc.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="H31HyoView.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="H31HyoViewRec.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="icsdiagctrl.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo1_01.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo1_01Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo1_02.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo1_02Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_01.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_01Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_02.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_02idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo4_01.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo4_01idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo4_02.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo4_02idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_01.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_012.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_012idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_01idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_02.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_022.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo6.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo6Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinHjnKskEX.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinHjnKskEXIdx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinIppan01.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinIppan02.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKani01.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKjnKskEX.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKjnKskEXIdx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Syz31ComDef.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzBaseDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinIppan01Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="RefundBaseDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\RefundDataDef.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagControlBase.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlKotei.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlMeisai.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlRiyuu.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlShiire.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlShiireHo.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlShiireKo.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlTokusyu.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlTorihiki.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlYsMeisai.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\DiagCtlYusyutsu.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\ShinRefundHjn01.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\ShinRefundHjn02.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\ShinRefundKjn01.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\ShinRefundKjn02.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\Syzrefunddef.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\H31SnRefundData.H">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="DBSyzSkjoRec.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinChskEX.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinChskEXIdx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeTaxExIdx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="icsdisp8ctrl1.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="_Picture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="_Font.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PrePrint.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="icsdbedt8ctrl1.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKani01idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKSisanUri.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKSisanUriIdx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKshiire.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKshiireIdx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKsisan_Uri2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKsisan_Uri2Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_022idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_02idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinIppan02idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeTaxEx2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeTaxEx2Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeTax2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeTax2Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeTax.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeTaxIdx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo1_03.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_03.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo1_03idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_03idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo4_03.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo4_03idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_03.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_03idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_032.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo5_032idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_11.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_11Idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_12.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_12idx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CKoujoSelect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="KoujoSelectIdx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKjnKskEX2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKjnKskEXIdx2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinHjnKskEX2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinHjnKskEXIdx2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKskRnd2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKskRnd.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinIppan01EX.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinIppan01IdxEX.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKani01EX.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKani01idxEX.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo6_2wari.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo6_2wariidx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_03Ex.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_03idxEx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_11Ex.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_11IdxEx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_12Ex.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinFhyo2_12idxEx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinIppan01IdxEX2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinIppan01EX2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKani01EX2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinKani01idxEX2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ChkMsg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\ShinRefundHjn02EX.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+    <ClInclude Include="SyzrefundDB\ShinRefundKjn02EX.h">
+      <Filter>ヘッダー ファイル\SyzrefundDB</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBSyz31.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>

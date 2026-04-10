@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{451CEF0B-052E-4B37-8EBF-57FED1117563}</ProjectGuid>
+    <RootNamespace>DBSyzShinMain</RootNamespace>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.27625.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
+    <IncludePath>C:\ICSDEV\INCLUDE8_d\CXTP;C:\ICSDEV\INCLUDE8_d;C:\ICSDEV\INCLUDE8\CXTP;C:\ICSDEV\INCLUDE8;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\ICSDEV\LIB15;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>DBSyzShin</TargetName>
+    <IncludePath>C:\ICSDEV\INCLUDE8;C:\ICSDEV\INCLUDE8\CXTP;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\ICSDEV\LIB15;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GENd.lib;ICS15_GENLd.lib;ICSCmnd.lib;ICS15_COSELd.lib;ZIM15_NpSubd.lib;ZIM15_ZmSubd.lib;ICS15_Printd.lib;ZIM15_Gend.lib;ZIM15_SyzMakeSubd.lib;ICS15_VLCTLd.lib;ZIM15_AddUpd.lib;ICS15_ARITHd.lib;ICS15_CoInfoSubd.lib;ICS15_Mctld.lib;ICS15_ESELECTd.lib;ICS15_OfficeInfod.lib;ICS15_VolDated.lib;ICS15_progress_Modd.lib;ZIM15_SyzAccessd.lib;ZIM15_SyzSykComd.lib;ICS15_XYSPrintd.lib;ICS15_PformInfd.lib;ZIM15_ShinCalculated.lib;ICS15_MTBLd.lib;ZIM15_Kmseld.lib;ICS15_Paymentd.lib;ICS15_Kmnctld.lib;ICS15_PrintSchd.lib;ICS15_Subtoold.lib;ZIM15_Syz26D.lib;ZIM15_Syz31D.lib;ZIM15_SyzTaxationListD.lib;ZIM15_SyzShinComD.lib;ICS15_MNSubd.lib;ICS15_MNEditd.lib;ICS15_NoTblModd.lib;ICS15_HjAccessd.lib;ICS15_ZipAdd.lib;ZIM15_SyZeid.lib;ZIM15_SyzTaxationList31D.lib;imm32.lib;ICS15_TaxAgentD.lib;ICS15_JZCHECKD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>ZIM15_SyzSykComd.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <TerminalServerAware>true</TerminalServerAware>
+    </Link>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CustomBuildStep>
+      <Message />
+      <Command />
+      <Inputs>$(TargetPath);%(Inputs)</Inputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GEN.lib;ICS15_GENL.lib;ICSCmn.lib;ICS15_COSEL.lib;ZIM15_NpSub.lib;ZIM15_ZmSub.lib;ICS15_Print.lib;ZIM15_Syz26.lib;ZIM15_Syz31.lib;ZIM15_Gen.lib;ZIM15_SyzMakeSub.lib;ICS15_VLCTL.lib;ZIM15_AddUp.lib;ICS15_ARITH.lib;ICS15_CoInfoSub.lib;ICS15_Mctl.lib;ICS15_ESELECT.lib;ICS15_OfficeInfo.lib;ICS15_VolDate.lib;ZIM15_SyzAccess.lib;ZIM15_SyzShinCom.lib;ZIM15_SyzTaxationList.lib;ZIM15_SyzSykCom.lib;ICS15_XYSPrint.lib;ICS15_PformInf.lib;ZIM15_ShinCalculate.lib;ICS15_MTBL.lib;ZIM15_Kmsel.lib;ICS15_Payment.lib;ICS15_progress_Mod.lib;ICS15_Kmnctl.lib;ICS15_PrintSch.lib;ICS15_Subtool.lib;ICS15_MNSub.lib;ICS15_MNEdit.lib;ICS15_NoTblMod.lib;ICS15_HjAccess.lib;ICS15_ZipAd.lib;ZIM15_SyZei.lib;ZIM15_SyzTaxationList31.lib;imm32.lib;ICS15_TaxAgent.lib;ICS15_JZCHECK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <DelayLoadDLLs>ZIM15_SyzTaxationList.dll;ZIM15_SyzSykCom.dll;ZIM15_SyzTaxationList31.dll;ICS15_TaxAgent.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <TerminalServerAware>true</TerminalServerAware>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CDiagException.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="CoinfoRel.cpp" />
+    <ClCompile Include="ColorComboBox.cpp" />
+    <ClCompile Include="DBSyzShinHistory.cpp" />
+    <ClCompile Include="DBSyzShinMain.cpp" />
+    <ClCompile Include="DBSyzShinMainDoc.cpp" />
+    <ClCompile Include="DBSyzShinMainMyNum.cpp" />
+    <ClCompile Include="DBSyzShinMainView.cpp" />
+    <ClCompile Include="DenshiInfo.cpp" />
+    <ClCompile Include="DlgJobEnd.cpp" />
+    <ClCompile Include="DlgJobEnd2.cpp" />
+    <ClCompile Include="GroupStatic.cpp" />
+    <ClCompile Include="Gyousyu.cpp" />
+    <ClCompile Include="icsdbedt8ctrl1.cpp" />
+    <ClCompile Include="icsdiag8ctrl1.cpp" />
+    <ClCompile Include="icsdiagctrl.cpp" />
+    <ClCompile Include="ICSReportPaintManagerEX.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MiddlePyment.cpp" />
+    <ClCompile Include="NextShinkokuDlg.cpp" />
+    <ClCompile Include="OpenSzsnk.cpp" />
+    <ClCompile Include="PrintKazeiSub.cpp" />
+    <ClCompile Include="PrintOut.cpp" />
+    <ClCompile Include="PrintTokuteiSub.cpp" />
+    <ClCompile Include="PrintZeitempSub.cpp" />
+    <ClCompile Include="PrnItem.cpp" />
+    <ClCompile Include="PrnPrint.cpp" />
+    <ClCompile Include="PrnPrintKani.cpp" />
+    <ClCompile Include="PrnPrintKani_EX.cpp" />
+    <ClCompile Include="PrnPrintKani_EX2.cpp" />
+    <ClCompile Include="PrnPrint_EX.cpp" />
+    <ClCompile Include="PrnPrint_EX2.cpp" />
+    <ClCompile Include="PrnReportDlg.cpp" />
+    <ClCompile Include="PrnTune.cpp" />
+    <ClCompile Include="SelReportKbn.cpp" />
+    <ClCompile Include="ShinCalq.cpp" />
+    <ClCompile Include="ShinDate.cpp" />
+    <ClCompile Include="ShinMinfoCheck.cpp" />
+    <ClCompile Include="SkjHjnConvert.cpp" />
+    <ClCompile Include="SkjKjnConvert.cpp" />
+    <ClCompile Include="Sn1FData.cpp" />
+    <ClCompile Include="SnData.cpp" />
+    <ClCompile Include="Snset.cpp" />
+    <ClCompile Include="SozokuSel.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SyzShinCalq.cpp" />
+    <ClCompile Include="TimeControl.cpp" />
+    <ClCompile Include="TransStatic.cpp" />
+    <ClCompile Include="ZeroPercent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CDiagException.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="ColorComboBox.h" />
+    <ClInclude Include="DBSyzShinMain.h" />
+    <ClInclude Include="DBSyzShinMainDoc.h" />
+    <ClInclude Include="DBSyzShinMainView.h" />
+    <ClInclude Include="DenshiInfo.h" />
+    <ClInclude Include="DiagControlBase.h" />
+    <ClInclude Include="DlgJobEnd.h" />
+    <ClInclude Include="DlgJobEnd2.h" />
+    <ClInclude Include="GroupStatic.h" />
+    <ClInclude Include="Gyousyu.h" />
+    <ClInclude Include="HistoryReport.h" />
+    <ClInclude Include="icsdiag8ctrl1.h" />
+    <ClInclude Include="icsdiagctrl.h" />
+    <ClInclude Include="ICSReportPaintManagerEX.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MiddlePyment.h" />
+    <ClInclude Include="NextShinkokuDlg.h" />
+    <ClInclude Include="PrintKazeiSub.h" />
+    <ClInclude Include="PrintTokuteiSub.h" />
+    <ClInclude Include="PrintZeitempSub.h" />
+    <ClInclude Include="PrnItem.h" />
+    <ClInclude Include="PrnPrint.h" />
+    <ClInclude Include="PrnPrintIdx.h" />
+    <ClInclude Include="PrnPrintIdx_EX.h" />
+    <ClInclude Include="PrnPrintIdx_EX2.h" />
+    <ClInclude Include="PrnPrintIdx_EX_Sub.h" />
+    <ClInclude Include="PrnPrintKani.h" />
+    <ClInclude Include="PrnPrintKaniIdx.h" />
+    <ClInclude Include="PrnPrintKaniIdx_EX.h" />
+    <ClInclude Include="PrnPrintKaniIdx_EX2.h" />
+    <ClInclude Include="PrnPrintKani_EX.h" />
+    <ClInclude Include="PrnPrintKani_EX2.h" />
+    <ClInclude Include="PrnPrint_EX.h" />
+    <ClInclude Include="PrnPrint_EX2.h" />
+    <ClInclude Include="PrnReportDlg.h" />
+    <ClInclude Include="PrnTune.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SkjHjnConvert.h" />
+    <ClInclude Include="SkjKjnConvert.h" />
+    <ClInclude Include="Sn1FData.h" />
+    <ClInclude Include="Snset.h" />
+    <ClInclude Include="SozokuSel.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SyzShinMainDef.h" />
+    <ClInclude Include="SyzShinRec.h" />
+    <ClInclude Include="TimeControl.h" />
+    <ClInclude Include="TransStatic.h" />
+    <ClInclude Include="ZeroPercent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bmp00002.bmp" />
+    <Image Include="res\bmp00005.bmp" />
+    <Image Include="res\DBSyzShin.ico" />
+    <Image Include="res\DBSyzShinMain.ico" />
+    <Image Include="res\DBSyzShinMainDoc.ico" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBSyzShinMain.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\DBSyzShinMain.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties _x007B_8A8B65FB-AFE2-4D25-A70C-69764E0DC371_x007D_="CIcsdiag8ctrl1" RESOURCE_FILE="DBSyzShinMain.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

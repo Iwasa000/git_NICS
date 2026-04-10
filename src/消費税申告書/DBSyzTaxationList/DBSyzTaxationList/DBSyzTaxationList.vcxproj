@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{66D9186E-49CB-40C2-8703-3FC3FB947063}</ProjectGuid>
+    <RootNamespace>DBSyzTaxationList</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+    <ProjectName>ZIM15_SyzTaxationList</ProjectName>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.27625.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)d</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GENd.lib;ICS15_GENLd.lib;ZIM15_SyzAccessd.lib;ICS15_MTBLd.lib;ZIM15_ZmSubd.lib;ICS15_ARITHd.lib;ZIM15_SyzShinComD.lib;ICS15_Printd.lib;ICS15_Subtoold.lib;ICSCmnd.lib;ICS15_XYSPrintd.lib;ZIM15_SyzSykComd.lib;ZIM15_NpSubd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>.\DBSyzTaxationListD_2017.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>ZIM15_SyzSykComd.dll;ZIM15_NpSubd.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GEN.lib;ICS15_GENL.lib;ZIM15_SyzAccess.lib;ICS15_MTBL.lib;ZIM15_ZmSub.lib;ICS15_ARITH.lib;ZIM15_SyzShinCom.lib;ICS15_Print.lib;ICS15_Subtool.lib;ICSCmn.lib;ICS15_XYSPrint.lib;ZIM15_SyzSykCom.lib;ZIM15_NpSub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>.\DBSyzTaxationList_2017.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>ZIM15_NpSub.dll;ZIM15_SyzSykCom.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="DBSyzTaxationList.cpp" />
+    <ClCompile Include="H26SpcListData.cpp" />
+    <ClCompile Include="H26TaxListData.cpp" />
+    <ClCompile Include="icsdiagctrl.cpp" />
+    <ClCompile Include="icsdisp8ctrl1.cpp" />
+    <ClCompile Include="KoketsuMeisyo.cpp" />
+    <ClCompile Include="ShinBuy.cpp" />
+    <ClCompile Include="ShinBuyKeika.cpp" />
+    <ClCompile Include="ShinCalc.cpp" />
+    <ClCompile Include="ShinCom.cpp" />
+    <ClCompile Include="ShinFudousan.cpp" />
+    <ClCompile Include="ShinFudousanKeika.cpp" />
+    <ClCompile Include="ShinJigyo.cpp" />
+    <ClCompile Include="ShinJigyoKeika.cpp" />
+    <ClCompile Include="ShinKniinp6syuDlg.cpp" />
+    <ClCompile Include="ShinKniinpDlg.cpp" />
+    <ClCompile Include="ShinKniinpKeika.cpp" />
+    <ClCompile Include="ShinKniinpKeika6syu.cpp" />
+    <ClCompile Include="ShinNougyou.cpp" />
+    <ClCompile Include="ShinNougyouKeika.cpp" />
+    <ClCompile Include="ShinSell.cpp" />
+    <ClCompile Include="ShinSellKeika.cpp" />
+    <ClCompile Include="ShinSpecific1.cpp" />
+    <ClCompile Include="ShinSpecific1EX.cpp" />
+    <ClCompile Include="ShinSpecific1EXkeika.cpp" />
+    <ClCompile Include="ShinSpecific21.cpp" />
+    <ClCompile Include="ShinSpecific21EX.cpp" />
+    <ClCompile Include="ShinSpecific21EX2.cpp" />
+    <ClCompile Include="ShinSpecific22.cpp" />
+    <ClCompile Include="ShinSpecific22keika.cpp" />
+    <ClCompile Include="ShinSpecific34.cpp" />
+    <ClCompile Include="ShinSpecific51.cpp" />
+    <ClCompile Include="ShinSpecific51keika.cpp" />
+    <ClCompile Include="ShinSpecific52.cpp" />
+    <ClCompile Include="ShinSpecific52keika.cpp" />
+    <ClCompile Include="ShinSpecific53.cpp" />
+    <ClCompile Include="ShinSpecific53keika.cpp" />
+    <ClCompile Include="ShinSpecific6.cpp" />
+    <ClCompile Include="ShinSpecificView.cpp" />
+    <ClCompile Include="SpcBaseDlg.cpp" />
+    <ClCompile Include="SpcListPrint.cpp" />
+    <ClCompile Include="SpecPassOff.cpp" />
+    <ClCompile Include="SpecPassOffEx.cpp" />
+    <ClCompile Include="SpecPassOn.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SyzBaseDlg.cpp" />
+    <ClCompile Include="TaxationListView.cpp" />
+    <ClCompile Include="TaxListDoc.cpp" />
+    <ClCompile Include="TaxtionListPrint.cpp" />
+    <ClCompile Include="TaxtionSelect.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBSyzTaxationListD_2017.def" />
+    <None Include="DBSyzTaxationList_2017.def" />
+    <None Include="res\DBSyzTaxationList.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DBShinListInt.h" />
+    <ClInclude Include="DBShinListRec.h" />
+    <ClInclude Include="H26SpcListData.h" />
+    <ClInclude Include="H26TaxListData.h" />
+    <ClInclude Include="icsdiagctrl.h" />
+    <ClInclude Include="icsdisp8ctrl1.h" />
+    <ClInclude Include="KoketsuMeisyo.h" />
+    <ClInclude Include="OrgResource.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ShinBuy.h" />
+    <ClInclude Include="ShinBuyIdx.h" />
+    <ClInclude Include="ShinBuyKeika.h" />
+    <ClInclude Include="ShinBuyKeikaIdx.h" />
+    <ClInclude Include="ShinCalc.h" />
+    <ClInclude Include="ShinCom.h" />
+    <ClInclude Include="ShinFudousan.h" />
+    <ClInclude Include="ShinFudousanIdx.h" />
+    <ClInclude Include="ShinFudousanKeika.h" />
+    <ClInclude Include="ShinFudousanKeikaIdx.h" />
+    <ClInclude Include="ShinJigyo.h" />
+    <ClInclude Include="ShinJigyoIdx.h" />
+    <ClInclude Include="ShinJigyoKeika.h" />
+    <ClInclude Include="ShinJigyoKeikaIdx.h" />
+    <ClInclude Include="ShinKniinp6syuDlg.h" />
+    <ClInclude Include="ShinKniinp6syuDlgIdx.h" />
+    <ClInclude Include="ShinKniinpDlg.h" />
+    <ClInclude Include="ShinKniinpDlgIdx.h" />
+    <ClInclude Include="ShinKniinpKeika.h" />
+    <ClInclude Include="ShinKniinpKeika6syu.h" />
+    <ClInclude Include="ShinKniinpKeika6syuIdx.h" />
+    <ClInclude Include="ShinKniinpKeikaIdx.h" />
+    <ClInclude Include="ShinNougyou.h" />
+    <ClInclude Include="ShinNougyouIdx.h" />
+    <ClInclude Include="ShinNougyouKeika.h" />
+    <ClInclude Include="ShinNougyouKeikaIdx.h" />
+    <ClInclude Include="ShinSell.h" />
+    <ClInclude Include="ShinSellIdx.h" />
+    <ClInclude Include="ShinSellKeika.h" />
+    <ClInclude Include="ShinSellKeikaIdx.h" />
+    <ClInclude Include="ShinSpecific1.h" />
+    <ClInclude Include="ShinSpecific1EX.h" />
+    <ClInclude Include="ShinSpecific1EXIdx.h" />
+    <ClInclude Include="ShinSpecific1EXkeika.h" />
+    <ClInclude Include="ShinSpecific1EXkeikaIdx.h" />
+    <ClInclude Include="ShinSpecific1Idx.h" />
+    <ClInclude Include="ShinSpecific21.h" />
+    <ClInclude Include="ShinSpecific21EX.h" />
+    <ClInclude Include="ShinSpecific21EX2.h" />
+    <ClInclude Include="ShinSpecific21EX2Idx.h" />
+    <ClInclude Include="ShinSpecific21EXIdx.h" />
+    <ClInclude Include="ShinSpecific22.h" />
+    <ClInclude Include="shinspecific22idx.h" />
+    <ClInclude Include="ShinSpecific22keika.h" />
+    <ClInclude Include="shinspecific22keikaidx.h" />
+    <ClInclude Include="ShinSpecific34.h" />
+    <ClInclude Include="ShinSpecific34Idx.h" />
+    <ClInclude Include="ShinSpecific51.h" />
+    <ClInclude Include="ShinSpecific51Idx.h" />
+    <ClInclude Include="ShinSpecific51keika.h" />
+    <ClInclude Include="ShinSpecific51keikaIdx.h" />
+    <ClInclude Include="ShinSpecific52.h" />
+    <ClInclude Include="ShinSpecific52Idx.h" />
+    <ClInclude Include="ShinSpecific52keika.h" />
+    <ClInclude Include="ShinSpecific52keikaIdx.h" />
+    <ClInclude Include="ShinSpecific53.h" />
+    <ClInclude Include="ShinSpecific53Idx.h" />
+    <ClInclude Include="ShinSpecific53keika.h" />
+    <ClInclude Include="ShinSpecific53keikaIdx.h" />
+    <ClInclude Include="ShinSpecific6.h" />
+    <ClInclude Include="ShinSpecific6Idx.h" />
+    <ClInclude Include="SpcBaseDlg.h" />
+    <ClInclude Include="SpecPassOff.h" />
+    <ClInclude Include="SpecPassOffEx.h" />
+    <ClInclude Include="SpecPassOn.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SyzBaseDlg.h" />
+    <ClInclude Include="SyzTaxListDef.h" />
+    <ClInclude Include="TaxationListView.h" />
+    <ClInclude Include="TaxListDoc.h" />
+    <ClInclude Include="TaxtionSelect.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBSyzTaxationList.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties _x007B_8A8B65FB-AFE2-4D25-A70C-69764E0DC371_x007D_="CIcsdiagctrl1" RESOURCE_FILE="DBSyzTaxationList.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

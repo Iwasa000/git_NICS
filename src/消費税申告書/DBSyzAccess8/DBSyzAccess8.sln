@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBSyzAccess8", "DBSyzAccess8\DBSyzAccess8.vcproj", "{8C738129-B71F-49E8-BB01-2F986AC9B314}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SyzAcsTest", "SyzAcsTest\SyzAcsTest.vcproj", "{E06BD357-5925-4669-9314-15C2E39FFFA3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8C738129-B71F-49E8-BB01-2F986AC9B314} = {8C738129-B71F-49E8-BB01-2F986AC9B314}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C738129-B71F-49E8-BB01-2F986AC9B314}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8C738129-B71F-49E8-BB01-2F986AC9B314}.Debug|Win32.Build.0 = Debug|Win32
+		{8C738129-B71F-49E8-BB01-2F986AC9B314}.Release|Win32.ActiveCfg = Release|Win32
+		{8C738129-B71F-49E8-BB01-2F986AC9B314}.Release|Win32.Build.0 = Release|Win32
+		{E06BD357-5925-4669-9314-15C2E39FFFA3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E06BD357-5925-4669-9314-15C2E39FFFA3}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

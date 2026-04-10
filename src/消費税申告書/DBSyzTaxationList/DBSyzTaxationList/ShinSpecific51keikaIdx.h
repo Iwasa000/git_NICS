@@ -1,0 +1,18 @@
+#pragma	once
+
+#define	ID510 48	//  1.(‚S“)	’²®‘O‚Ì‰ÛÅd“ü‚ê“™‚ÌÅŠz‚Ì‡Œv				[SpKgsz]
+#define	ID511 49	//  2.(‚S“)	‰ÛÅd“ü‚ê“™‚Ì‚İ‚Ég“r‚ª“Á’è‚³‚ê‚Ä‚¢‚é“Á’èû“ü	[SpTsyu + SpKsyu]
+#define	ID512 50	//  3.(‚S“)	‡A~‚S^‚P‚O‚T									[SpTszg + SpKszg]
+#define	ID513 51	//  6.(‚S“)	‡@|‡B											[SpKgzg-(SpTszg + SpKszg)]
+#define	ID514 52	//  7.			’²®Š„‡ •ª•ê									[SpFsyu]
+#define	ID515 53	//  7.			’²®Š„‡ •ªq									[SpTuwb + SpFsyu]											
+#define	ID516 54	//  8.(‚S“)	‡E~‡F											[SpTwag]
+#define	ID517 55	//  9.(‚S“)	‡B{‡G											[SpGgtg]
+#define	ID518 56	// 10.(‚S“)	d“ü‚êTœÅŠz									[SpSizg]
+#define	ID519 57	//  1.(6.3“)	’²®‘O‚Ì‰ÛÅd“ü‚ê“™‚ÌÅŠz‚Ì‡Œv				[SpKgsz]
+#define	ID520 58	//  4.(6.3“)	‰ÛÅd“ü‚ê“™‚Ì‚İ‚Ég“r‚ª“Á’è‚³‚ê‚Ä‚¢‚é“Á’èû“ü	[SpTsyu + SpKsyu]
+#define	ID521 59	//  5.(6.3“)	‡A~‚S^‚P‚O‚T									[SpTszg + SpKszg]
+#define	ID522 60	//  6.(6.3“)	‡@|‡D											[SpKgzg-(SpTszg + SpKszg)]
+#define	ID523 61	//  8.(6.3“)	‡E~‡F											[SpTwag]
+#define	ID524 62	//  9.(6.3“)	‡B{‡G											[SpGgtg]
+#define	ID525 63	// 10.(6.3“)	d“ü‚êTœÅŠz									[SpSizg]

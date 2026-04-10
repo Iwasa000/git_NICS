@@ -1,0 +1,6 @@
+; DBSyz31.def : DLL のモジュール パラメータを宣言します。
+
+LIBRARY      "DBSyz31"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます

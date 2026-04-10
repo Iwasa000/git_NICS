@@ -1,0 +1,788 @@
+#pragma	once
+
+//'14.08.25
+#define		NKWIDECNT	5		//カラムの横の数
+#define		NKLINCNT	39		//帳票の行数。この行数でデータを保存していってる
+#define		NKVMIN		301		//入力ボックスの最小のインデックス
+#define		NKVMAX		495		//入力ボックスの最大のインデックス
+
+#define		NKVLST		271
+
+#define		NKYEARID	1
+
+#define		NKZKBNID	290
+
+/*
+
+
+#define		VCNT	3
+#define		VLIN	39
+
+#define		VMIN	204
+#define		VMAX	320
+#define		VLST	312
+
+#define		YEARID	1
+
+#define		ZKBNID	352
+*/
+
+
+//全てのIDX定義
+#define		KNOUVAL01A	301
+#define		KNOUVAL01B	302
+#define		KNOUVAL01C	303
+#define		KNOUVAL01D	304
+#define		KNOUVAL01E	305
+#define		KNOUVAL02KA	306
+#define		KNOUVAL02KB	307
+#define		KNOUVAL02KC	308
+#define		KNOUVAL02KD	309
+#define		KNOUVAL02KE	310
+#define		KNOUVAL02JA	311
+#define		KNOUVAL02JB	312
+#define		KNOUVAL02JC	313
+#define		KNOUVAL02JD	314
+#define		KNOUVAL02JE	315
+#define		KNOUVAL03A	316
+#define		KNOUVAL03B	317
+#define		KNOUVAL03C	318
+#define		KNOUVAL03D	319
+#define		KNOUVAL03E	320
+#define		KNOUVAL03MA	321
+#define		KNOUVAL03MB	322
+#define		KNOUVAL03MC	323
+#define		KNOUVAL03MD	324
+#define		KNOUVAL03ME	325
+#define		KNOUVAL04A	326
+#define		KNOUVAL04B	327
+#define		KNOUVAL04C	328
+#define		KNOUVAL04D	329
+#define		KNOUVAL04E	330
+#define		KNOUVAL04TA	331
+#define		KNOUVAL04TB	332
+#define		KNOUVAL04TC	333
+#define		KNOUVAL04TD	334
+#define		KNOUVAL04TE	335
+#define		KNOUVAL05A	336
+#define		KNOUVAL05B	337
+#define		KNOUVAL05C	338
+#define		KNOUVAL05D	339
+#define		KNOUVAL05E	340
+#define		KNOUVAL06A	341
+#define		KNOUVAL06B	342
+#define		KNOUVAL06C	343
+#define		KNOUVAL06D	344
+#define		KNOUVAL06E	345
+#define		KNOUVAL07A	346
+#define		KNOUVAL07B	347
+#define		KNOUVAL07C	348
+#define		KNOUVAL07D	349
+#define		KNOUVAL07E	350
+#define		KNOUVAL08A	351
+#define		KNOUVAL08B	352
+#define		KNOUVAL08C	353
+#define		KNOUVAL08D	354
+#define		KNOUVAL08E	355
+#define		KNOUVAL09A	356
+#define		KNOUVAL09B	357
+#define		KNOUVAL09C	358
+#define		KNOUVAL09D	359
+#define		KNOUVAL09E	360
+#define		KNOUVAL10A	361
+#define		KNOUVAL10B	362
+#define		KNOUVAL10C	363
+#define		KNOUVAL10D	364
+#define		KNOUVAL10E	365
+#define		KNOUVAL11A	366
+#define		KNOUVAL11B	367
+#define		KNOUVAL11C	368
+#define		KNOUVAL11D	369
+#define		KNOUVAL11E	370
+#define		KNOUVAL12A	371
+#define		KNOUVAL12B	372
+#define		KNOUVAL12C	373
+#define		KNOUVAL12D	374
+#define		KNOUVAL12E	375
+#define		KNOUVAL13A	376
+#define		KNOUVAL13B	377
+#define		KNOUVAL13C	378
+#define		KNOUVAL13D	379
+#define		KNOUVAL13E	380
+#define		KNOUVAL14A	381
+#define		KNOUVAL14B	382
+#define		KNOUVAL14C	383
+#define		KNOUVAL14D	384
+#define		KNOUVAL14E	385
+#define		KNOUVAL15A	386
+#define		KNOUVAL15B	387
+#define		KNOUVAL15C	388
+#define		KNOUVAL15D	389
+#define		KNOUVAL15E	390
+#define		KNOUVAL16A	391
+#define		KNOUVAL16B	392
+#define		KNOUVAL16C	393
+#define		KNOUVAL16D	394
+#define		KNOUVAL16E	395
+#define		KNOUVAL17A	396
+#define		KNOUVAL17B	397
+#define		KNOUVAL17C	398
+#define		KNOUVAL17D	399
+#define		KNOUVAL17E	400
+#define		KNOUVAL18A	401
+#define		KNOUVAL18B	402
+#define		KNOUVAL18C	403
+#define		KNOUVAL18D	404
+#define		KNOUVAL18E	405
+#define		KNOUVAL19A	406
+#define		KNOUVAL19B	407
+#define		KNOUVAL19C	408
+#define		KNOUVAL19D	409
+#define		KNOUVAL19E	410
+#define		KNOUVAL20A	411
+#define		KNOUVAL20B	412
+#define		KNOUVAL20C	413
+#define		KNOUVAL20D	414
+#define		KNOUVAL20E	415
+#define		KNOUVAL21A	416
+#define		KNOUVAL21B	417
+#define		KNOUVAL21C	418
+#define		KNOUVAL21D	419
+#define		KNOUVAL21E	420
+#define		KNOUVAL22A	421
+#define		KNOUVAL22B	422
+#define		KNOUVAL22C	423
+#define		KNOUVAL22D	424
+#define		KNOUVAL22E	425
+#define		KNOUVAL23A	426
+#define		KNOUVAL23B	427
+#define		KNOUVAL23C	428
+#define		KNOUVAL23D	429
+#define		KNOUVAL23E	430
+#define		KNOUVAL24A	431
+#define		KNOUVAL24B	432
+#define		KNOUVAL24C	433
+#define		KNOUVAL24D	434
+#define		KNOUVAL24E	435
+#define		KNOUVAL25A	436
+#define		KNOUVAL25B	437
+#define		KNOUVAL25C	438
+#define		KNOUVAL25D	439
+#define		KNOUVAL25E	440
+#define		KNOUVAL26A	441
+#define		KNOUVAL26B	442
+#define		KNOUVAL26C	443
+#define		KNOUVAL26D	444
+#define		KNOUVAL26E	445
+#define		KNOUVAL27A	446
+#define		KNOUVAL27B	447
+#define		KNOUVAL27C	448
+#define		KNOUVAL27D	449
+#define		KNOUVAL27E	450
+#define		KNOUVAL28A	451
+#define		KNOUVAL28B	452
+#define		KNOUVAL28C	453
+#define		KNOUVAL28D	454
+#define		KNOUVAL28E	455
+#define		KNOUVAL29A	456
+#define		KNOUVAL29B	457
+#define		KNOUVAL29C	458
+#define		KNOUVAL29D	459
+#define		KNOUVAL29E	460
+#define		KNOUVAL30A	461
+#define		KNOUVAL30B	462
+#define		KNOUVAL30C	463
+#define		KNOUVAL30D	464
+#define		KNOUVAL30E	465
+#define		KNOUVAL31A	466
+#define		KNOUVAL31B	467
+#define		KNOUVAL31C	468
+#define		KNOUVAL31D	469
+#define		KNOUVAL31E	470
+#define		KNOUVAL32A	471
+#define		KNOUVAL32B	472
+#define		KNOUVAL32C	473
+#define		KNOUVAL32D	474
+#define		KNOUVAL32E	475
+#define		KNOUVAL33A	476
+#define		KNOUVAL33B	477
+#define		KNOUVAL33C	478
+#define		KNOUVAL33D	479
+#define		KNOUVAL33E	480
+#define		KNOUVAL34A	481
+#define		KNOUVAL34B	482
+#define		KNOUVAL34C	483
+#define		KNOUVAL34D	484
+#define		KNOUVAL34E	485
+#define		KNOUVAL35A	486
+#define		KNOUVAL35B	487
+#define		KNOUVAL35C	488
+#define		KNOUVAL35D	489
+#define		KNOUVAL35E	490
+#define		KNOUVAL36A	491
+#define		KNOUVAL36B	492
+#define		KNOUVAL36C	493
+#define		KNOUVAL36D	494
+#define		KNOUVAL36E	495
+#define		KNOUKNAME27	287
+#define		KNOUKNAME28	288
+#define		KNOUKNAME29	289
+
+// 課税取引金額計算表（農業所得用）
+static SH_ITEMINDEX	Nougyou[]	=	{
+	{ KNOUVAL01A, 0, 1, 0			},
+	{ KNOUVAL01B, 0, 1, 0			},
+	{ KNOUVAL01D, 0, 1, 0			},
+	{ KNOUVAL01E, 0, 1, 0			},
+	{ KNOUVAL02KA, 0, 1, 0			},
+	{ KNOUVAL02KD, 0, 1, 0			},
+	{ KNOUVAL02KE, 0, 1, 0			},
+	{ KNOUVAL02JA, 0, 1, 0			},
+	{ KNOUVAL02JB, 0, 1, 0			},
+	{ KNOUVAL02JD, 0, 1, 0			},
+	{ KNOUVAL02JE, 0, 1, 0			},
+	{ KNOUVAL03A, 0, 1, 0			},
+	{ KNOUVAL03B, 0, 1, 0			},
+	{ KNOUVAL03D, 0, 1, 0			},
+	{ KNOUVAL03E, 0, 1, 0			},
+	{ KNOUVAL03MC, 0, 1, 0			},
+	{ KNOUVAL03MD, 0, 1, 0			},
+	{ KNOUVAL03ME, 0, 1, 0			},
+	{ KNOUVAL04TA, 0, 1, 0			},
+	{ KNOUVAL04TB, 0, 1, 0			},
+	{ KNOUVAL04TD, 0, 1, 0			},
+	{ KNOUVAL04TE, 0, 1, 0			},
+	{ KNOUVAL05A, 0, 1, 0			},
+	{ KNOUVAL06A, 0, 1, 0			},
+	{ KNOUVAL08A, 0, 1, 0			},
+	{ KNOUVAL08B, 0, 1, 0			},
+	{ KNOUVAL08D, 0, 1, 0			},
+	{ KNOUVAL08E, 0, 1, 0			},
+	{ KNOUVAL09A, 0, 1, 0			},
+	{ KNOUVAL09B, 0, 1, 0			},
+	{ KNOUVAL09D, 0, 1, 0			},
+	{ KNOUVAL09E, 0, 1, 0			},
+	{ KNOUVAL10A, 0, 1, 0			},
+	{ KNOUVAL10B, 0, 1, 0			},
+	{ KNOUVAL10D, 0, 1, 0			},
+	{ KNOUVAL10E, 0, 1, 0			},
+	{ KNOUVAL11A, 0, 1, 0			},
+	{ KNOUVAL11B, 0, 1, 0			},
+	{ KNOUVAL11D, 0, 1, 0			},
+	{ KNOUVAL11E, 0, 1, 0			},
+	{ KNOUVAL12A, 0, 1, 0			},
+	{ KNOUVAL12B, 0, 1, 0			},
+	{ KNOUVAL12D, 0, 1, 0			},
+	{ KNOUVAL12E, 0, 1, 0			},
+	{ KNOUVAL13A, 0, 1, 0			},
+	{ KNOUVAL13D, 0, 1, 0			},
+	{ KNOUVAL13E, 0, 1, 0			},
+	{ KNOUVAL14A, 0, 1, 0			},
+	{ KNOUVAL14D, 0, 1, 0			},
+	{ KNOUVAL14E, 0, 1, 0			},
+	{ KNOUVAL15A, 0, 1, 0			},
+	{ KNOUVAL15D, 0, 1, 0			},
+	{ KNOUVAL15E, 0, 1, 0			},
+	{ KNOUVAL16A, 0, 1, 0			},
+	{ KNOUVAL16D, 0, 1, 0			},
+	{ KNOUVAL16E, 0, 1, 0			},
+	{ KNOUVAL17A, 0, 1, 0			},
+	{ KNOUVAL17B, 0, 1, 0			},
+	{ KNOUVAL17D, 0, 1, 0			},
+	{ KNOUVAL17E, 0, 1, 0			},
+	{ KNOUVAL18A, 0, 1, 0			},
+	{ KNOUVAL18D, 0, 1, 0			},
+	{ KNOUVAL18E, 0, 1, 0			},
+	{ KNOUVAL19A, 0, 1, 0			},
+	{ KNOUVAL20A, 0, 1, 0			},
+	{ KNOUVAL21A, 0, 1, 0			},
+	{ KNOUVAL21B, 0, 1, 0			},
+	{ KNOUVAL21D, 0, 1, 0			},
+	{ KNOUVAL21E, 0, 1, 0			},
+	{ KNOUVAL22A, 0, 1, 0			},
+	{ KNOUVAL22B, 0, 1, 0			},
+	{ KNOUVAL22D, 0, 1, 0			},
+	{ KNOUVAL22E, 0, 1, 0			},
+	{ KNOUVAL23A, 0, 1, 0			},
+	{ KNOUVAL24A, 0, 1, 0			},
+	{ KNOUVAL24B, 0, 1, 0			},
+	{ KNOUVAL24D, 0, 1, 0			},
+	{ KNOUVAL24E, 0, 1, 0			},
+	{ KNOUVAL25A, 0, 1, 0			},
+	{ KNOUVAL25B, 0, 1, 0			},
+	{ KNOUVAL25D, 0, 1, 0			},
+	{ KNOUVAL25E, 0, 1, 0			},
+	{ KNOUVAL26A, 0, 1, 0			},
+	{ KNOUVAL27A, 0, 1, 0			},
+	{ KNOUVAL27B, 0, 1, 0			},
+	{ KNOUVAL27D, 0, 1, 0			},
+	{ KNOUVAL27E, 0, 1, 0			},
+	{ KNOUVAL28A, 0, 1, 0			},
+	{ KNOUVAL28B, 0, 1, 0			},
+	{ KNOUVAL28D, 0, 1, 0			},
+	{ KNOUVAL28E, 0, 1, 0			},
+	{ KNOUVAL29A, 0, 1, 0			},
+	{ KNOUVAL29B, 0, 1, 0			},
+	{ KNOUVAL29D, 0, 1, 0			},
+	{ KNOUVAL29E, 0, 1, 0			},
+	{ KNOUVAL30A, 0, 1, 0			},
+	{ KNOUVAL30B, 0, 1, 0			},
+	{ KNOUVAL30D, 0, 1, 0			},
+	{ KNOUVAL30E, 0, 1, 0			},
+	{ KNOUVAL32A, 0, 1, 0			},
+	{ KNOUVAL33A, 0, 1, 0			},
+	{ KNOUVAL34A, 0, 1, 0			},	
+	{ KNOUKNAME27, 1, 1, 0			},
+	{ KNOUKNAME28, 1, 1, 0			},
+	{ KNOUKNAME29, 1, 1, 0			},
+	{	0, 0, 0, 0			}
+};
+
+
+
+//'14.08.18
+static FCSUPDOWN_INFO	FCS_ShinNougyouKeika[]	=	{
+	{	KNOUKNAME27 		},
+	{	KNOUKNAME28 		},
+	{	KNOUKNAME29 		},
+	{	KNOUVAL01A			},
+	{	KNOUVAL02KA			},
+	{	KNOUVAL02JA 		},
+	{	KNOUVAL03A			},
+	{	KNOUVAL03MA			},
+	{	KNOUVAL04A 			},	
+	{	KNOUVAL04TA			},	
+	{	KNOUVAL05A			},
+	{	KNOUVAL06A 			},
+	{	KNOUVAL07A			},
+	{	KNOUVAL08A			},
+	{	KNOUVAL09A 			},
+	{	KNOUVAL10A			},
+	{	KNOUVAL11A 			},
+	{	KNOUVAL12A			},
+	{	KNOUVAL13A			},
+	{	KNOUVAL14A 			},
+	{	KNOUVAL15A			},
+	{	KNOUVAL16A 			},
+	{	KNOUVAL17A			},
+	{	KNOUVAL18A			},
+	{	KNOUVAL19A			},
+	{	KNOUVAL20A			},
+	{	KNOUVAL21A			},
+	{	KNOUVAL22A			},
+	{	KNOUVAL23A			},
+	{	KNOUVAL24A			},
+	{	KNOUVAL25A 			},
+	{	KNOUVAL26A			},
+	{	KNOUVAL27A 			},
+	{	KNOUVAL28A			},
+	{	KNOUVAL29A			},
+	{	KNOUVAL30A 			},
+	{	KNOUVAL31A			},
+	{	KNOUVAL32A 			},
+	{	KNOUVAL33A			},
+	{	KNOUVAL34A			},
+	{	KNOUVAL35A			},
+	{	KNOUVAL36A			},
+	{	KNOUVAL01B			},
+	{	KNOUVAL02KB			},
+	{	KNOUVAL02JB 		},
+	{	KNOUVAL03B			},
+	{	KNOUVAL03MB			},
+	{	KNOUVAL04B 			},	
+	{	KNOUVAL04TB			},	
+	{	KNOUVAL05B			},
+	{	KNOUVAL06B 			},
+	{	KNOUVAL07B			},
+	{	KNOUVAL08B			},
+	{	KNOUVAL09B			},
+	{	KNOUVAL10B			},
+	{	KNOUVAL11B			},
+	{	KNOUVAL12B			},
+	{	KNOUVAL13B			},
+	{	KNOUVAL14B			},
+	{	KNOUVAL15B			},
+	{	KNOUVAL16B			},
+	{	KNOUVAL17B			},
+	{	KNOUVAL18B			},
+	{	KNOUVAL19B			},
+	{	KNOUVAL20B			},
+	{	KNOUVAL21B			},
+	{	KNOUVAL22B			},
+	{	KNOUVAL23B			},
+	{	KNOUVAL24B			},
+	{	KNOUVAL25B			},
+	{	KNOUVAL26B			},
+	{	KNOUVAL27B			},
+	{	KNOUVAL28B			},
+	{	KNOUVAL29B			},
+	{	KNOUVAL30B			},
+	{	KNOUVAL31B			},
+	{	KNOUVAL32B 			},
+	{	KNOUVAL33B			},
+	{	KNOUVAL34B			},
+	{	KNOUVAL35B 			},
+	{	KNOUVAL36B			},
+	{	KNOUVAL01C			},
+	{	KNOUVAL02KC			},
+	{	KNOUVAL02JC 		},
+	{	KNOUVAL03C			},
+	{	KNOUVAL03MC			},
+	{	KNOUVAL04C			},	
+	{	KNOUVAL04TC			},	
+	{	KNOUVAL05C			},
+	{	KNOUVAL06C 			},
+	{	KNOUVAL07C			},
+	{	KNOUVAL08C			},
+	{	KNOUVAL09C 			},
+	{	KNOUVAL10C			},
+	{	KNOUVAL11C 			},
+	{	KNOUVAL12C			},
+	{	KNOUVAL13C			},
+	{	KNOUVAL14C 			},
+	{	KNOUVAL15C			},
+	{	KNOUVAL16C 			},
+	{	KNOUVAL17C			},
+	{	KNOUVAL18C			},
+	{	KNOUVAL19C 			},
+	{	KNOUVAL20C			},
+	{	KNOUVAL21C			},
+	{	KNOUVAL22C 			},
+	{	KNOUVAL23C			},
+	{	KNOUVAL24C			},
+	{	KNOUVAL25C 			},
+	{	KNOUVAL26C			},
+	{	KNOUVAL27C 			},
+	{	KNOUVAL28C			},
+	{	KNOUVAL29C			},
+	{	KNOUVAL30C 			},
+	{	KNOUVAL31C			},
+	{	KNOUVAL32C 			},
+	{	KNOUVAL33C			},
+	{	KNOUVAL34C			},
+	{	KNOUVAL35C 			},
+	{	KNOUVAL36C			},
+	{	KNOUVAL01D			},
+	{	KNOUVAL02KD			},
+	{	KNOUVAL02JD 		},
+	{	KNOUVAL03D			},
+	{	KNOUVAL03MD			},
+	{	KNOUVAL04D			},	
+	{	KNOUVAL04TD			},	
+	{	KNOUVAL05D			},
+	{	KNOUVAL06D 			},
+	{	KNOUVAL07D			},
+	{	KNOUVAL08D			},
+	{	KNOUVAL09D 			},
+	{	KNOUVAL10D			},
+	{	KNOUVAL11D 			},
+	{	KNOUVAL12D			},
+	{	KNOUVAL13D			},
+	{	KNOUVAL14D 			},
+	{	KNOUVAL15D			},
+	{	KNOUVAL16D			},
+	{	KNOUVAL17D			},
+	{	KNOUVAL18D			},
+	{	KNOUVAL19D	 		},
+	{	KNOUVAL20D			},
+	{	KNOUVAL21D			},
+	{	KNOUVAL22D 			},
+	{	KNOUVAL23D			},
+	{	KNOUVAL24D			},
+	{	KNOUVAL25D 			},
+	{	KNOUVAL26D			},
+	{	KNOUVAL27D 			},
+	{	KNOUVAL28D			},
+	{	KNOUVAL29D			},
+	{	KNOUVAL30D 			},
+	{	KNOUVAL31D			},
+	{	KNOUVAL32D 			},
+	{	KNOUVAL33D			},
+	{	KNOUVAL34D			},
+	{	KNOUVAL35D 			},
+	{	KNOUVAL36D			},
+	{	KNOUVAL01E			},
+	{	KNOUVAL02KE			},
+	{	KNOUVAL02JE 		},
+	{	KNOUVAL03E			},
+	{	KNOUVAL03ME			},
+	{	KNOUVAL04E			},	
+	{	KNOUVAL04TE			},	
+	{	KNOUVAL05E			},
+	{	KNOUVAL06E			},
+	{	KNOUVAL07E			},
+	{	KNOUVAL08E			},
+	{	KNOUVAL09E			},
+	{	KNOUVAL10E			},
+	{	KNOUVAL11E			},
+	{	KNOUVAL12E			},
+	{	KNOUVAL13E			},
+	{	KNOUVAL14E			},
+	{	KNOUVAL15E			},
+	{	KNOUVAL16E			},
+	{	KNOUVAL17E			},
+	{	KNOUVAL18E			},
+	{	KNOUVAL19E 			},
+	{	KNOUVAL20E			},
+	{	KNOUVAL21E			},
+	{	KNOUVAL22E 			},
+	{	KNOUVAL23E			},
+	{	KNOUVAL24E			},
+	{	KNOUVAL25E 			},
+	{	KNOUVAL26E			},
+	{	KNOUVAL27E 			},
+	{	KNOUVAL28E			},
+	{	KNOUVAL29E			},
+	{	KNOUVAL30E 			},
+	{	KNOUVAL31E			},
+	{	KNOUVAL32E 			},
+	{	KNOUVAL33E			},
+	{	KNOUVAL34E			},
+	{	KNOUVAL35E 			},
+	{	KNOUVAL36E			},
+};
+
+static FCSUPDOWN_INFO	FCS_ShinNougyouKeika_LR[]	=	{
+	{	KNOUVAL01A		},
+	{	KNOUVAL01B		},
+	{	KNOUVAL01C		},
+	{	KNOUVAL01D		},
+	{	KNOUVAL01E		},
+	{	KNOUVAL02KA		},
+	{	KNOUVAL02KB		},
+	{	KNOUVAL02KC		},
+	{	KNOUVAL02KD		},
+	{	KNOUVAL02KE		},
+	{	KNOUVAL02JA		},
+	{	KNOUVAL02JB		},
+	{	KNOUVAL02JC		},
+	{	KNOUVAL02JD		},
+	{	KNOUVAL02JE		},
+	{	KNOUVAL03A		},
+	{	KNOUVAL03B		},
+	{	KNOUVAL03C		},
+	{	KNOUVAL03D		},
+	{	KNOUVAL03E		},
+	{	KNOUVAL03MA		},
+	{	KNOUVAL03MB		},
+	{	KNOUVAL03MC		},
+	{	KNOUVAL03MD		},
+	{	KNOUVAL03ME		},
+	{	KNOUVAL04A 		},	
+	{	KNOUVAL04B 		},	
+	{	KNOUVAL04C 		},	
+	{	KNOUVAL04D 		},	
+	{	KNOUVAL04E 		},	
+	{	KNOUVAL04TA		},	
+	{	KNOUVAL04TB		},	
+	{	KNOUVAL04TC		},	
+	{	KNOUVAL04TD		},	
+	{	KNOUVAL04TE		},	
+	{	KNOUVAL05A		},
+	{	KNOUVAL05B		},
+	{	KNOUVAL05C		},
+	{	KNOUVAL05D		},
+	{	KNOUVAL05E		},
+	{	KNOUVAL06A 		},
+	{	KNOUVAL06B 		},
+	{	KNOUVAL06C 		},
+	{	KNOUVAL06D 		},
+	{	KNOUVAL06E 		},
+	{	KNOUVAL07A		},
+	{	KNOUVAL07B		},
+	{	KNOUVAL07C		},
+	{	KNOUVAL07D		},
+	{	KNOUVAL07E		},
+	{	KNOUVAL08A		},
+	{	KNOUVAL08B		},
+	{	KNOUVAL08C		},
+	{	KNOUVAL08D		},
+	{	KNOUVAL08E		},
+	{	KNOUVAL09A 		},
+	{	KNOUVAL09B 		},
+	{	KNOUVAL09C 		},
+	{	KNOUVAL09D 		},
+	{	KNOUVAL09E 		},
+	{	KNOUVAL10A		},
+	{	KNOUVAL10B		},
+	{	KNOUVAL10C		},
+	{	KNOUVAL10D		},
+	{	KNOUVAL10E		},
+	{	KNOUVAL11A 		},
+	{	KNOUVAL11B 		},
+	{	KNOUVAL11C 		},
+	{	KNOUVAL11D 		},
+	{	KNOUVAL11E 		},
+	{	KNOUVAL12A		},
+	{	KNOUVAL12B		},
+	{	KNOUVAL12C		},
+	{	KNOUVAL12D		},
+	{	KNOUVAL12E		},
+	{	KNOUVAL13A		},
+	{	KNOUVAL13B		},
+	{	KNOUVAL13C		},
+	{	KNOUVAL13D		},
+	{	KNOUVAL13E		},
+	{	KNOUVAL14A 		},
+	{	KNOUVAL14B 		},
+	{	KNOUVAL14C 		},
+	{	KNOUVAL14D 		},
+	{	KNOUVAL14E 		},
+	{	KNOUVAL15A		},
+	{	KNOUVAL15B		},
+	{	KNOUVAL15C		},
+	{	KNOUVAL15D		},
+	{	KNOUVAL15E		},
+	{	KNOUVAL16A 		},
+	{	KNOUVAL16B 		},
+	{	KNOUVAL16C 		},
+	{	KNOUVAL16D 		},
+	{	KNOUVAL16E 		},
+	{	KNOUVAL17A		},
+	{	KNOUVAL17B		},
+	{	KNOUVAL17C		},
+	{	KNOUVAL17D		},
+	{	KNOUVAL17E		},
+	{	KNOUVAL18A		},
+	{	KNOUVAL18B		},
+	{	KNOUVAL18C		},
+	{	KNOUVAL18D		},
+	{	KNOUVAL18E		},
+	{	KNOUVAL19A 		},
+	{	KNOUVAL19B 		},
+	{	KNOUVAL19C 		},
+	{	KNOUVAL19D 		},
+	{	KNOUVAL19E 		},
+	{	KNOUVAL20A		},
+	{	KNOUVAL20B		},
+	{	KNOUVAL20C		},
+	{	KNOUVAL20D		},
+	{	KNOUVAL20E		},
+	{	KNOUVAL21A		},
+	{	KNOUVAL21B		},
+	{	KNOUVAL21C		},
+	{	KNOUVAL21D		},
+	{	KNOUVAL21E		},
+	{	KNOUVAL22A 		},
+	{	KNOUVAL22B 		},
+	{	KNOUVAL22C 		},
+	{	KNOUVAL22D 		},
+	{	KNOUVAL22E 		},
+	{	KNOUVAL23A		},
+	{	KNOUVAL23B		},
+	{	KNOUVAL23C		},
+	{	KNOUVAL23D		},
+	{	KNOUVAL23E		},
+	{	KNOUVAL24A		},
+	{	KNOUVAL24B		},
+	{	KNOUVAL24C		},
+	{	KNOUVAL24D		},
+	{	KNOUVAL24E		},
+	{	KNOUVAL25A 		},
+	{	KNOUVAL25B 		},
+	{	KNOUVAL25C 		},
+	{	KNOUVAL25D 		},
+	{	KNOUVAL25E 		},
+	{	KNOUVAL26A		},
+	{	KNOUVAL26B		},
+	{	KNOUVAL26C		},
+	{	KNOUVAL26D		},
+	{	KNOUVAL26E		},
+	{	KNOUKNAME27 	},
+	{	KNOUVAL27A 		},
+	{	KNOUVAL27B 		},
+	{	KNOUVAL27C 		},
+	{	KNOUVAL27D 		},
+	{	KNOUVAL27E 		},
+	{	KNOUKNAME28 	},
+	{	KNOUVAL28A		},
+	{	KNOUVAL28B		},
+	{	KNOUVAL28C		},
+	{	KNOUVAL28D		},
+	{	KNOUVAL28E		},
+	{	KNOUKNAME29 	},
+	{	KNOUVAL29A		},
+	{	KNOUVAL29B		},
+	{	KNOUVAL29C		},
+	{	KNOUVAL29D		},
+	{	KNOUVAL29E		},
+	{	KNOUVAL30A 		},
+	{	KNOUVAL30B 		},
+	{	KNOUVAL30C 		},
+	{	KNOUVAL30D 		},
+	{	KNOUVAL30E 		},
+	{	KNOUVAL31A		},
+	{	KNOUVAL31B		},
+	{	KNOUVAL31C		},
+	{	KNOUVAL31D		},
+	{	KNOUVAL31E		},
+	{	KNOUVAL32A 		},
+	{	KNOUVAL32B 		},
+	{	KNOUVAL32C 		},
+	{	KNOUVAL32D 		},
+	{	KNOUVAL32E 		},
+	{	KNOUVAL33A		},
+	{	KNOUVAL33B		},
+	{	KNOUVAL33C		},
+	{	KNOUVAL33D		},
+	{	KNOUVAL33E		},
+	{	KNOUVAL34A		},
+	{	KNOUVAL34B		},
+	{	KNOUVAL34C		},
+	{	KNOUVAL34D		},
+	{	KNOUVAL34E		},
+	{	KNOUVAL35A 		},
+	{	KNOUVAL35B 		},
+	{	KNOUVAL35C 		},
+	{	KNOUVAL35D 		},
+	{	KNOUVAL35E 		},
+	{	KNOUVAL36A		},
+	{	KNOUVAL36B		},
+	{	KNOUVAL36C		},
+	{	KNOUVAL36D		},
+	{	KNOUVAL36E		},
+};
+
+#define		FCS_SHINNOUGYOUKEIKACNT	198
+
+
+//'14.08.25
+#define		KNOULINE1	0
+#define		KNOULINE2K	1	//家事消費
+#define		KNOULINE2J	2	//事業消費
+#define		KNOULINE3	3
+#define		KNOULINE3M	4	//未成熟果樹収入
+#define		KNOULINE4	5
+#define		KNOULINE4TA	38	//返還等対価
+#define		KNOULINE5	6
+#define		KNOULINE6	7
+#define		KNOULINE7	8
+#define		KNOULINE8	9
+#define		KNOULINE9	10
+#define		KNOULINE10	11
+#define		KNOULINE11	12
+#define		KNOULINE12	13
+#define		KNOULINE13	14
+#define		KNOULINE14	15
+#define		KNOULINE15	16
+#define		KNOULINE16	17
+#define		KNOULINE17	18
+#define		KNOULINE18	19
+#define		KNOULINE19	20
+#define		KNOULINE20	21
+#define		KNOULINE21	22
+#define		KNOULINE22	23
+#define		KNOULINE23	24
+#define		KNOULINE24	25
+#define		KNOULINE25	26
+#define		KNOULINE26	27
+#define		KNOULINE27	28
+#define		KNOULINE28	29
+#define		KNOULINE29	30
+#define		KNOULINE30	31
+#define		KNOULINE31	32
+#define		KNOULINE32	33
+#define		KNOULINE33	34
+#define		KNOULINE34	35
+#define		KNOULINE35	36
+#define		KNOULINE36	37

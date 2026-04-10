@@ -1,0 +1,490 @@
+#pragma once
+
+#define		VCNT	3
+#define		VLIN	39
+
+#define		VMIN	204
+#define		VMAX	320
+#define		VLST	312
+
+#define		YEARID	1
+
+#define		ZKBNID	352
+
+
+
+//定義変更。全てのIDX定義'14.08.11
+#define		NOUVAL01A	204
+#define		NOUVAL01B	205
+#define		NOUVAL01C	206
+#define		NOUVAL02KA	207
+#define		NOUVAL02KB	208
+#define		NOUVAL02KC	209
+#define		NOUVAL02JA	210
+#define		NOUVAL02JB	211
+#define		NOUVAL02JC	212
+#define		NOUVAL03A	213
+#define		NOUVAL03B	214
+#define		NOUVAL03C	215
+#define		NOUVAL03MA	216
+#define		NOUVAL03MB	217
+#define		NOUVAL03MC	218
+#define		NOUVAL04A	219
+#define		NOUVAL04B	220
+#define		NOUVAL04C	221
+#define		NOUVAL04TA	222
+#define		NOUVAL04TB	223
+#define		NOUVAL04TC	224
+#define		NOUVAL05A	225
+#define		NOUVAL05B	226
+#define		NOUVAL05C	227
+#define		NOUVAL06A	228
+#define		NOUVAL06B	229
+#define		NOUVAL06C	230
+#define		NOUVAL07A	231
+#define		NOUVAL07B	232
+#define		NOUVAL07C	233
+#define		NOUVAL08A	234
+#define		NOUVAL08B	235
+#define		NOUVAL08C	236
+#define		NOUVAL09A	237
+#define		NOUVAL09B	238
+#define		NOUVAL09C	239
+#define		NOUVAL10A	240
+#define		NOUVAL10B	241
+#define		NOUVAL10C	242
+#define		NOUVAL11A	243
+#define		NOUVAL11B	244
+#define		NOUVAL11C	245
+#define		NOUVAL12A	246
+#define		NOUVAL12B	247
+#define		NOUVAL12C	248
+#define		NOUVAL13A	249
+#define		NOUVAL13B	250
+#define		NOUVAL13C	251
+#define		NOUVAL14A	252
+#define		NOUVAL14B	253
+#define		NOUVAL14C	254
+#define		NOUVAL15A	255
+#define		NOUVAL15B	256
+#define		NOUVAL15C	257
+#define		NOUVAL16A	258
+#define		NOUVAL16B	259
+#define		NOUVAL16C	260
+#define		NOUVAL17A	261
+#define		NOUVAL17B	262
+#define		NOUVAL17C	263
+#define		NOUVAL18A	264
+#define		NOUVAL18B	265
+#define		NOUVAL18C	266
+#define		NOUVAL19A	267
+#define		NOUVAL19B	268
+#define		NOUVAL19C	269
+#define		NOUVAL20A	270
+#define		NOUVAL20B	271
+#define		NOUVAL20C	272
+#define		NOUVAL21A	273
+#define		NOUVAL21B	274
+#define		NOUVAL21C	275
+#define		NOUVAL22A	276
+#define		NOUVAL22B	277
+#define		NOUVAL22C	278
+#define		NOUVAL23A	279
+#define		NOUVAL23B	280
+#define		NOUVAL23C	281
+#define		NOUVAL24A	282
+#define		NOUVAL24B	283
+#define		NOUVAL24C	284
+#define		NOUVAL25A	285
+#define		NOUVAL25B	286
+#define		NOUVAL25C	287
+#define		NOUVAL26A	288
+#define		NOUVAL26B	289
+#define		NOUVAL26C	290
+#define		NOUVAL27A	291
+#define		NOUVAL27B	292
+#define		NOUVAL27C	293
+#define		NOUVAL28A	294
+#define		NOUVAL28B	295
+#define		NOUVAL28C	296
+#define		NOUVAL29A	297
+#define		NOUVAL29B	298
+#define		NOUVAL29C	299
+#define		NOUVAL30A	300
+#define		NOUVAL30B	301
+#define		NOUVAL30C	302
+#define		NOUVAL31A	303
+#define		NOUVAL31B	304
+#define		NOUVAL31C	305
+#define		NOUVAL32A	306
+#define		NOUVAL32B	307
+#define		NOUVAL32C	308
+#define		NOUVAL33A	309
+#define		NOUVAL33B	310
+#define		NOUVAL33C	311
+#define		NOUVAL34A	312
+#define		NOUVAL34B	313
+#define		NOUVAL34C	314
+#define		NOUVAL35A	315
+#define		NOUVAL35B	316
+#define		NOUVAL35C	317
+#define		NOUVAL36A	318
+#define		NOUVAL36B	319
+#define		NOUVAL36C	320
+#define		NOUKNAME27	321
+#define		NOUKNAME28	322
+#define		NOUKNAME29	323
+
+
+
+// 課税取引金額計算表（農業所得用）
+static SH_ITEMINDEX	Nougyou[]	=	{
+	{ NOUVAL01A, 0, 1, 0			},
+	{ NOUVAL01B, 0, 1, 0			},
+	{ NOUVAL02KA, 0, 1, 0			},
+	{ NOUVAL02JA, 0, 1, 0			},
+	{ NOUVAL02JB, 0, 1, 0			},
+	{ NOUVAL03A, 0, 1, 0			},
+	{ NOUVAL03B, 0, 1, 0			},
+	{ NOUVAL03MC, 0, 1, 0			},
+	{ NOUVAL04TA, 0, 1, 0			},
+	{ NOUVAL04TB, 0, 1, 0			},
+	{ NOUVAL05A, 0, 1, 0			},
+	{ NOUVAL06A, 0, 1, 0			},
+	{ NOUVAL08A, 0, 1, 0			},
+	{ NOUVAL08B, 0, 1, 0			},
+	{ NOUVAL09A, 0, 1, 0			},
+	{ NOUVAL09B, 0, 1, 0			},
+	{ NOUVAL10A, 0, 1, 0			},
+	{ NOUVAL10B, 0, 1, 0			},
+	{ NOUVAL11A, 0, 1, 0			},
+	{ NOUVAL11B, 0, 1, 0			},
+	{ NOUVAL12A, 0, 1, 0			},
+	{ NOUVAL12B, 0, 1, 0			},
+	{ NOUVAL13A, 0, 1, 0			},
+	{ NOUVAL14A, 0, 1, 0			},
+	{ NOUVAL15A, 0, 1, 0			},
+	{ NOUVAL16A, 0, 1, 0			},
+	{ NOUVAL17A, 0, 1, 0			},
+	{ NOUVAL17B, 0, 1, 0			},
+	{ NOUVAL18A, 0, 1, 0			},
+	{ NOUVAL19A, 0, 1, 0			},
+	{ NOUVAL20A, 0, 1, 0			},
+	{ NOUVAL21A, 0, 1, 0			},
+	{ NOUVAL21B, 0, 1, 0			},
+	{ NOUVAL22A, 0, 1, 0			},
+	{ NOUVAL22B, 0, 1, 0			},
+	{ NOUVAL23A, 0, 1, 0			},
+	{ NOUVAL24A, 0, 1, 0			},
+	{ NOUVAL24B, 0, 1, 0			},
+	{ NOUVAL25A, 0, 1, 0			},
+	{ NOUVAL25B, 0, 1, 0			},
+	{ NOUVAL26A, 0, 1, 0			},
+	{ NOUVAL27A, 0, 1, 0			},
+	{ NOUVAL27B, 0, 1, 0			},
+	{ NOUVAL28A, 0, 1, 0			},
+	{ NOUVAL28B, 0, 1, 0			},
+	{ NOUVAL29A, 0, 1, 0			},
+	{ NOUVAL29B, 0, 1, 0			},
+	{ NOUVAL30A, 0, 1, 0			},
+	{ NOUVAL30B, 0, 1, 0			},
+	{ NOUVAL32A, 0, 1, 0			},
+	{ NOUVAL33A, 0, 1, 0			},
+	{ NOUVAL34A, 0, 1, 0			},
+	{ NOUKNAME27, 1, 1, 0			},
+	{ NOUKNAME28, 1, 1, 0			},
+	{ NOUKNAME29, 1, 1, 0			},
+	{	0, 0, 0, 0			}
+};
+
+
+//'14.08.18
+static FCSUPDOWN_INFO	FCS_ShinNougyou[]	=	{
+	{	NOUKNAME27 		},
+	{	NOUKNAME28 		},
+	{	NOUKNAME29 		},
+	{	NOUVAL01A		},
+	{	NOUVAL02KA		},
+	{	NOUVAL02JA 		},
+	{	NOUVAL03A		},
+	{	NOUVAL03MA		},
+	{	NOUVAL04A 		},	
+	{	NOUVAL04TA		},	
+	{	NOUVAL05A		},
+	{	NOUVAL06A 		},
+	{	NOUVAL07A		},
+	{	NOUVAL08A		},
+	{	NOUVAL09A 		},
+	{	NOUVAL10A		},
+	{	NOUVAL11A 		},
+	{	NOUVAL12A		},
+	{	NOUVAL13A		},
+	{	NOUVAL14A 		},
+	{	NOUVAL15A		},
+	{	NOUVAL16A 		},
+	{	NOUVAL17A		},
+	{	NOUVAL18A		},
+	{	NOUVAL19A 		},
+	{	NOUVAL20A		},
+	{	NOUVAL21A		},
+	{	NOUVAL22A 		},
+	{	NOUVAL23A		},
+	{	NOUVAL24A		},
+	{	NOUVAL25A 		},
+	{	NOUVAL26A		},
+	{	NOUVAL27A 		},
+	{	NOUVAL28A		},
+	{	NOUVAL29A		},
+	{	NOUVAL30A 		},
+	{	NOUVAL31A		},
+	{	NOUVAL32A 		},
+	{	NOUVAL33A		},
+	{	NOUVAL34A		},
+	{	NOUVAL35A 		},
+	{	NOUVAL36A		},
+	{	NOUVAL01B		},
+	{	NOUVAL02KB		},
+	{	NOUVAL02JB 		},
+	{	NOUVAL03B		},
+	{	NOUVAL03MB		},
+	{	NOUVAL04B 		},	
+	{	NOUVAL04TB		},	
+	{	NOUVAL05B		},
+	{	NOUVAL06B 		},
+	{	NOUVAL07B		},
+	{	NOUVAL08B		},
+	{	NOUVAL09B 		},
+	{	NOUVAL10B		},
+	{	NOUVAL11B 		},
+	{	NOUVAL12B		},
+	{	NOUVAL13B		},
+	{	NOUVAL14B 		},
+	{	NOUVAL15B		},
+	{	NOUVAL16B 		},
+	{	NOUVAL17B		},
+	{	NOUVAL18B		},
+	{	NOUVAL19B 		},
+	{	NOUVAL20B		},
+	{	NOUVAL21B		},
+	{	NOUVAL22B 		},
+	{	NOUVAL23B		},
+	{	NOUVAL24B		},
+	{	NOUVAL25B 		},
+	{	NOUVAL26B		},
+	{	NOUVAL27B 		},
+	{	NOUVAL28B		},
+	{	NOUVAL29B		},
+	{	NOUVAL30B 		},
+	{	NOUVAL31B		},
+	{	NOUVAL32B 		},
+	{	NOUVAL33B		},
+	{	NOUVAL34B		},
+	{	NOUVAL35B 		},
+	{	NOUVAL36B		},
+	{	NOUVAL01C		},
+	{	NOUVAL02KC		},
+	{	NOUVAL02JC 		},
+	{	NOUVAL03C		},
+	{	NOUVAL03MC		},
+	{	NOUVAL04C		},	
+	{	NOUVAL04TC		},	
+	{	NOUVAL05C		},
+	{	NOUVAL06C 		},
+	{	NOUVAL07C		},
+	{	NOUVAL08C		},
+	{	NOUVAL09C 		},
+	{	NOUVAL10C		},
+	{	NOUVAL11C 		},
+	{	NOUVAL12C		},
+	{	NOUVAL13C		},
+	{	NOUVAL14C 		},
+	{	NOUVAL15C		},
+	{	NOUVAL16C 		},
+	{	NOUVAL17C		},
+	{	NOUVAL18C		},
+	{	NOUVAL19C 		},
+	{	NOUVAL20C		},
+	{	NOUVAL21C		},
+	{	NOUVAL22C 		},
+	{	NOUVAL23C		},
+	{	NOUVAL24C		},
+	{	NOUVAL25C 		},
+	{	NOUVAL26C		},
+	{	NOUVAL27C 		},
+	{	NOUVAL28C		},
+	{	NOUVAL29C		},
+	{	NOUVAL30C 		},
+	{	NOUVAL31C		},
+	{	NOUVAL32C 		},
+	{	NOUVAL33C		},
+	{	NOUVAL34C		},
+	{	NOUVAL35C 		},
+	{	NOUVAL36C		},
+};
+
+static FCSUPDOWN_INFO	FCS_ShinNougyou_LR[]	=	{
+	{	NOUVAL01A		},
+	{	NOUVAL01B		},
+	{	NOUVAL01C		},
+	{	NOUVAL02KA		},
+	{	NOUVAL02KB		},
+	{	NOUVAL02KC		},
+	{	NOUVAL02JA		},
+	{	NOUVAL02JB		},
+	{	NOUVAL02JC		},
+	{	NOUVAL03A		},
+	{	NOUVAL03B		},
+	{	NOUVAL03C		},
+	{	NOUVAL03MA		},
+	{	NOUVAL03MB		},
+	{	NOUVAL03MC		},
+	{	NOUVAL04A 		},	
+	{	NOUVAL04B 		},	
+	{	NOUVAL04C 		},	
+	{	NOUVAL04TA		},	
+	{	NOUVAL04TB		},	
+	{	NOUVAL04TC		},	
+	{	NOUVAL05A		},
+	{	NOUVAL05B		},
+	{	NOUVAL05C		},
+	{	NOUVAL06A 		},
+	{	NOUVAL06B 		},
+	{	NOUVAL06C 		},
+	{	NOUVAL07A		},
+	{	NOUVAL07B		},
+	{	NOUVAL07C		},
+	{	NOUVAL08A		},
+	{	NOUVAL08B		},
+	{	NOUVAL08C		},
+	{	NOUVAL09A 		},
+	{	NOUVAL09B 		},
+	{	NOUVAL09C 		},
+	{	NOUVAL10A		},
+	{	NOUVAL10B		},
+	{	NOUVAL10C		},
+	{	NOUVAL11A 		},
+	{	NOUVAL11B 		},
+	{	NOUVAL11C 		},
+	{	NOUVAL12A		},
+	{	NOUVAL12B		},
+	{	NOUVAL12C		},
+	{	NOUVAL13A		},
+	{	NOUVAL13B		},
+	{	NOUVAL13C		},
+	{	NOUVAL14A 		},
+	{	NOUVAL14B 		},
+	{	NOUVAL14C 		},
+	{	NOUVAL15A		},
+	{	NOUVAL15B		},
+	{	NOUVAL15C		},
+	{	NOUVAL16A 		},
+	{	NOUVAL16B 		},
+	{	NOUVAL16C 		},
+	{	NOUVAL17A		},
+	{	NOUVAL17B		},
+	{	NOUVAL17C		},
+	{	NOUVAL18A		},
+	{	NOUVAL18B		},
+	{	NOUVAL18C		},
+	{	NOUVAL19A 		},
+	{	NOUVAL19B 		},
+	{	NOUVAL19C 		},
+	{	NOUVAL20A		},
+	{	NOUVAL20B		},
+	{	NOUVAL20C		},
+	{	NOUVAL21A		},
+	{	NOUVAL21B		},
+	{	NOUVAL21C		},
+	{	NOUVAL22A 		},
+	{	NOUVAL22B 		},
+	{	NOUVAL22C 		},
+	{	NOUVAL23A		},
+	{	NOUVAL23B		},
+	{	NOUVAL23C		},
+	{	NOUVAL24A		},
+	{	NOUVAL24B		},
+	{	NOUVAL24C		},
+	{	NOUVAL25A 		},
+	{	NOUVAL25B 		},
+	{	NOUVAL25C 		},
+	{	NOUVAL26A		},
+	{	NOUVAL26B		},
+	{	NOUVAL26C		},
+	{	NOUKNAME27 		},
+	{	NOUVAL27A 		},
+	{	NOUVAL27B 		},
+	{	NOUVAL27C 		},
+	{	NOUKNAME28 		},
+	{	NOUVAL28A		},
+	{	NOUVAL28B		},
+	{	NOUVAL28C		},
+	{	NOUKNAME29 		},
+	{	NOUVAL29A		},
+	{	NOUVAL29B		},
+	{	NOUVAL29C		},
+	{	NOUVAL30A 		},
+	{	NOUVAL30B 		},
+	{	NOUVAL30C 		},
+	{	NOUVAL31A		},
+	{	NOUVAL31B		},
+	{	NOUVAL31C		},
+	{	NOUVAL32A 		},
+	{	NOUVAL32B 		},
+	{	NOUVAL32C 		},
+	{	NOUVAL33A		},
+	{	NOUVAL33B		},
+	{	NOUVAL33C		},
+	{	NOUVAL34A		},
+	{	NOUVAL34B		},
+	{	NOUVAL34C		},
+	{	NOUVAL35A 		},
+	{	NOUVAL35B 		},
+	{	NOUVAL35C 		},
+	{	NOUVAL36A		},
+	{	NOUVAL36B		},
+	{	NOUVAL36C		},
+};
+
+#define		FCS_SHINNOUGYOUCNT	120
+
+#define		KNOULINE1	0
+#define		KNOULINE2K	1	//家事消費
+#define		KNOULINE2J	2	//事業消費
+#define		KNOULINE3	3
+#define		KNOULINE3M	4	//未成熟果樹収入
+#define		KNOULINE4	5
+#define		KNOULINE4TA	38	//返還等対価
+#define		KNOULINE5	6
+#define		KNOULINE6	7
+#define		KNOULINE7	8
+#define		KNOULINE8	9
+#define		KNOULINE9	10
+#define		KNOULINE10	11
+#define		KNOULINE11	12
+#define		KNOULINE12	13
+#define		KNOULINE13	14
+#define		KNOULINE14	15
+#define		KNOULINE15	16
+#define		KNOULINE16	17
+#define		KNOULINE17	18
+#define		KNOULINE18	19
+#define		KNOULINE19	20
+#define		KNOULINE20	21
+#define		KNOULINE21	22
+#define		KNOULINE22	23
+#define		KNOULINE23	24
+#define		KNOULINE24	25
+#define		KNOULINE25	26
+#define		KNOULINE26	27
+#define		KNOULINE27	28
+#define		KNOULINE28	29
+#define		KNOULINE29	30
+#define		KNOULINE30	31
+#define		KNOULINE31	32
+#define		KNOULINE32	33
+#define		KNOULINE33	34
+#define		KNOULINE34	35
+#define		KNOULINE35	36
+#define		KNOULINE36	37
+
+
