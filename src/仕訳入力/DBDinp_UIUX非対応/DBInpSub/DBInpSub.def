@@ -1,0 +1,6 @@
+; DBInpSub.def : DLL のモジュール パラメータを宣言します。
+
+;LIBRARY      "DBInpSub8"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます
