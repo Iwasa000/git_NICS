@@ -200,6 +200,14 @@ int CShinCalculateW::CheckShinkokuH26()
 	smofs = emofs = months = -1;
 
 	do {
+		// TISW修正[24-0327] 2026/02/16 START
+		if (pZaimuSub->minfo->smd > m_eymd)
+		{
+			// 集計期間の範囲外に到達
+			break;
+		}
+		// TISW修正[24-0327] 2026/02/16 END
+
 		// 指定開始月オフセット
 		if( smofs == -1 ) {
 			if( (pZaimuSub->minfo->smd <= m_symd) && (m_symd <= pZaimuSub->minfo->emd) ) {
@@ -214,12 +222,12 @@ int CShinCalculateW::CheckShinkokuH26()
 			}
 		}
 		// 指定最終月オフセット
-		if( emofs == -1 ) {
-			if( (pZaimuSub->minfo->smd <= m_eymd) && (m_eymd <= pZaimuSub->minfo->emd) ) {
-				emofs = pZaimuSub->minfo->ofset;
-				break;
-			}
+		//if( emofs == -1 ) { // TISW修正[24-0327] 2026/02/16
+		if( (pZaimuSub->minfo->smd <= m_eymd) && (m_eymd <= pZaimuSub->minfo->emd) ) {
+			emofs = pZaimuSub->minfo->ofset;
+			//break; // TISW修正[24-0327] 2026/02/16
 		}
+		//} // TISW修正[24-0327] 2026/02/16
 
 	} while( pZaimuSub->minfo->MoveNext() != ERR );
 
