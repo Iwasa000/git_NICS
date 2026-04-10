@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2018
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBSyzShinCom", "DBSyzShinCom\DBSyzShinCom.vcxproj", "{578F35A4-9AC3-45E0-B4A5-3E23207026FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{578F35A4-9AC3-45E0-B4A5-3E23207026FB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{578F35A4-9AC3-45E0-B4A5-3E23207026FB}.Debug|Win32.Build.0 = Debug|Win32
+		{578F35A4-9AC3-45E0-B4A5-3E23207026FB}.Release|Win32.ActiveCfg = Release|Win32
+		{578F35A4-9AC3-45E0-B4A5-3E23207026FB}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9BE651F-9EE8-4DE8-B181-B3883162676A}
+	EndGlobalSection
+EndGlobal

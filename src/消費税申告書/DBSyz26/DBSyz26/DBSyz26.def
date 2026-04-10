@@ -1,0 +1,6 @@
+; DBSyz26.def : DLL のモジュール パラメータを宣言します。
+
+LIBRARY      "DBSyz26"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます

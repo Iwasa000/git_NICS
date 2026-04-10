@@ -1,0 +1,6 @@
+; DBSyzShinCom.def : DLL のモジュール パラメータを宣言します。
+
+LIBRARY      "DBSyzShinComD"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます

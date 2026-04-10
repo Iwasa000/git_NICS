@@ -1,0 +1,6 @@
+﻿; SimulateKuriwari.def : DLL のモジュール パラメーターを宣言します。
+
+LIBRARY "ZIM15_DBSyzSimKuriwari"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます

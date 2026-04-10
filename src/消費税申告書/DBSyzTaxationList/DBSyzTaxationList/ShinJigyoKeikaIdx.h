@@ -1,0 +1,712 @@
+#pragma	once
+
+//'14.08.18
+
+
+#define		JKWIDECNT	5		//カラムの横の数
+#define		JKLINCNT	34		//帳票の行数。この行数でデータを保存していってる
+#define		JKVMIN		250		//入力ボックスの最小のインデックス
+#define		JKVMAX		419		//入力ボックスの最大のインデックス
+
+#define		JKVLST		271
+
+#define		JKYEARID	1
+
+#define		JKZKBNID	426
+
+/*
+#define		VCNT	3
+#define		VLIN	34
+
+#define		VMIN	177
+#define		VMAX	278
+#define		VLST	271
+
+#define		YEARID	1
+
+#define		ZKBNID	426
+*/
+
+
+//全てのIDX定義
+#define		KJIGVAL01A	250
+#define		KJIGVAL01B	251
+#define		KJIGVAL01C	252
+#define		KJIGVAL01D	253
+#define		KJIGVAL01E	254
+#define		KJIGVAL01TA	255
+#define		KJIGVAL01TB	256
+#define		KJIGVAL01TC	257
+#define		KJIGVAL01TD	258
+#define		KJIGVAL01TE	259
+#define		KJIGVAL02A	260
+#define		KJIGVAL02B	261
+#define		KJIGVAL02C	262
+#define		KJIGVAL02D	263
+#define		KJIGVAL02E	264
+#define		KJIGVAL03A	265
+#define		KJIGVAL03B	266
+#define		KJIGVAL03C	267
+#define		KJIGVAL03D	268
+#define		KJIGVAL03E	269
+#define		KJIGVAL04A	270
+#define		KJIGVAL04B	271
+#define		KJIGVAL04C	272
+#define		KJIGVAL04D	273
+#define		KJIGVAL04E	274
+#define		KJIGVAL05A	275
+#define		KJIGVAL05B	276
+#define		KJIGVAL05C	277
+#define		KJIGVAL05D	278
+#define		KJIGVAL05E	279
+#define		KJIGVAL06A	280
+#define		KJIGVAL06B	281
+#define		KJIGVAL06C	282
+#define		KJIGVAL06D	283
+#define		KJIGVAL06E	284
+#define		KJIGVAL07A	285
+#define		KJIGVAL07B	286
+#define		KJIGVAL07C	287
+#define		KJIGVAL07D	288
+#define		KJIGVAL07E	289
+#define		KJIGVAL08A	290
+#define		KJIGVAL08B	291
+#define		KJIGVAL08C	292
+#define		KJIGVAL08D	293
+#define		KJIGVAL08E	294
+#define		KJIGVAL09A	295
+#define		KJIGVAL09B	296
+#define		KJIGVAL09C	297
+#define		KJIGVAL09D	298
+#define		KJIGVAL09E	299
+#define		KJIGVAL10A	300
+#define		KJIGVAL10B	301
+#define		KJIGVAL10C	302
+#define		KJIGVAL10D	303
+#define		KJIGVAL10E	304
+#define		KJIGVAL11A	305
+#define		KJIGVAL11B	306
+#define		KJIGVAL11C	307
+#define		KJIGVAL11D	308
+#define		KJIGVAL11E	309
+#define		KJIGVAL12A	310
+#define		KJIGVAL12B	311
+#define		KJIGVAL12C	312
+#define		KJIGVAL12D	313
+#define		KJIGVAL12E	314
+#define		KJIGVAL13A	315
+#define		KJIGVAL13B	316
+#define		KJIGVAL13C	317
+#define		KJIGVAL13D	318
+#define		KJIGVAL13E	319
+#define		KJIGVAL14A	320
+#define		KJIGVAL14B	321
+#define		KJIGVAL14C	322
+#define		KJIGVAL14D	323
+#define		KJIGVAL14E	324
+#define		KJIGVAL15A	325
+#define		KJIGVAL15B	326
+#define		KJIGVAL15C	327
+#define		KJIGVAL15D	328
+#define		KJIGVAL15E	329
+#define		KJIGVAL16A	330
+#define		KJIGVAL16B	331
+#define		KJIGVAL16C	332
+#define		KJIGVAL16D	333
+#define		KJIGVAL16E	334
+#define		KJIGVAL17A	335
+#define		KJIGVAL17B	336
+#define		KJIGVAL17C	337
+#define		KJIGVAL17D	338
+#define		KJIGVAL17E	339
+#define		KJIGVAL18A	340
+#define		KJIGVAL18B	341
+#define		KJIGVAL18C	342
+#define		KJIGVAL18D	343
+#define		KJIGVAL18E	344
+#define		KJIGVAL19A	345
+#define		KJIGVAL19B	346
+#define		KJIGVAL19C	347
+#define		KJIGVAL19D	348
+#define		KJIGVAL19E	349
+#define		KJIGVAL20A	350
+#define		KJIGVAL20B	351
+#define		KJIGVAL20C	352
+#define		KJIGVAL20D	353
+#define		KJIGVAL20E	354
+#define		KJIGVAL21A	355
+#define		KJIGVAL21B	356
+#define		KJIGVAL21C	357
+#define		KJIGVAL21D	358
+#define		KJIGVAL21E	359
+#define		KJIGVAL22A	360
+#define		KJIGVAL22B	361
+#define		KJIGVAL22C	362
+#define		KJIGVAL22D	363
+#define		KJIGVAL22E	364
+#define		KJIGVAL23A	365
+#define		KJIGVAL23B	366
+#define		KJIGVAL23C	367
+#define		KJIGVAL23D	368
+#define		KJIGVAL23E	369
+#define		KJIGVAL24A	370
+#define		KJIGVAL24B	371
+#define		KJIGVAL24C	372
+#define		KJIGVAL24D	373
+#define		KJIGVAL24E	374
+#define		KJIGVAL25A	375
+#define		KJIGVAL25B	376
+#define		KJIGVAL25C	377
+#define		KJIGVAL25D	378
+#define		KJIGVAL25E	379
+#define		KJIGVAL26A	380
+#define		KJIGVAL26B	381
+#define		KJIGVAL26C	382
+#define		KJIGVAL26D	383
+#define		KJIGVAL26E	384
+#define		KJIGVAL27A	385
+#define		KJIGVAL27B	386
+#define		KJIGVAL27C	387
+#define		KJIGVAL27D	388
+#define		KJIGVAL27E	389
+#define		KJIGVAL28A	390
+#define		KJIGVAL28B	391
+#define		KJIGVAL28C	392
+#define		KJIGVAL28D	393
+#define		KJIGVAL28E	394
+#define		KJIGVAL29A	395
+#define		KJIGVAL29B	396
+#define		KJIGVAL29C	397
+#define		KJIGVAL29D	398
+#define		KJIGVAL29E	399
+#define		KJIGVAL30A	400
+#define		KJIGVAL30B	401
+#define		KJIGVAL30C	402
+#define		KJIGVAL30D	403
+#define		KJIGVAL30E	404
+#define		KJIGVAL31A	405
+#define		KJIGVAL31B	406
+#define		KJIGVAL31C	407
+#define		KJIGVAL31D	408
+#define		KJIGVAL31E	409
+#define		KJIGVAL32A	410
+#define		KJIGVAL32B	411
+#define		KJIGVAL32C	412
+#define		KJIGVAL32D	413
+#define		KJIGVAL32E	414
+#define		KJIGVAL33A	415
+#define		KJIGVAL33B	416
+#define		KJIGVAL33C	417
+#define		KJIGVAL33D	418
+#define		KJIGVAL33E	419
+#define		KJIGKNAME25	420
+#define		KJIGKNAME26	421
+#define		KJIGKNAME27	422
+#define		KJIGKNAME28	423
+#define		KJIGKNAME29	424
+#define		KJIGKNAME30	425
+
+
+// 課税取引金額計算表（事業所得用）
+static SH_ITEMINDEX	JigyouKeika[]	=	{
+	{ KJIGVAL01A, 0, 1, 0			},
+	{ KJIGVAL01B, 0, 1, 0			},
+	{ KJIGVAL01D, 0, 1, 0			},
+	{ KJIGVAL01E, 0, 1, 0			},
+	{ KJIGVAL01TA, 0, 1, 0			},
+	{ KJIGVAL01TB, 0, 1, 0			},
+	{ KJIGVAL01TD, 0, 1, 0			},
+	{ KJIGVAL01TE, 0, 1, 0			},
+	{ KJIGVAL02A, 0, 1, 0			},
+	{ KJIGVAL03A, 0, 1, 0			},
+	{ KJIGVAL03B, 0, 1, 0			},
+	{ KJIGVAL03D, 0, 1, 0			},
+	{ KJIGVAL03E, 0, 1, 0			},
+	{ KJIGVAL05A, 0, 1, 0			},
+	{ KJIGVAL08A, 0, 1, 0			},
+	{ KJIGVAL08B, 0, 1, 0			},
+	{ KJIGVAL08D, 0, 1, 0			},
+	{ KJIGVAL08E, 0, 1, 0			},
+	{ KJIGVAL09A, 0, 1, 0			},
+	{ KJIGVAL09B, 0, 1, 0			},
+	{ KJIGVAL09D, 0, 1, 0			},
+	{ KJIGVAL09E, 0, 1, 0			},
+	{ KJIGVAL10A, 0, 1, 0			},
+	{ KJIGVAL10D, 0, 1, 0			},
+	{ KJIGVAL10E, 0, 1, 0			},
+	{ KJIGVAL11A, 0, 1, 0			},
+	{ KJIGVAL11B, 0, 1, 0			},
+	{ KJIGVAL11D, 0, 1, 0			},
+	{ KJIGVAL11E, 0, 1, 0			},
+	{ KJIGVAL12A, 0, 1, 0			},
+	{ KJIGVAL12B, 0, 1, 0			},
+	{ KJIGVAL12D, 0, 1, 0			},
+	{ KJIGVAL12E, 0, 1, 0			},
+	{ KJIGVAL13A, 0, 1, 0			},
+	{ KJIGVAL13B, 0, 1, 0			},
+	{ KJIGVAL13D, 0, 1, 0			},
+	{ KJIGVAL13E, 0, 1, 0			},
+	{ KJIGVAL14A, 0, 1, 0			},
+	{ KJIGVAL14B, 0, 1, 0			},
+	{ KJIGVAL14D, 0, 1, 0			},
+	{ KJIGVAL14E, 0, 1, 0			},
+	{ KJIGVAL15A, 0, 1, 0			},
+	{ KJIGVAL16A, 0, 1, 0			},
+	{ KJIGVAL16D, 0, 1, 0			},
+	{ KJIGVAL16E, 0, 1, 0			},
+	{ KJIGVAL17A, 0, 1, 0			},
+	{ KJIGVAL17D, 0, 1, 0			},
+	{ KJIGVAL17E, 0, 1, 0			},
+	{ KJIGVAL18A, 0, 1, 0			},
+	{ KJIGVAL19A, 0, 1, 0			},
+	{ KJIGVAL19B, 0, 1, 0			},
+	{ KJIGVAL19D, 0, 1, 0			},
+	{ KJIGVAL19E, 0, 1, 0			},
+	{ KJIGVAL20A, 0, 1, 0			},
+	{ KJIGVAL20B, 0, 1, 0			},
+	{ KJIGVAL20D, 0, 1, 0			},
+	{ KJIGVAL20E, 0, 1, 0			},
+	{ KJIGVAL21A, 0, 1, 0			},
+	{ KJIGVAL21B, 0, 1, 0			},
+	{ KJIGVAL21D, 0, 1, 0			},
+	{ KJIGVAL21E, 0, 1, 0			},
+	{ KJIGVAL22A, 0, 1, 0			},
+	{ KJIGVAL23A, 0, 1, 0			},
+	{ KJIGVAL23B, 0, 1, 0			},
+	{ KJIGVAL23D, 0, 1, 0			},
+	{ KJIGVAL23E, 0, 1, 0			},
+	{ KJIGVAL24A, 0, 1, 0			},
+	{ KJIGVAL25A, 0, 1, 0			},
+	{ KJIGVAL25B, 0, 1, 0			},
+	{ KJIGVAL25D, 0, 1, 0			},
+	{ KJIGVAL25E, 0, 1, 0			},
+	{ KJIGVAL26A, 0, 1, 0			},
+	{ KJIGVAL26B, 0, 1, 0			},
+	{ KJIGVAL26D, 0, 1, 0			},
+	{ KJIGVAL26E, 0, 1, 0			},
+	{ KJIGVAL27A, 0, 1, 0			},
+	{ KJIGVAL27B, 0, 1, 0			},
+	{ KJIGVAL27D, 0, 1, 0			},
+	{ KJIGVAL27E, 0, 1, 0			},
+	{ KJIGVAL28A, 0, 1, 0			},
+	{ KJIGVAL28B, 0, 1, 0			},
+	{ KJIGVAL28D, 0, 1, 0			},
+	{ KJIGVAL28E, 0, 1, 0			},
+	{ KJIGVAL29A, 0, 1, 0			},
+	{ KJIGVAL29B, 0, 1, 0			},
+	{ KJIGVAL29D, 0, 1, 0			},
+	{ KJIGVAL29E, 0, 1, 0			},
+	{ KJIGVAL30A, 0, 1, 0			},
+	{ KJIGVAL30B, 0, 1, 0			},
+	{ KJIGVAL30D, 0, 1, 0			},
+	{ KJIGVAL30E, 0, 1, 0			},
+	{ KJIGVAL31A, 0, 1, 0			},
+	{ KJIGVAL31B, 0, 1, 0			},
+	{ KJIGVAL31D, 0, 1, 0			},
+	{ KJIGVAL31E, 0, 1, 0			},
+	{ KJIGKNAME25, 1, 1, 0			},
+	{ KJIGKNAME26, 1, 1, 0			},
+	{ KJIGKNAME27, 1, 1, 0			},
+	{ KJIGKNAME28, 1, 1, 0			},
+	{ KJIGKNAME29, 1, 1, 0			},
+	{ KJIGKNAME30, 1, 1, 0			},
+	{	0, 0, 0, 0			}
+};
+
+//'14.08.18
+static FCSUPDOWN_INFO	FCS_ShinJigyouKeika[]	=	{
+	{	KJIGKNAME25 		},
+	{	KJIGKNAME26 		},
+	{	KJIGKNAME27 		},
+	{	KJIGKNAME28			},
+	{	KJIGKNAME29			},
+	{	KJIGKNAME30			},
+	{	KJIGVAL01A 			},
+	{	KJIGVAL01TA			},
+	{	KJIGVAL02A			},
+	{	KJIGVAL03A 			},
+	{	KJIGVAL04A			},
+	{	KJIGVAL05A			},
+	{	KJIGVAL06A			},	
+	{	KJIGVAL07A			},	
+	{	KJIGVAL08A			},
+	{	KJIGVAL09A			},
+	{	KJIGVAL10A			},
+	{	KJIGVAL11A			},
+	{	KJIGVAL12A			},
+	{	KJIGVAL13A			},
+	{	KJIGVAL14A			},
+	{	KJIGVAL15A			},
+	{	KJIGVAL16A			},
+	{	KJIGVAL17A			},
+	{	KJIGVAL18A			},
+	{	KJIGVAL19A			},
+	{	KJIGVAL20A			},
+	{	KJIGVAL21A			},
+	{	KJIGVAL22A			},
+	{	KJIGVAL23A			},
+	{	KJIGVAL24A			},
+	{	KJIGVAL25A			},
+	{	KJIGVAL26A			},
+	{	KJIGVAL27A			},
+	{	KJIGVAL28A			},
+	{	KJIGVAL29A			},
+	{	KJIGVAL30A			},
+	{	KJIGVAL31A			},
+	{	KJIGVAL32A			},
+	{	KJIGVAL33A			},
+	{	KJIGVAL01B 			},
+	{	KJIGVAL01TB			},
+	{	KJIGVAL02B			},
+	{	KJIGVAL03B 			},
+	{	KJIGVAL04B			},
+	{	KJIGVAL05B			},
+	{	KJIGVAL06B			},
+	{	KJIGVAL07B			},
+	{	KJIGVAL08B			},
+	{	KJIGVAL09B	 		},
+	{	KJIGVAL10B			},
+	{	KJIGVAL11B			},
+	{	KJIGVAL12B 			},
+	{	KJIGVAL13B			},
+	{	KJIGVAL14B			},
+	{	KJIGVAL15B			},
+	{	KJIGVAL16B 			},
+	{	KJIGVAL17B			},
+	{	KJIGVAL18B 			},
+	{	KJIGVAL19B			},
+	{	KJIGVAL20B			},
+	{	KJIGVAL21B			},
+	{	KJIGVAL22B			},
+	{	KJIGVAL23B			},
+	{	KJIGVAL24B			},
+	{	KJIGVAL25B			},
+	{	KJIGVAL26B			},
+	{	KJIGVAL27B			},
+	{	KJIGVAL28B			},
+	{	KJIGVAL29B			},
+	{	KJIGVAL30B			},
+	{	KJIGVAL31B			},
+	{	KJIGVAL32B			},
+	{	KJIGVAL33B			},
+	{	KJIGVAL01C 			},
+	{	KJIGVAL01TC			},
+	{	KJIGVAL02C			},
+	{	KJIGVAL03C 			},
+	{	KJIGVAL04C			},
+	{	KJIGVAL05C			},
+	{	KJIGVAL06C 			},
+	{	KJIGVAL07C			},
+	{	KJIGVAL08C			},
+	{	KJIGVAL09C 			},
+	{	KJIGVAL10C			},
+	{	KJIGVAL11C			},
+	{	KJIGVAL12C 			},
+	{	KJIGVAL13C			},
+	{	KJIGVAL14C			},
+	{	KJIGVAL15C			},
+	{	KJIGVAL16C 			},
+	{	KJIGVAL17C			},
+	{	KJIGVAL18C 			},
+	{	KJIGVAL19C			},
+	{	KJIGVAL20C			},
+	{	KJIGVAL21C			},
+	{	KJIGVAL22C			},
+	{	KJIGVAL23C			},
+	{	KJIGVAL24C			},
+	{	KJIGVAL25C			},
+	{	KJIGVAL26C			},
+	{	KJIGVAL27C			},
+	{	KJIGVAL28C			},
+	{	KJIGVAL29C			},
+	{	KJIGVAL30C			},
+	{	KJIGVAL31C			},
+	{	KJIGVAL32C			},
+	{	KJIGVAL33C			},
+	{	KJIGVAL01D 			},
+	{	KJIGVAL01TD			},
+	{	KJIGVAL02D			},
+	{	KJIGVAL03D 			},
+	{	KJIGVAL04D			},
+	{	KJIGVAL05D			},
+	{	KJIGVAL06D 			},
+	{	KJIGVAL07D			},
+	{	KJIGVAL08D			},
+	{	KJIGVAL09D 			},
+	{	KJIGVAL10D			},
+	{	KJIGVAL11D			},
+	{	KJIGVAL12D 			},
+	{	KJIGVAL13D			},
+	{	KJIGVAL14D			},
+	{	KJIGVAL15D			},
+	{	KJIGVAL16D 			},
+	{	KJIGVAL17D			},
+	{	KJIGVAL18D 			},
+	{	KJIGVAL19D			},
+	{	KJIGVAL20D			},
+	{	KJIGVAL21D			},
+	{	KJIGVAL22D			},
+	{	KJIGVAL23D			},
+	{	KJIGVAL24D			},
+	{	KJIGVAL25D			},
+	{	KJIGVAL26D			},
+	{	KJIGVAL27D			},
+	{	KJIGVAL28D			},
+	{	KJIGVAL29D			},
+	{	KJIGVAL30D			},
+	{	KJIGVAL31D			},
+	{	KJIGVAL32D			},
+	{	KJIGVAL33D			},
+	{	KJIGVAL01E 			},
+	{	KJIGVAL01TE			},
+	{	KJIGVAL02E			},
+	{	KJIGVAL03E 			},
+	{	KJIGVAL04E			},
+	{	KJIGVAL05E			},
+	{	KJIGVAL06E 			},
+	{	KJIGVAL07E			},
+	{	KJIGVAL08E			},
+	{	KJIGVAL09E 			},
+	{	KJIGVAL10E			},
+	{	KJIGVAL11E			},
+	{	KJIGVAL12E 			},
+	{	KJIGVAL13E			},
+	{	KJIGVAL14E			},
+	{	KJIGVAL15E			},
+	{	KJIGVAL16E 			},
+	{	KJIGVAL17E			},
+	{	KJIGVAL18E			},
+	{	KJIGVAL19E			},
+	{	KJIGVAL20E			},
+	{	KJIGVAL21E			},
+	{	KJIGVAL22E			},
+	{	KJIGVAL23E			},
+	{	KJIGVAL24E			},
+	{	KJIGVAL25E			},
+	{	KJIGVAL26E			},
+	{	KJIGVAL27E			},
+	{	KJIGVAL28E			},
+	{	KJIGVAL29E			},
+	{	KJIGVAL30E			},
+	{	KJIGVAL31E			},
+	{	KJIGVAL32E			},
+	{	KJIGVAL33E			},
+};
+
+static FCSUPDOWN_INFO	FCS_ShinJigyouKeika_LR[]	=	{
+	{	KJIGVAL01A 		},
+	{	KJIGVAL01B 		},
+	{	KJIGVAL01C 		},
+	{	KJIGVAL01D 		},
+	{	KJIGVAL01E 		},
+	{	KJIGVAL01TA		},
+	{	KJIGVAL01TB		},
+	{	KJIGVAL01TC		},
+	{	KJIGVAL01TD		},
+	{	KJIGVAL01TE		},
+	{	KJIGVAL02A		},
+	{	KJIGVAL02B		},
+	{	KJIGVAL02C		},
+	{	KJIGVAL02D		},
+	{	KJIGVAL02E		},
+	{	KJIGVAL03A 		},
+	{	KJIGVAL03B 		},
+	{	KJIGVAL03C 		},
+	{	KJIGVAL03D 		},
+	{	KJIGVAL03E 		},
+	{	KJIGVAL04A		},
+	{	KJIGVAL04B		},
+	{	KJIGVAL04C		},
+	{	KJIGVAL04D		},
+	{	KJIGVAL04E		},
+	{	KJIGVAL05A		},
+	{	KJIGVAL05B		},
+	{	KJIGVAL05C		},
+	{	KJIGVAL05D		},
+	{	KJIGVAL05E		},
+	{	KJIGVAL06A 		},	
+	{	KJIGVAL06B 		},	
+	{	KJIGVAL06C 		},	
+	{	KJIGVAL06D 		},	
+	{	KJIGVAL06E 		},	
+	{	KJIGVAL07A		},	
+	{	KJIGVAL07B		},	
+	{	KJIGVAL07C		},	
+	{	KJIGVAL07D		},	
+	{	KJIGVAL07E		},	
+	{	KJIGVAL08A		},
+	{	KJIGVAL08B		},
+	{	KJIGVAL08C		},
+	{	KJIGVAL08D		},
+	{	KJIGVAL08E		},
+	{	KJIGVAL09A 		},
+	{	KJIGVAL09B 		},
+	{	KJIGVAL09C 		},
+	{	KJIGVAL09D 		},
+	{	KJIGVAL09E 		},
+	{	KJIGVAL10A		},
+	{	KJIGVAL10B		},
+	{	KJIGVAL10C		},
+	{	KJIGVAL10D		},
+	{	KJIGVAL10E		},
+	{	KJIGVAL11A		},
+	{	KJIGVAL11B		},
+	{	KJIGVAL11C		},
+	{	KJIGVAL11D		},
+	{	KJIGVAL11E		},
+	{	KJIGVAL12A 		},
+	{	KJIGVAL12B 		},
+	{	KJIGVAL12C 		},
+	{	KJIGVAL12D 		},
+	{	KJIGVAL12E 		},
+	{	KJIGVAL13A		},
+	{	KJIGVAL13B		},
+	{	KJIGVAL13C		},
+	{	KJIGVAL13D		},
+	{	KJIGVAL13E		},
+	{	KJIGVAL14A		},
+	{	KJIGVAL14B		},
+	{	KJIGVAL14C		},
+	{	KJIGVAL14D		},
+	{	KJIGVAL14E		},
+	{	KJIGVAL15A		},
+	{	KJIGVAL15B		},
+	{	KJIGVAL15C		},
+	{	KJIGVAL15D		},
+	{	KJIGVAL15E		},
+	{	KJIGVAL16A 		},
+	{	KJIGVAL16B 		},
+	{	KJIGVAL16C 		},
+	{	KJIGVAL16D 		},
+	{	KJIGVAL16E 		},
+	{	KJIGVAL17A		},
+	{	KJIGVAL17B		},
+	{	KJIGVAL17C		},
+	{	KJIGVAL17D		},
+	{	KJIGVAL17E		},
+	{	KJIGVAL18A 		},
+	{	KJIGVAL18B 		},
+	{	KJIGVAL18C 		},
+	{	KJIGVAL18D 		},
+	{	KJIGVAL18E 		},
+	{	KJIGVAL19A		},
+	{	KJIGVAL19B		},
+	{	KJIGVAL19C		},
+	{	KJIGVAL19D		},
+	{	KJIGVAL19E		},
+	{	KJIGVAL20A		},
+	{	KJIGVAL20B		},
+	{	KJIGVAL20C		},
+	{	KJIGVAL20D		},
+	{	KJIGVAL20E		},
+	{	KJIGVAL21A		},
+	{	KJIGVAL21B		},
+	{	KJIGVAL21C		},
+	{	KJIGVAL21D		},
+	{	KJIGVAL21E		},
+	{	KJIGVAL22A		},
+	{	KJIGVAL22B		},
+	{	KJIGVAL22C		},
+	{	KJIGVAL22D		},
+	{	KJIGVAL22E		},
+	{	KJIGVAL23A		},
+	{	KJIGVAL23B		},
+	{	KJIGVAL23C		},
+	{	KJIGVAL23D		},
+	{	KJIGVAL23E		},
+	{	KJIGVAL24A		},
+	{	KJIGVAL24B		},
+	{	KJIGVAL24C		},
+	{	KJIGVAL24D		},
+	{	KJIGVAL24E		},
+	{	KJIGKNAME25 	},
+	{	KJIGVAL25A		},
+	{	KJIGVAL25B		},
+	{	KJIGVAL25C		},
+	{	KJIGVAL25D		},
+	{	KJIGVAL25E		},
+	{	KJIGKNAME26 	},
+	{	KJIGVAL26A		},
+	{	KJIGVAL26B		},
+	{	KJIGVAL26C		},
+	{	KJIGVAL26D		},
+	{	KJIGVAL26E		},
+	{	KJIGKNAME27 	},
+	{	KJIGVAL27A		},
+	{	KJIGVAL27B		},
+	{	KJIGVAL27C		},
+	{	KJIGVAL27D		},
+	{	KJIGVAL27E		},
+	{	KJIGKNAME28		},
+	{	KJIGVAL28A		},
+	{	KJIGVAL28B		},
+	{	KJIGVAL28C		},
+	{	KJIGVAL28D		},
+	{	KJIGVAL28E		},
+	{	KJIGKNAME29		},
+	{	KJIGVAL29A		},
+	{	KJIGVAL29B		},
+	{	KJIGVAL29C		},
+	{	KJIGVAL29D		},
+	{	KJIGVAL29E		},
+	{	KJIGKNAME30		},
+	{	KJIGVAL30A		},
+	{	KJIGVAL30B		},
+	{	KJIGVAL30C		},
+	{	KJIGVAL30D		},
+	{	KJIGVAL30E		},
+	{	KJIGVAL31A		},
+	{	KJIGVAL31B		},
+	{	KJIGVAL31C		},
+	{	KJIGVAL31D		},
+	{	KJIGVAL31E		},
+	{	KJIGVAL32A		},
+	{	KJIGVAL32B		},
+	{	KJIGVAL32C		},
+	{	KJIGVAL32D		},
+	{	KJIGVAL32E		},
+	{	KJIGVAL33A		},
+	{	KJIGVAL33B		},
+	{	KJIGVAL33C		},
+	{	KJIGVAL33D		},
+	{	KJIGVAL33E		},
+};
+
+#define		FCS_SHINJIGYOUKEIKACNT	176
+
+
+//'14.08.21
+#define		KJIGLINE1	0
+#define		KJIGLINE1TA	33	//返還等対価
+#define		KJIGLINE2	1
+#define		KJIGLINE3	2
+#define		KJIGLINE4	3
+#define		KJIGLINE5	4
+#define		KJIGLINE6	5
+#define		KJIGLINE7	6
+#define		KJIGLINE8	7
+#define		KJIGLINE9	8
+#define		KJIGLINE10	9
+#define		KJIGLINE11	10
+#define		KJIGLINE12	11
+#define		KJIGLINE13	12
+#define		KJIGLINE14	13
+#define		KJIGLINE15	14
+#define		KJIGLINE16	15
+#define		KJIGLINE17	16
+#define		KJIGLINE18	17
+#define		KJIGLINE19	18
+#define		KJIGLINE20	19
+#define		KJIGLINE21	20
+#define		KJIGLINE22	21
+#define		KJIGLINE23	22
+#define		KJIGLINE24	23
+#define		KJIGLINE25	24
+#define		KJIGLINE26	25
+#define		KJIGLINE27	26
+#define		KJIGLINE28	27
+#define		KJIGLINE29	28
+#define		KJIGLINE30	29
+#define		KJIGLINE31	30
+#define		KJIGLINE32	31
+#define		KJIGLINE33	32

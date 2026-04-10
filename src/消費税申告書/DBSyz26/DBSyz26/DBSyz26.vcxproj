@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{47709CCF-74B7-4C53-9793-AC21623BA12A}</ProjectGuid>
+    <RootNamespace>DBSyz26</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+    <ProjectName>ZIM15_Syz26</ProjectName>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.27625.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)d</TargetName>
+    <IncludePath>C:\ICSDEV\INCLUDE8;C:\ICSDEV\INCLUDE8\CXTP;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\ICSDEV\LIB15;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\ICSDEV\INCLUDE8;C:\ICSDEV\INCLUDE8\CXTP;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Inputs>
+      </Inputs>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GENd.lib;ICS15_GENLd.lib;ZIM15_NpSubd.lib;ZIM15_ZmSubd.lib;ICS15_Printd.lib;ICS15_Subtoold.lib;ICSCmnd.lib;ZIM15_SyzAccessd.lib;ICS15_ARITHd.lib;ICS15_ESELECTd.lib;ZIM15_SyzShinComD.lib;ICS15_ZipAdd.lib;ICS15_XYSPrintd.lib;ICS15_MTBLd.lib;ZIM15_SyzSykComd.lib;ICS15_VolDated.lib;ZIM15_Syz26Datad.lib;ICS15_MNSubd.lib;ICS15_MNEditd.lib;imm32.lib;ZIM15_SyZeid.lib;ICS15_NoTblModd.lib;ICS15_KaigenInfod.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>.\DBSyz26D_2017.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>ZIM15_SyzSykComD.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GEN.lib;ICS15_GENL.lib;ZIM15_NpSub.lib;ZIM15_ZmSub.lib;ICS15_Print.lib;ICS15_Subtool.lib;ICSCmn.lib;ZIM15_SyzAccess.lib;ICS15_ARITH.lib;ICS15_ESELECT.lib;ZIM15_SyzShinCom.lib;ICS15_ZipAd.lib;ICS15_XYSPrint.lib;ICS15_MTBL.lib;ZIM15_SyzSykCom.lib;ICS15_VolDate.lib;ZIM15_Syz26Data.lib;ICS15_MNSub.lib;ICS15_MNEdit.lib;imm32.lib;ZIM15_SyZei.lib;ICS15_NoTblMod.lib;ICS15_KaigenInfo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>.\DBSyz26_2017.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>ZIM15_SyzSykCom.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ChangeTax.cpp" />
+    <ClCompile Include="ChangeTaxEx.cpp" />
+    <ClCompile Include="DBSyz26.cpp" />
+    <ClCompile Include="ExEdit.cpp" />
+    <ClCompile Include="H26HyoDoc.cpp" />
+    <ClCompile Include="H26HyoPrint.cpp" />
+    <ClCompile Include="H26HyoView.cpp" />
+    <ClCompile Include="H26SnKskData.cpp" />
+    <ClCompile Include="icsdbedt8ctrl1.cpp" />
+    <ClCompile Include="icsdiagctrl.cpp" />
+    <ClCompile Include="icsdisp8ctrl1.cpp" />
+    <ClCompile Include="PrePrint.cpp" />
+    <ClCompile Include="PrePrint2.cpp" />
+    <ClCompile Include="PrnReportDlg.cpp" />
+    <ClCompile Include="RefundBaseDialog.cpp" />
+    <ClCompile Include="ShinChsk.cpp" />
+    <ClCompile Include="ShinChskEX.cpp" />
+    <ClCompile Include="ShinCom.cpp" />
+    <ClCompile Include="ShinFhyo10.cpp" />
+    <ClCompile Include="ShinFhyo10Calq.cpp" />
+    <ClCompile Include="ShinFhyo10EX.cpp" />
+    <ClCompile Include="ShinFhyo10EXCalq.cpp" />
+    <ClCompile Include="ShinFhyo20.cpp" />
+    <ClCompile Include="ShinFhyo20Calq.cpp" />
+    <ClCompile Include="ShinFhyo20EX.cpp" />
+    <ClCompile Include="ShinFhyo20EXCalq.cpp" />
+    <ClCompile Include="ShinFhyo22.cpp" />
+    <ClCompile Include="ShinFhyo22Calq.cpp" />
+    <ClCompile Include="ShinFhyo22EX.cpp" />
+    <ClCompile Include="ShinFhyo22EXCalq.cpp" />
+    <ClCompile Include="ShinFhyo40.cpp" />
+    <ClCompile Include="ShinFhyo40Calq.cpp" />
+    <ClCompile Include="ShinFhyo40EX.cpp" />
+    <ClCompile Include="ShinFhyo40EXCalq.cpp" />
+    <ClCompile Include="ShinFhyo50.cpp" />
+    <ClCompile Include="ShinFhyo50Calq.cpp" />
+    <ClCompile Include="ShinFhyo50EX.cpp" />
+    <ClCompile Include="ShinFhyo50EXCalq.cpp" />
+    <ClCompile Include="ShinFhyo52.cpp" />
+    <ClCompile Include="ShinFhyo522.cpp" />
+    <ClCompile Include="ShinFhyo522Calq.cpp" />
+    <ClCompile Include="ShinFhyo522EX.cpp" />
+    <ClCompile Include="ShinFhyo522EXCalq.cpp" />
+    <ClCompile Include="ShinFhyo52Calq.cpp" />
+    <ClCompile Include="ShinFhyo52EX.cpp" />
+    <ClCompile Include="ShinFhyo52EXCalq.cpp" />
+    <ClCompile Include="shinfhyo60.cpp" />
+    <ClCompile Include="ShinFhyo60Calq.cpp" />
+    <ClCompile Include="ShinHjnKsk.cpp" />
+    <ClCompile Include="ShinHjnKskEX.cpp" />
+    <ClCompile Include="ShinIppan.cpp" />
+    <ClCompile Include="ShinIppanCalq.cpp" />
+    <ClCompile Include="ShinIppanEX.cpp" />
+    <ClCompile Include="ShinIppanEXCalq.cpp" />
+    <ClCompile Include="ShinKani.cpp" />
+    <ClCompile Include="ShinKaniCalq.cpp" />
+    <ClCompile Include="ShinKaniEX.cpp" />
+    <ClCompile Include="ShinKaniEX2.cpp" />
+    <ClCompile Include="ShinKaniEX2Calq.cpp" />
+    <ClCompile Include="ShinKaniEXCalq.cpp" />
+    <ClCompile Include="ShinKjnKsk.cpp" />
+    <ClCompile Include="ShinKjnKskEX.cpp" />
+    <ClCompile Include="ShinKskRnd.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SyzBaseDlg.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlKotei.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlMeisai.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlRiyuu.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlShiire.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlShiireHo.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlShiireKo.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlTokusyu.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlTorihiki.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlYsMeisai.cpp" />
+    <ClCompile Include="SyzrefundDB\DiagCtlYusyutsu.cpp" />
+    <ClCompile Include="SyzrefundDB\H26SnRefundData.cpp" />
+    <ClCompile Include="SyzrefundDB\ShinRefundHjn01.cpp" />
+    <ClCompile Include="SyzrefundDB\ShinRefundHjn02.cpp" />
+    <ClCompile Include="SyzrefundDB\ShinRefundKjn01.cpp" />
+    <ClCompile Include="SyzrefundDB\ShinRefundKjn02.cpp" />
+    <ClCompile Include="TKUtiwake.cpp" />
+    <ClCompile Include="TKUtiwakeCalq.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBSyz26D_2017.def" />
+    <None Include="DBSyz26_2017.def" />
+    <None Include="res\DBSyz26.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ChangeTax.h" />
+    <ClInclude Include="ChangeTaxEx.h" />
+    <ClInclude Include="ChangeTaxExIdx.h" />
+    <ClInclude Include="ChangeTaxIdx.h" />
+    <ClInclude Include="ExEdit.h" />
+    <ClInclude Include="H26HyoDoc.h" />
+    <ClInclude Include="H26HyoView.h" />
+    <ClInclude Include="H26SnKskData.h" />
+    <ClInclude Include="H26SnRefundData.h" />
+    <ClInclude Include="icsdbedt8ctrl1.h" />
+    <ClInclude Include="icsdiagctrl.h" />
+    <ClInclude Include="icsdisp8ctrl1.h" />
+    <ClInclude Include="icsdisp8ctrl2.h" />
+    <ClInclude Include="OrgResource.h" />
+    <ClInclude Include="PrePrint.h" />
+    <ClInclude Include="PrePrint2.h" />
+    <ClInclude Include="PrnReportDlg.h" />
+    <ClInclude Include="RefundBaseDialog.h" />
+    <ClInclude Include="RefundDataDef.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ShinChsk.h" />
+    <ClInclude Include="ShinChskEX.h" />
+    <ClInclude Include="ShinChskEXIdx.h" />
+    <ClInclude Include="ShinChskIdx.h" />
+    <ClInclude Include="ShinFhyo10.h" />
+    <ClInclude Include="ShinFhyo10EX.h" />
+    <ClInclude Include="ShinFhyo10EXIdx.h" />
+    <ClInclude Include="ShinFhyo10Idx.h" />
+    <ClInclude Include="ShinFhyo20.h" />
+    <ClInclude Include="ShinFhyo20EX.h" />
+    <ClInclude Include="ShinFhyo20EXIdx.h" />
+    <ClInclude Include="ShinFhyo20Idx.h" />
+    <ClInclude Include="ShinFhyo22.h" />
+    <ClInclude Include="ShinFhyo22EX.h" />
+    <ClInclude Include="ShinFhyo22EXIdx.h" />
+    <ClInclude Include="ShinFhyo22Idx.h" />
+    <ClInclude Include="ShinFhyo40.h" />
+    <ClInclude Include="ShinFhyo40EX.h" />
+    <ClInclude Include="ShinFhyo40EXIdx.h" />
+    <ClInclude Include="ShinFhyo40Idx.h" />
+    <ClInclude Include="ShinFhyo50.h" />
+    <ClInclude Include="ShinFhyo50EX.h" />
+    <ClInclude Include="ShinFhyo50EXIdx.h" />
+    <ClInclude Include="ShinFhyo50Idx.h" />
+    <ClInclude Include="ShinFhyo52.h" />
+    <ClInclude Include="ShinFhyo522.h" />
+    <ClInclude Include="ShinFhyo522EX.h" />
+    <ClInclude Include="ShinFhyo522EXIdx.h" />
+    <ClInclude Include="ShinFhyo522Idx.h" />
+    <ClInclude Include="ShinFhyo52EX.h" />
+    <ClInclude Include="ShinFhyo52EXIdx.h" />
+    <ClInclude Include="ShinFhyo52Idx.h" />
+    <ClInclude Include="ShinFhyo60.h" />
+    <ClInclude Include="ShinFhyo60Idx.h" />
+    <ClInclude Include="ShinHjnKsk.h" />
+    <ClInclude Include="ShinHjnKskEX.h" />
+    <ClInclude Include="ShinHjnKskEXIdx.h" />
+    <ClInclude Include="ShinHjnKskIdx.h" />
+    <ClInclude Include="ShinIppan.h" />
+    <ClInclude Include="ShinIppanEX.h" />
+    <ClInclude Include="ShinIppanEXIdx.h" />
+    <ClInclude Include="ShinIppanIdx.h" />
+    <ClInclude Include="ShinKani.h" />
+    <ClInclude Include="ShinKaniEX.h" />
+    <ClInclude Include="ShinKaniEX2.h" />
+    <ClInclude Include="ShinKaniEx2Idx.h" />
+    <ClInclude Include="ShinKaniExIdx.h" />
+    <ClInclude Include="ShinKaniIdx.h" />
+    <ClInclude Include="ShinKjnKsk.h" />
+    <ClInclude Include="ShinKjnKskEX.h" />
+    <ClInclude Include="ShinKjnKskEXIdx.h" />
+    <ClInclude Include="ShinKjnKskIdx.h" />
+    <ClInclude Include="ShinKskRnd.h" />
+    <ClInclude Include="ShinRefundHjn01.h" />
+    <ClInclude Include="ShinRefundHjn02.h" />
+    <ClInclude Include="ShinRefundKjn01.h" />
+    <ClInclude Include="ShinRefundKjn02.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Syz26ComDef.h" />
+    <ClInclude Include="SyzBaseDlg.h" />
+    <ClInclude Include="SyzrefundDB\DiagControlBase.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlKotei.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlMeisai.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlRiyuu.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlShiire.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlShiireHo.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlShiireKo.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlTokusyu.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlTorihiki.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlYsMeisai.h" />
+    <ClInclude Include="SyzrefundDB\DiagCtlYusyutsu.h" />
+    <ClInclude Include="SyzrefundDB\ShinRefundHjn01.h" />
+    <ClInclude Include="SyzrefundDB\ShinRefundHjn02.h" />
+    <ClInclude Include="SyzrefundDB\ShinRefundKjn01.h" />
+    <ClInclude Include="SyzrefundDB\ShinRefundKjn02.h" />
+    <ClInclude Include="SyzrefundDB\Syzrefunddef.h" />
+    <ClInclude Include="TKUtiwake.h" />
+    <ClInclude Include="TKUtiwakeIdx.h" />
+    <ClInclude Include="_Font.h" />
+    <ClInclude Include="_Picture.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBSyz26.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties _x007B_9B6935F7-0CDC-4909-93BC-7F349165E9D6_x007D_="CIcsdisp8ctrl2" _x007B_8A8B65FB-AFE2-4D25-A70C-69764E0DC371_x007D_="CIcsdiagctrl" RESOURCE_FILE="DBSyz26.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

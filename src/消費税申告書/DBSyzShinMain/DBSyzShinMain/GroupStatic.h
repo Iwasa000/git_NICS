@@ -1,0 +1,74 @@
+#pragma once
+
+
+// CGroupStatic
+
+//éññ±èäñºìoò^ÅïçÏê¨ópÉJÉâÅ[
+static COLORREF HSTATIC_COLOR_ZEIGREEN	= PALETTERGB( 151, 242, 123 );
+
+
+static COLORREF HSTATIC_COLOR_WHITE		= PALETTERGB( 255, 255, 255 );
+static COLORREF HSTATIC_COLOR_GRAY		= PALETTERGB( 192, 192, 192 );
+static COLORREF HSTATIC_COLOR_GREEN		= PALETTERGB( 27, 126, 25 );
+static COLORREF HSTATIC_COLOR_LBLUE		= PALETTERGB( 176, 224, 255 );
+static COLORREF HSTATIC_COLOR_LGREEN	= PALETTERGB( 173, 254, 240 );
+static COLORREF HSTATIC_COLOR_DBLUE		= HSTATIC_COLOR_ZEIGREEN;//PALETTERGB( 148, 176, 220 );
+static COLORREF HSTATIC_COLOR_ORANGE	= PALETTERGB( 247, 193, 106 );
+
+static COLORREF HSTATIC_COLOR_OWHITE	= PALETTERGB( 255, 235, 215 );
+static COLORREF HSTATIC_COLOR_BWHITE	= PALETTERGB( 230, 240, 255 );
+static COLORREF HSTATIC_COLOR_GWHITE	= PALETTERGB( 230, 255, 240 );
+static COLORREF HSTATIC_COLOR_DBWHITE	= PALETTERGB( 208, 221, 240 );
+
+//static COLORREF HSTATIC_COLOR_PURPLE	= PALETTERGB( 255, 204, 255 );
+static COLORREF HSTATIC_COLOR_PURPLE	= PALETTERGB( 0xe0, 0xff, 0xff );
+static COLORREF HSTATIC_COLOR_TEST		= PALETTERGB( 247, 193, 106 );
+
+
+
+static COLORREF HSTATIC_COLOR_FRAME		= HSTATIC_COLOR_GRAY;
+static COLORREF HSTATIC_COLOR_BCOLOR	= HSTATIC_COLOR_PURPLE;
+static COLORREF HSTATIC_COLOR_ECOLOR	= HSTATIC_COLOR_BWHITE;
+
+static COLORREF HSTATIC_COLOR_TBCOLOR	= HSTATIC_COLOR_TEST;
+static COLORREF HSTATIC_COLOR_TECOLOR	= HSTATIC_COLOR_WHITE;
+
+
+class CGroupStatic : public CStatic
+{
+	DECLARE_DYNAMIC(CGroupStatic)
+
+public:
+	CGroupStatic();
+	virtual ~CGroupStatic();
+
+
+protected:
+	ICSColorInfo	m_cinf;
+
+	COLORREF	m_frame;
+	COLORREF	m_bcolor, m_ecolor;
+	COLORREF	m_tbcolor, m_tecolor;
+
+	LONG		m_thsize;
+	LONG		m_elsize;
+
+	CString		m_title;
+
+public:
+	BOOL RegisterWindowClass();
+	void lc_GradientFill(const HDC& hdc, const CRect& rect, COLOR16 r, COLOR16 g, COLOR16 b, COLOR16 r2, COLOR16 g2, COLOR16 b2, BOOL is_horizontal);
+	void lc_GradientFill(const HDC& hdc, const CRect& rect, COLORREF bcolor, COLORREF ecolor, BOOL is_horizontal);
+
+	void SetTitleString(LPCTSTR title);
+
+	// éwíËîwåiêFÇÃïœçX
+	void SetBkColor( COLORREF bcolor );
+
+protected:
+	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnPaint();
+};
+
+

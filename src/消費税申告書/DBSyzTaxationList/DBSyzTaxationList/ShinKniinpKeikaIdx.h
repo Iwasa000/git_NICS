@@ -1,0 +1,580 @@
+#pragma	once
+
+#define		JSKWIDECNT	12	//カラムの横の数
+//2016.10.20 UPDATE START
+//#define		JSKLINCNT	8	//帳票の行数。この行数でデータを保存していってる
+//#define		JSKVMIN		133	//入力ボックスの最小のインデックス
+//#define		JSKVMAX		228	//入力ボックスの最大のインデックス
+#define		JSKLINCNT	9	//帳票の行数。この行数でデータを保存していってる
+#define		JSKVMIN		148	//入力ボックスの最小のインデックス
+#define		JSKVMAX		255	//入力ボックスの最大のインデックス
+//2016.10.20 UPDATE END
+
+//#define		JSKYEARID	1
+
+#define		JSKZKBNID	1
+#define		JSKDISP1	29
+
+//全てのIDX定義
+//2016.10.20 UPDATE START
+//#define		JSKVAL01A	133
+//#define		JSKVAL01B	134
+//#define		JSKVAL01C	135
+//#define		JSKVAL01D	136
+//#define		JSKVAL02A	137
+//#define		JSKVAL02B	138
+//#define		JSKVAL02C	139
+//#define		JSKVAL02D	140
+//#define		JSKVAL03A	141
+//#define		JSKVAL03B	142
+//#define		JSKVAL03C	143
+//#define		JSKVAL03D	144
+//#define		JSKVAL04A	145
+//#define		JSKVAL04B	146
+//#define		JSKVAL04C	147
+//#define		JSKVAL04D	148
+//#define		JSKVAL05A	149
+//#define		JSKVAL05B	150
+//#define		JSKVAL05C	151
+//#define		JSKVAL05D	152
+//#define		JSKVAL06A	153
+//#define		JSKVAL06B	154
+//#define		JSKVAL06C	155
+//#define		JSKVAL06D	156
+//#define		JSKVAL07A	157
+//#define		JSKVAL07B	158
+//#define		JSKVAL07C	159
+//#define		JSKVAL07D	160
+//#define		JSKVAL08A	161
+//#define		JSKVAL08B	162
+//#define		JSKVAL08C	163
+//#define		JSKVAL08D	164
+//#define		JSKVAL09A	165
+//#define		JSKVAL09B	166
+//#define		JSKVAL09C	167
+//#define		JSKVAL09D	168
+//#define		JSKVAL10A	169
+//#define		JSKVAL10B	170
+//#define		JSKVAL10C	171
+//#define		JSKVAL10D	172
+//#define		JSKVAL11A	173
+//#define		JSKVAL11B	174
+//#define		JSKVAL11C	175
+//#define		JSKVAL11D	176
+//#define		JSKVAL12A	177
+//#define		JSKVAL12B	178
+//#define		JSKVAL12C	179
+//#define		JSKVAL12D	180
+//#define		JSKVAL13A	181
+//#define		JSKVAL13B	182
+//#define		JSKVAL13C	183
+//#define		JSKVAL13D	184
+//#define		JSKVAL14A	185
+//#define		JSKVAL14B	186
+//#define		JSKVAL14C	187
+//#define		JSKVAL14D	188
+//#define		JSKVAL15A	189
+//#define		JSKVAL15B	190
+//#define		JSKVAL15C	191
+//#define		JSKVAL15D	192
+//#define		JSKVAL16A	193
+//#define		JSKVAL16B	194
+//#define		JSKVAL16C	195
+//#define		JSKVAL16D	196
+//#define		JSKVAL17A	197
+//#define		JSKVAL17B	198
+//#define		JSKVAL17C	199
+//#define		JSKVAL17D	200
+//#define		JSKVAL18A	201
+//#define		JSKVAL18B	202
+//#define		JSKVAL18C	203
+//#define		JSKVAL18D	204
+//#define		JSKVAL19A	205
+//#define		JSKVAL19B	206
+//#define		JSKVAL19C	207
+//#define		JSKVAL19D	208
+//#define		JSKVAL20A	209
+//#define		JSKVAL20B	210
+//#define		JSKVAL20C	211
+//#define		JSKVAL20D	212
+//#define		JSKVAL21A	213
+//#define		JSKVAL21B	214
+//#define		JSKVAL21C	215
+//#define		JSKVAL21D	216
+//#define		JSKVAL22A	217
+//#define		JSKVAL22B	218
+//#define		JSKVAL22C	219
+//#define		JSKVAL22D	220
+//#define		JSKVAL23A	221
+//#define		JSKVAL23B	222
+//#define		JSKVAL23C	223
+//#define		JSKVAL23D	224
+//#define		JSKVAL24A	225
+//#define		JSKVAL24B	226
+//#define		JSKVAL24C	227
+//#define		JSKVAL24D	228
+
+#define		JSKVAL01A	148
+#define		JSKVAL01B	149
+#define		JSKVAL01C	150
+#define		JSKVAL01D	151
+#define		JSKVAL02A	152
+#define		JSKVAL02B	153
+#define		JSKVAL02C	154
+#define		JSKVAL02D	155
+#define		JSKVAL03A	156
+#define		JSKVAL03B	157
+#define		JSKVAL03C	158
+#define		JSKVAL03D	159
+#define		JSKVAL04A	160
+#define		JSKVAL04B	161
+#define		JSKVAL04C	162
+#define		JSKVAL04D	163
+#define		JSKVAL05A	164
+#define		JSKVAL05B	165
+#define		JSKVAL05C	166
+#define		JSKVAL05D	167
+#define		JSKVAL06A	168
+#define		JSKVAL06B	169
+#define		JSKVAL06C	170
+#define		JSKVAL06D	171
+#define		JSKVAL07A	172
+#define		JSKVAL07B	173
+#define		JSKVAL07C	174
+#define		JSKVAL07D	175
+#define		JSKVAL08A	176
+#define		JSKVAL08B	177
+#define		JSKVAL08C	178
+#define		JSKVAL08D	179
+#define		JSKVAL09A	180
+#define		JSKVAL09B	181
+#define		JSKVAL09C	182
+#define		JSKVAL09D	183
+#define		JSKVAL10A	184
+#define		JSKVAL10B	185
+#define		JSKVAL10C	186
+#define		JSKVAL10D	187
+#define		JSKVAL11A	188
+#define		JSKVAL11B	189
+#define		JSKVAL11C	190
+#define		JSKVAL11D	191
+#define		JSKVAL12A	192
+#define		JSKVAL12B	193
+#define		JSKVAL12C	194
+#define		JSKVAL12D	195
+#define		JSKVAL13A	196
+#define		JSKVAL13B	197
+#define		JSKVAL13C	198
+#define		JSKVAL13D	199
+#define		JSKVAL14A	200
+#define		JSKVAL14B	201
+#define		JSKVAL14C	202
+#define		JSKVAL14D	203
+#define		JSKVAL15A	204
+#define		JSKVAL15B	205
+#define		JSKVAL15C	206
+#define		JSKVAL15D	207
+#define		JSKVAL16A	208
+#define		JSKVAL16B	209
+#define		JSKVAL16C	210
+#define		JSKVAL16D	211
+#define		JSKVAL17A	212
+#define		JSKVAL17B	213
+#define		JSKVAL17C	214
+#define		JSKVAL17D	215
+#define		JSKVAL18A	216
+#define		JSKVAL18B	217
+#define		JSKVAL18C	218
+#define		JSKVAL18D	219
+#define		JSKVAL19A	220
+#define		JSKVAL19B	221
+#define		JSKVAL19C	222
+#define		JSKVAL19D	223
+#define		JSKVAL20A	224
+#define		JSKVAL20B	225
+#define		JSKVAL20C	226
+#define		JSKVAL20D	227
+#define		JSKVAL21A	228
+#define		JSKVAL21B	229
+#define		JSKVAL21C	230
+#define		JSKVAL21D	231
+#define		JSKVAL22A	232
+#define		JSKVAL22B	233
+#define		JSKVAL22C	234
+#define		JSKVAL22D	235
+#define		JSKVAL23A	236
+#define		JSKVAL23B	237
+#define		JSKVAL23C	238
+#define		JSKVAL23D	239
+#define		JSKVAL24A	240
+#define		JSKVAL24B	241
+#define		JSKVAL24C	242
+#define		JSKVAL24D	243
+#define		JSKVAL25A	244
+#define		JSKVAL25B	245
+#define		JSKVAL25C	246
+#define		JSKVAL25D	247
+#define		JSKVAL26A	248
+#define		JSKVAL26B	249
+#define		JSKVAL26C	250
+#define		JSKVAL26D	251
+#define		JSKVAL27A	252
+#define		JSKVAL27B	253
+#define		JSKVAL27C	254
+#define		JSKVAL27D	255
+//2016.10.20 UPDATE END
+
+// 課税仕入高計算表
+static SH_ITEMINDEX	ShinKniinpKeika[]	=	{
+	{  JSKVAL01A, 0, 1, 0			},
+	{  JSKVAL01B, 0, 1, 0			},
+	{  JSKVAL01D, 0, 1, 0			},
+	{  JSKVAL02C, 0, 1, 0			},
+	{  JSKVAL02D, 0, 1, 0			},
+	{  JSKVAL03C, 0, 1, 0			},
+	{  JSKVAL03D, 0, 1, 0			},
+	{  JSKVAL04A, 0, 1, 0			},
+	{  JSKVAL04B, 0, 1, 0			},
+	{  JSKVAL04D, 0, 1, 0			},
+	{  JSKVAL05C, 0, 1, 0			},
+	{  JSKVAL05D, 0, 1, 0			},
+	{  JSKVAL06C, 0, 1, 0			},
+	{  JSKVAL06D, 0, 1, 0			},
+	{  JSKVAL07A, 0, 1, 0			},
+	{  JSKVAL07B, 0, 1, 0			},
+	{  JSKVAL07D, 0, 1, 0			},
+	{  JSKVAL08C, 0, 1, 0			},
+	{  JSKVAL08D, 0, 1, 0			},
+	{  JSKVAL09C, 0, 1, 0			},
+	{  JSKVAL09D, 0, 1, 0			},
+	{  JSKVAL10A, 0, 1, 0			},
+	{  JSKVAL10B, 0, 1, 0			},
+	{  JSKVAL10D, 0, 1, 0			},
+	{  JSKVAL11C, 0, 1, 0			},
+	{  JSKVAL11D, 0, 1, 0			},
+	{  JSKVAL12C, 0, 1, 0			},
+	{  JSKVAL12D, 0, 1, 0			},
+	{  JSKVAL13A, 0, 1, 0			},
+	{  JSKVAL13B, 0, 1, 0			},
+//2016.10.20 CANCEL START
+	{  JSKVAL13D, 0, 1, 0			},
+//2016.10.20 CANCEL END
+	{  JSKVAL14C, 0, 1, 0			},
+//2016.10.20 CANCEL START
+	{  JSKVAL14D, 0, 1, 0			},
+//2016.10.20 CANCEL END
+	{  JSKVAL15C, 0, 1, 0			},
+//2016.10.20 CANCEL START
+	{  JSKVAL15D, 0, 1, 0			},
+//2016.10.20 CANCEL END
+	{  JSKVAL16A, 0, 1, 0			},
+	{  JSKVAL16B, 0, 1, 0			},
+//2016.10.20 DELETE START
+//	{  JSKVAL16D, 0, 1, 0			},
+//2016.10.20 DELETE END
+	{  JSKVAL17C, 0, 1, 0			},
+//2016.10.20 DELETE START
+//	{  JSKVAL17D, 0, 1, 0			},
+//2016.10.20 DELETE END
+	{  JSKVAL18C, 0, 1, 0			},
+//2016.10.20 DELETE START
+//	{  JSKVAL18D, 0, 1, 0			},
+//2016.10.20 DELETE END
+	{  JSKVAL19A, 0, 1, 0			},
+	{  JSKVAL19B, 0, 1, 0			},
+	{  JSKVAL19D, 0, 1, 0			},
+	{  JSKVAL20C, 0, 1, 0			},
+	{  JSKVAL20D, 0, 1, 0			},
+	{  JSKVAL21C, 0, 1, 0			},
+	{  JSKVAL21D, 0, 1, 0			},
+//2016.10.20 INSERT START
+	{  JSKVAL22A, 0, 1, 0			},
+	{  JSKVAL22B, 0, 1, 0			},
+	{  JSKVAL22D, 0, 1, 0			},
+	{  JSKVAL23C, 0, 1, 0			},
+	{  JSKVAL23D, 0, 1, 0			},
+	{  JSKVAL24C, 0, 1, 0			},
+	{  JSKVAL24D, 0, 1, 0			},
+//2016.10.20 INSERT END
+	{	0, 0, 0, 0					}
+};
+
+static FCSUPDOWN_INFO	FCS_ShinKniinpKeika[]	=	{
+	{	JSKVAL01A 		},
+	{	JSKVAL02A 		},
+	{	JSKVAL03A 		},
+	{	JSKVAL04A 		},
+	{	JSKVAL05A 		},
+	{	JSKVAL06A 		},
+	{	JSKVAL07A 		},
+	{	JSKVAL08A 		},
+	{	JSKVAL09A 		},
+	{	JSKVAL10A 		},
+	{	JSKVAL11A 		},
+	{	JSKVAL12A 		},
+	{	JSKVAL13A 		},
+	{	JSKVAL14A 		},
+	{	JSKVAL15A 		},
+	{	JSKVAL16A 		},
+	{	JSKVAL17A 		},
+	{	JSKVAL18A 		},
+	{	JSKVAL19A 		},
+	{	JSKVAL20A 		},
+	{	JSKVAL21A 		},
+	{	JSKVAL22A 		},
+	{	JSKVAL23A 		},
+	{	JSKVAL24A 		},
+//2016.10.20 INSERT START
+	{	JSKVAL25A 		},
+	{	JSKVAL26A 		},
+	{	JSKVAL27A 		},
+//2016.10.20 INSERT END
+	{	JSKVAL01B 		},
+	{	JSKVAL02B 		},
+	{	JSKVAL03B		},
+	{	JSKVAL04B 		},
+	{	JSKVAL05B 		},
+	{	JSKVAL06B 		},
+	{	JSKVAL07B 		},
+	{	JSKVAL08B 		},
+	{	JSKVAL09B 		},
+	{	JSKVAL10B 		},
+	{	JSKVAL11B 		},
+	{	JSKVAL12B 		},
+	{	JSKVAL13B 		},
+	{	JSKVAL14B 		},
+	{	JSKVAL15B 		},
+	{	JSKVAL16B 		},
+	{	JSKVAL17B 		},
+	{	JSKVAL18B 		},
+	{	JSKVAL19B 		},
+	{	JSKVAL20B 		},
+	{	JSKVAL21B 		},
+	{	JSKVAL22B 		},
+	{	JSKVAL23B 		},
+	{	JSKVAL24B 		},
+//2016.10.20 INSERT START
+	{	JSKVAL25B 		},
+	{	JSKVAL26B 		},
+	{	JSKVAL27B 		},
+//2016.10.20 INSERT END
+	{	JSKVAL01C 		},
+	{	JSKVAL02C 		},
+	{	JSKVAL03C		},
+	{	JSKVAL04C 		},
+	{	JSKVAL05C 		},
+	{	JSKVAL06C		},
+	{	JSKVAL07C 		},
+	{	JSKVAL08C 		},
+	{	JSKVAL09C 		},
+	{	JSKVAL10C 		},
+	{	JSKVAL11C 		},
+	{	JSKVAL12C 		},
+	{	JSKVAL13C 		},
+	{	JSKVAL14C 		},
+	{	JSKVAL15C 		},
+	{	JSKVAL16C 		},
+	{	JSKVAL17C 		},
+	{	JSKVAL18C 		},
+	{	JSKVAL19C 		},
+	{	JSKVAL20C 		},
+	{	JSKVAL21C 		},
+	{	JSKVAL22C 		},
+	{	JSKVAL23C 		},
+	{	JSKVAL24C 		},
+//2016.10.20 INSERT START
+	{	JSKVAL25C 		},
+	{	JSKVAL26C 		},
+	{	JSKVAL27C 		},
+//2016.10.20 INSERT END
+	{	JSKVAL01D 		},
+	{	JSKVAL02D 		},
+	{	JSKVAL03D		},
+	{	JSKVAL04D 		},
+	{	JSKVAL05D 		},
+	{	JSKVAL06D 		},
+	{	JSKVAL07D 		},
+	{	JSKVAL08D 		},
+	{	JSKVAL09D 		},
+	{	JSKVAL10D 		},
+	{	JSKVAL11D 		},
+	{	JSKVAL12D 		},
+//2016.10.20 CANCEL START
+	{	JSKVAL13D 		},
+	{	JSKVAL14D 		},
+	{	JSKVAL15D 		},
+//2016.10.20 CANCEL END
+//2016.10.20 DELETE START
+//	{	JSKVAL16D 		},
+//	{	JSKVAL17D 		},
+//	{	JSKVAL18D 		},
+//2016.10.20 DELETE START
+	{	JSKVAL19D 		},
+	{	JSKVAL20D 		},
+	{	JSKVAL21D 		},
+	{	JSKVAL22D 		},
+	{	JSKVAL23D 		},
+	{	JSKVAL24D 		},
+//2016.10.20 INSERT START
+	{	JSKVAL25D 		},
+	{	JSKVAL26D 		},
+	{	JSKVAL27D 		},
+//2016.10.20 INSERT END
+};
+
+static FCSUPDOWN_INFO	FCS_ShinKniinpKeika_LR[]	=	{
+	{	JSKVAL01A 		},
+	{	JSKVAL01B 		},
+	{	JSKVAL01C 		},
+	{	JSKVAL01D 		},
+	{	JSKVAL02A 		},
+	{	JSKVAL02B 		},
+	{	JSKVAL02C 		},
+	{	JSKVAL02D 		},
+	{	JSKVAL03A 		},
+	{	JSKVAL03B 		},
+	{	JSKVAL03C 		},
+	{	JSKVAL03D 		},
+	{	JSKVAL04A 		},
+	{	JSKVAL04B 		},
+	{	JSKVAL04C 		},
+	{	JSKVAL04D 		},
+	{	JSKVAL05A 		},
+	{	JSKVAL05B 		},
+	{	JSKVAL05C 		},
+	{	JSKVAL05D 		},
+	{	JSKVAL06A 		},
+	{	JSKVAL06B 		},
+	{	JSKVAL06C 		},
+	{	JSKVAL06D 		},
+	{	JSKVAL07A 		},
+	{	JSKVAL07B 		},
+	{	JSKVAL07C 		},
+	{	JSKVAL07D 		},
+	{	JSKVAL08A 		},
+	{	JSKVAL08B 		},
+	{	JSKVAL08C 		},
+	{	JSKVAL08D 		},
+	{	JSKVAL09A 		},
+	{	JSKVAL09B 		},
+	{	JSKVAL09C 		},
+	{	JSKVAL09D 		},
+	{	JSKVAL10A 		},
+	{	JSKVAL10B 		},
+	{	JSKVAL10C 		},
+	{	JSKVAL10D 		},
+	{	JSKVAL11A 		},
+	{	JSKVAL11B 		},
+	{	JSKVAL11C 		},
+	{	JSKVAL11D 		},
+	{	JSKVAL12A 		},
+	{	JSKVAL12B 		},
+	{	JSKVAL12C 		},
+	{	JSKVAL12D 		},
+	{	JSKVAL13A 		},
+	{	JSKVAL13B 		},
+	{	JSKVAL13C 		},
+//2016.10.20 CANCEL START
+	{	JSKVAL13D 		},
+//2016.10.20 CANCEL END
+	{	JSKVAL14A 		},
+	{	JSKVAL14B 		},
+	{	JSKVAL14C 		},
+//2016.10.20 CANCEL START
+	{	JSKVAL14D 		},
+//2016.10.20 CANCEL END
+	{	JSKVAL15A 		},
+	{	JSKVAL15B 		},
+	{	JSKVAL15C 		},
+//2016.10.20 CANCEL START
+	{	JSKVAL15D 		},
+//2016.10.20 CANCEL END
+	{	JSKVAL16A 		},
+	{	JSKVAL16B 		},
+	{	JSKVAL16C 		},
+//2016.10.20 DELETE START
+//	{	JSKVAL16D 		},
+//2016.10.20 DELETE END
+	{	JSKVAL17A 		},
+	{	JSKVAL17B 		},
+	{	JSKVAL17C 		},
+//2016.10.20 DELETE START
+//	{	JSKVAL17D 		},
+//2016.10.20 DELETE END
+	{	JSKVAL18A 		},
+	{	JSKVAL18B 		},
+	{	JSKVAL18C 		},
+//2016.10.20 DELETE START
+//	{	JSKVAL18D 		},
+//2016.10.20 DELETE END
+	{	JSKVAL19A 		},
+	{	JSKVAL19B 		},
+	{	JSKVAL19C 		},
+	{	JSKVAL19D 		},
+	{	JSKVAL20A 		},
+	{	JSKVAL20B 		},
+	{	JSKVAL20C 		},
+	{	JSKVAL20D 		},
+	{	JSKVAL21A 		},
+	{	JSKVAL21B 		},
+	{	JSKVAL21C 		},
+	{	JSKVAL21D 		},
+	{	JSKVAL22A 		},
+	{	JSKVAL22B 		},
+	{	JSKVAL22C 		},
+	{	JSKVAL22D 		},
+	{	JSKVAL23A 		},
+	{	JSKVAL23B 		},
+	{	JSKVAL23C 		},
+	{	JSKVAL23D 		},
+	{	JSKVAL24A 		},
+	{	JSKVAL24B 		},
+	{	JSKVAL24C 		},
+	{	JSKVAL24D 		},
+//2016.10.20 INSERT START
+	{	JSKVAL25A 		},
+	{	JSKVAL25B 		},
+	{	JSKVAL25C 		},
+	{	JSKVAL25D 		},
+	{	JSKVAL26A 		},
+	{	JSKVAL26B 		},
+	{	JSKVAL26C 		},
+	{	JSKVAL26D 		},
+	{	JSKVAL27A 		},
+	{	JSKVAL27B 		},
+	{	JSKVAL27C 		},
+	{	JSKVAL27D 		},	
+//2016.10.20 INSERT END
+};
+//#define		FCS_SHINKNIINPKEIKACNT	96
+//2016.10.20 UPDATE START
+//#define		FCS_SHINKNIINPKEIKACNT	93
+#define		FCS_SHINKNIINPKEIKACNT	107
+//2016.10.20 UPDATE END
+
+#define		KKNIINPLINE1		0	//第一種
+#define		KKNIINPLINE2		1	//第二種
+#define		KKNIINPLINE3		2	//第三種
+#define		KKNIINPLINE4		3	//農業事業者？(経過措置ありでは不使用) → 経過措置でも使用 2016.10.20
+#define		KKNIINPLINE5		4	//第四種
+#define		KKNIINPLINE6		8	//固定資産等の譲渡
+#define		KKNIINPLINE7		5	//第五種
+#define		KKNIINPLINE8		6	//不動産事業者
+#define		KKNIINPLINE9		7	//合計
+/*
+#define		KKNIINPLINE10		9
+#define		KKNIINPLINE11		10
+#define		KKNIINPLINE12		11
+#define		KKNIINPLINE13		12
+#define		KKNIINPLINE14		13
+#define		KKNIINPLINE15		14
+#define		KKNIINPLINE16		15
+#define		KKNIINPLINE17		16
+#define		KKNIINPLINE18		17
+#define		KKNIINPLINE19		18
+#define		KKNIINPLINE20		19
+#define		KKNIINPLINE21		20
+#define		KKNIINPLINE22		21
+#define		KKNIINPLINE23		22
+#define		KKNIINPLINE24		23
+*/

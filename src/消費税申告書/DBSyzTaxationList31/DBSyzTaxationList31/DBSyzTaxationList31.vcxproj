@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B68B28AC-464E-47C8-BA39-6888952FE2FF}</ProjectGuid>
+    <RootNamespace>DBSyzTaxationList31</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+    <ProjectName>ZIM15_SyzTaxationList31</ProjectName>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.28127.55</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)d</TargetName>
+    <IncludePath>C:\ICSDEV\ICSDEV\INCLUDE\CXTP;C:\ICSDEV\ICSDEV\INCLUDE;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\ICSDEV\ICSDEV\LIB;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\ICSDEV\INCLUDE8\CXTP;C:\ICSDEV\INCLUDE8;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <ModuleDefinitionFile>.\DBSyzTaxationList31D_2017.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalDependencies>ICS15_GENd.lib;ICS15_GENLd.lib;ZIM15_SyzAccessd.lib;ICS15_MTBLd.lib;ZIM15_ZmSubd.lib;ICS15_ARITHd.lib;ZIM15_SyzShinComD.lib;ICS15_Printd.lib;ICS15_Subtoold.lib;ICSCmnd.lib;ICS15_XYSPrintd.lib;ZIM15_SyzSykComd.lib;ZIM15_NpSubd.lib;STZ15_DBIFd.lib</AdditionalDependencies>
+      <DelayLoadDLLs>ZIM15_SyzSykComd.dll;ZIM15_NpSubd.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <ModuleDefinitionFile>.\DBSyzTaxationList31_2017.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalDependencies>ICS15_GEN.lib;ICS15_GENL.lib;ZIM15_SyzAccess.lib;ICS15_MTBL.lib;ZIM15_ZmSub.lib;ICS15_ARITH.lib;ZIM15_SyzShinCom.lib;ICS15_Print.lib;ICS15_Subtool.lib;ICSCmn.lib;ICS15_XYSPrint.lib;ZIM15_SyzSykCom.lib;ZIM15_NpSub.lib;STZ15_DBIF.lib</AdditionalDependencies>
+      <DelayLoadDLLs>ZIM15_NpSub.dll;ZIM15_SyzSykCom.dll;STZ15_DBIF.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="KoketsuKingaku.cpp" />
+    <ClCompile Include="DBSyzTaxationList31.cpp" />
+    <ClCompile Include="H31SpcListData.cpp" />
+    <ClCompile Include="H31TaxListData.cpp" />
+    <ClCompile Include="icsdisp8ctrl1.cpp" />
+    <ClCompile Include="KoketsuMeisyo.cpp" />
+    <ClCompile Include="ShinBuy31Ex.cpp" />
+    <ClCompile Include="ShinBuy31Ex2.cpp" />
+    <ClCompile Include="ShinFudousan31Ex.cpp" />
+    <ClCompile Include="ShinFudousan31Ex2.cpp" />
+    <ClCompile Include="ShinJigyo31Ex.cpp" />
+    <ClCompile Include="ShinJigyo31Ex2.cpp" />
+    <ClCompile Include="ShinKniinp31Ex.cpp" />
+    <ClCompile Include="ShinNougyou31Ex.cpp" />
+    <ClCompile Include="ShinNougyou31Ex2.cpp" />
+    <ClCompile Include="ShinSell31Ex.cpp" />
+    <ClCompile Include="ShinSell31Ex2.cpp" />
+    <ClCompile Include="ShinSpecific1_31.cpp" />
+    <ClCompile Include="ShinSpecific1_31Ex.cpp" />
+    <ClCompile Include="ShinSpecific22_2_31.cpp" />
+    <ClCompile Include="ShinSpecific22_2_31Ex.cpp" />
+    <ClCompile Include="ShinSpecific22_31.cpp" />
+    <ClCompile Include="ShinSpecific2_31.cpp" />
+    <ClCompile Include="ShinSpecific2_31Ex.cpp" />
+    <ClCompile Include="ShinSpecific31View.cpp" />
+    <ClCompile Include="ShinSpecific34_31.cpp" />
+    <ClCompile Include="ShinSpecific51_31.cpp" />
+    <ClCompile Include="ShinSpecific51_31Ex.cpp" />
+    <ClCompile Include="ShinSpecific51_31Ex2.cpp" />
+    <ClCompile Include="ShinSpecific52_1_31.cpp" />
+    <ClCompile Include="ShinSpecific52_2_31.cpp" />
+    <ClCompile Include="ShinSpecific52_31.cpp" />
+    <ClCompile Include="ShinSpecific52_31Ex.cpp" />
+    <ClCompile Include="ShinSpecific52_31Ex2.cpp" />
+    <ClCompile Include="ShinSpecific52_31_31.cpp" />
+    <ClCompile Include="ShinSpecific52_32_31.cpp" />
+    <ClCompile Include="ShinSpecific52_33_31.cpp" />
+    <ClCompile Include="ShinSpecific52_41_31.cpp" />
+    <ClCompile Include="ShinSpecific52_42_31.cpp" />
+    <ClCompile Include="ShinSpecific52_43_31.cpp" />
+    <ClCompile Include="ShinSpecific53_31.cpp" />
+    <ClCompile Include="ShinSpecific53_31Ex.cpp" />
+    <ClCompile Include="ShinSpecific53_31Ex2.cpp" />
+    <ClCompile Include="SpcBaseDlg.cpp" />
+    <ClCompile Include="SpcListPrint.cpp" />
+    <ClCompile Include="SpeAddDlg.cpp" />
+    <ClCompile Include="SpecPassOffEx.cpp" />
+    <ClCompile Include="SpecPassOffEx2.cpp" />
+    <ClCompile Include="SyotokuzeiRendo.cpp" />
+    <ClCompile Include="TaxList31Doc.cpp" />
+    <ClCompile Include="icsdiagctrl.cpp" />
+    <ClCompile Include="ShinBuy31.cpp" />
+    <ClCompile Include="ShzTax31Calc.cpp" />
+    <ClCompile Include="ShinCom.cpp" />
+    <ClCompile Include="ShinFudousan31.cpp" />
+    <ClCompile Include="ShinJigyo31.cpp" />
+    <ClCompile Include="ShinKniinp31.cpp" />
+    <ClCompile Include="ShinNougyou31.cpp" />
+    <ClCompile Include="ShinSell31.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SyzBaseDlg.cpp" />
+    <ClCompile Include="TaxationList31View.cpp" />
+    <ClCompile Include="TaxtionList31Print.cpp" />
+    <ClCompile Include="TaxtionSelect.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBSyzTaxationList31.def" />
+    <None Include="DBSyzTaxationList31d_2017.def" />
+    <None Include="DBSyzTaxationList31_2017.def" />
+    <None Include="res\DBSyzTaxationList31.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="KoketsuKingaku.h" />
+    <ClInclude Include="DBShinListInt.h" />
+    <ClInclude Include="DBShinListRec.h" />
+    <ClInclude Include="H31SpcListData.h" />
+    <ClInclude Include="H31TaxListData.h" />
+    <ClInclude Include="icsdisp8ctrl1.h" />
+    <ClInclude Include="KoketsuMeisyo.h" />
+    <ClInclude Include="ShinBuy31Ex.h" />
+    <ClInclude Include="ShinBuy31Ex2.h" />
+    <ClInclude Include="ShinBuy31Ex2Idx.h" />
+    <ClInclude Include="ShinBuy31ExIdx.h" />
+    <ClInclude Include="ShinFudousan31Ex.h" />
+    <ClInclude Include="ShinFudousan31Ex2.h" />
+    <ClInclude Include="ShinFudousan31ExIdx.h" />
+    <ClInclude Include="ShinJigyo31Ex.h" />
+    <ClInclude Include="ShinJigyo31Ex2.h" />
+    <ClInclude Include="ShinJigyo31ExIdx.h" />
+    <ClInclude Include="ShinKniinp31Ex.h" />
+    <ClInclude Include="ShinKniinp31ExIdx.h" />
+    <ClInclude Include="ShinNougyou31Ex.h" />
+    <ClInclude Include="ShinNougyou31Ex2.h" />
+    <ClInclude Include="ShinNougyou31ExIdx.h" />
+    <ClInclude Include="ShinSell31Ex2.h" />
+    <ClInclude Include="ShinSell31Ex2Idx.h" />
+    <ClInclude Include="ShinSell31ExIdx.h" />
+    <ClInclude Include="ShinSell31Ex.h" />
+    <ClInclude Include="ShinSpecific1_31.h" />
+    <ClInclude Include="ShinSpecific1_31Ex.h" />
+    <ClInclude Include="ShinSpecific1_31Idx.h" />
+    <ClInclude Include="ShinSpecific1_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific22_2_31.h" />
+    <ClInclude Include="ShinSpecific22_2_31Ex.h" />
+    <ClInclude Include="ShinSpecific22_2_31Idx.h" />
+    <ClInclude Include="ShinSpecific22_2_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific22_31.h" />
+    <ClInclude Include="ShinSpecific22_31Idx.h" />
+    <ClInclude Include="ShinSpecific2_31.h" />
+    <ClInclude Include="ShinSpecific2_31Ex.h" />
+    <ClInclude Include="ShinSpecific2_31Idx.h" />
+    <ClInclude Include="ShinSpecific2_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific34_31.h" />
+    <ClInclude Include="ShinSpecific34_31Idx.h" />
+    <ClInclude Include="ShinSpecific51_31.h" />
+    <ClInclude Include="ShinSpecific51_31Ex.h" />
+    <ClInclude Include="ShinSpecific51_31Ex2.h" />
+    <ClInclude Include="ShinSpecific51_31Idx.h" />
+    <ClInclude Include="ShinSpecific51_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific51_31_exIdx2.h" />
+    <ClInclude Include="ShinSpecific52_1_31.h" />
+    <ClInclude Include="ShinSpecific52_1_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific52_2_31.h" />
+    <ClInclude Include="ShinSpecific52_2_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific52_31.h" />
+    <ClInclude Include="ShinSpecific52_31Ex.h" />
+    <ClInclude Include="ShinSpecific52_31Ex2.h" />
+    <ClInclude Include="ShinSpecific52_31Idx.h" />
+    <ClInclude Include="ShinSpecific52_31_31.h" />
+    <ClInclude Include="ShinSpecific52_31_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific52_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific52_31_exIdx2.h" />
+    <ClInclude Include="ShinSpecific52_32_31.h" />
+    <ClInclude Include="ShinSpecific52_32_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific52_33_31.h" />
+    <ClInclude Include="ShinSpecific52_33_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific52_41_31.h" />
+    <ClInclude Include="ShinSpecific52_41_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific52_42_31.h" />
+    <ClInclude Include="ShinSpecific52_42_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific52_43_31.h" />
+    <ClInclude Include="ShinSpecific52_43_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific53_31.h" />
+    <ClInclude Include="ShinSpecific53_31Ex.h" />
+    <ClInclude Include="ShinSpecific53_31Ex2.h" />
+    <ClInclude Include="ShinSpecific53_31Idx.h" />
+    <ClInclude Include="ShinSpecific53_31_exIdx.h" />
+    <ClInclude Include="ShinSpecific53_31_exIdx2.h" />
+    <ClInclude Include="SpcBaseDlg.h" />
+    <ClInclude Include="SpeAddDlg.h" />
+    <ClInclude Include="SpecPassOffEx.h" />
+    <ClInclude Include="SpecPassOffEx2.h" />
+    <ClInclude Include="StzRendoDef.h" />
+    <ClInclude Include="TaxList31Doc.h" />
+    <ClInclude Include="icsdiagctrl.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ShinBuy31.h" />
+    <ClInclude Include="ShinBuy31Idx.h" />
+    <ClInclude Include="ShzTax31Calc.h" />
+    <ClInclude Include="ShinCom.h" />
+    <ClInclude Include="ShinFudousan31.h" />
+    <ClInclude Include="ShinFudousan31Idx.h" />
+    <ClInclude Include="ShinJigyo31.h" />
+    <ClInclude Include="ShinJigyo31Idx.h" />
+    <ClInclude Include="ShinKniinp31.h" />
+    <ClInclude Include="ShinKniinp31Idx.h" />
+    <ClInclude Include="ShinNougyou31.h" />
+    <ClInclude Include="ShinNougyou31Idx.h" />
+    <ClInclude Include="ShinSell31.h" />
+    <ClInclude Include="ShinSell31Idx.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SyzBaseDlg.h" />
+    <ClInclude Include="SyzTaxList31Def.h" />
+    <ClInclude Include="TaxationList31View.h" />
+    <ClInclude Include="TaxtionSelect.h" />
+    <ClInclude Include="_Font.h" />
+    <ClInclude Include="_Picture.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBSyzTaxationList31.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

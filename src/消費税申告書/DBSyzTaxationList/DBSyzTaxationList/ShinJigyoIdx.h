@@ -1,0 +1,447 @@
+#pragma once
+
+#define		VCNT	3
+#define		VLIN	34
+
+#define		VMIN	177
+#define		VMAX	278
+#define		VLST	271
+
+#define		YEARID	1
+
+#define		ZKBNID	304
+
+
+
+//定義変更。全てのIDX定義'14.08.11
+#define		JIGVAL01A	177
+#define		JIGVAL01B	178
+#define		JIGVAL01C	179
+#define		JIGVAL01TA	180
+#define		JIGVAL01TB	181
+#define		JIGVAL01TC	182
+#define		JIGVAL02A	183
+#define		JIGVAL02B	184
+#define		JIGVAL02C	185
+#define		JIGVAL03A	186
+#define		JIGVAL03B	187
+#define		JIGVAL03C	188
+#define		JIGVAL04A	189
+#define		JIGVAL04B	190
+#define		JIGVAL04C	191
+#define		JIGVAL05A	192
+#define		JIGVAL05B	193
+#define		JIGVAL05C	194
+#define		JIGVAL06A	195
+#define		JIGVAL06B	196
+#define		JIGVAL06C	197
+#define		JIGVAL07A	198
+#define		JIGVAL07B	199
+#define		JIGVAL07C	200
+#define		JIGVAL08A	201
+#define		JIGVAL08B	202
+#define		JIGVAL08C	203
+#define		JIGVAL09A	204
+#define		JIGVAL09B	205
+#define		JIGVAL09C	206
+#define		JIGVAL10A	207
+#define		JIGVAL10B	208
+#define		JIGVAL10C	209
+#define		JIGVAL11A	210
+#define		JIGVAL11B	211
+#define		JIGVAL11C	212
+#define		JIGVAL12A	213
+#define		JIGVAL12B	214
+#define		JIGVAL12C	215
+#define		JIGVAL13A	216
+#define		JIGVAL13B	217
+#define		JIGVAL13C	218
+#define		JIGVAL14A	219
+#define		JIGVAL14B	220
+#define		JIGVAL14C	221
+#define		JIGVAL15A	222
+#define		JIGVAL15B	223
+#define		JIGVAL15C	224
+#define		JIGVAL16A	225
+#define		JIGVAL16B	226
+#define		JIGVAL16C	227
+#define		JIGVAL17A	228
+#define		JIGVAL17B	229
+#define		JIGVAL17C	230
+#define		JIGVAL18A	231
+#define		JIGVAL18B	232
+#define		JIGVAL18C	233
+#define		JIGVAL19A	234
+#define		JIGVAL19B	235
+#define		JIGVAL19C	236
+#define		JIGVAL20A	237
+#define		JIGVAL20B	238
+#define		JIGVAL20C	239
+#define		JIGVAL21A	240
+#define		JIGVAL21B	241
+#define		JIGVAL21C	242
+#define		JIGVAL22A	243
+#define		JIGVAL22B	244
+#define		JIGVAL22C	245
+#define		JIGVAL23A	246
+#define		JIGVAL23B	247
+#define		JIGVAL23C	248
+#define		JIGVAL24A	249
+#define		JIGVAL24B	250
+#define		JIGVAL24C	251
+#define		JIGVAL25A	252
+#define		JIGVAL25B	253
+#define		JIGVAL25C	254
+#define		JIGVAL26A	255
+#define		JIGVAL26B	256
+#define		JIGVAL26C	257
+#define		JIGVAL27A	258
+#define		JIGVAL27B	259
+#define		JIGVAL27C	260
+#define		JIGVAL28A	261
+#define		JIGVAL28B	262
+#define		JIGVAL28C	263
+#define		JIGVAL29A	264
+#define		JIGVAL29B	265
+#define		JIGVAL29C	266
+#define		JIGVAL30A	267
+#define		JIGVAL30B	268
+#define		JIGVAL30C	269
+#define		JIGVAL31A	270
+#define		JIGVAL31B	271
+#define		JIGVAL31C	272
+#define		JIGVAL32A	273
+#define		JIGVAL32B	274
+#define		JIGVAL32C	275
+#define		JIGVAL33A	276
+#define		JIGVAL33B	277
+#define		JIGVAL33C	278
+#define		JIGKNAME25	279
+#define		JIGKNAME26	280
+#define		JIGKNAME27	281
+#define		JIGKNAME28	282
+#define		JIGKNAME29	283
+#define		JIGKNAME30	284
+
+
+
+// 課税取引金額計算表（事業所得用）
+static SH_ITEMINDEX	Jigyou[]	=	{
+	{ JIGVAL01A, 0, 1, 0			},
+	{ JIGVAL01B, 0, 1, 0			},
+	{ JIGVAL01TA, 0, 1, 0			},
+	{ JIGVAL01TB, 0, 1, 0			},
+	{ JIGVAL02A, 0, 1, 0			},
+	{ JIGVAL03A, 0, 1, 0			},
+	{ JIGVAL03B, 0, 1, 0			},
+	{ JIGVAL05A, 0, 1, 0			},
+	{ JIGVAL08A, 0, 1, 0			},
+	{ JIGVAL08B, 0, 1, 0			},
+	{ JIGVAL09A, 0, 1, 0			},
+	{ JIGVAL09B, 0, 1, 0			},
+	{ JIGVAL10A, 0, 1, 0			},
+	{ JIGVAL11A, 0, 1, 0			},
+	{ JIGVAL11B, 0, 1, 0			},
+	{ JIGVAL12A, 0, 1, 0			},
+	{ JIGVAL12B, 0, 1, 0			},
+	{ JIGVAL13A, 0, 1, 0			},
+	{ JIGVAL13B, 0, 1, 0			},
+	{ JIGVAL14A, 0, 1, 0			},
+	{ JIGVAL14B, 0, 1, 0			},
+	{ JIGVAL15A, 0, 1, 0			},
+	{ JIGVAL16A, 0, 1, 0			},
+	{ JIGVAL17A, 0, 1, 0			},
+	{ JIGVAL18A, 0, 1, 0			},
+	{ JIGVAL19A, 0, 1, 0			},
+	{ JIGVAL19B, 0, 1, 0			},
+	{ JIGVAL20A, 0, 1, 0			},
+	{ JIGVAL20B, 0, 1, 0			},
+	{ JIGVAL21A, 0, 1, 0			},
+	{ JIGVAL21B, 0, 1, 0			},
+	{ JIGVAL22A, 0, 1, 0			},
+	{ JIGVAL23A, 0, 1, 0			},
+	{ JIGVAL23B, 0, 1, 0			},
+	{ JIGVAL24A, 0, 1, 0			},
+	{ JIGVAL25A, 0, 1, 0			},
+	{ JIGVAL25B, 0, 1, 0			},
+	{ JIGVAL26A, 0, 1, 0			},
+	{ JIGVAL26B, 0, 1, 0			},
+	{ JIGVAL27A, 0, 1, 0			},
+	{ JIGVAL27B, 0, 1, 0			},
+	{ JIGVAL28A, 0, 1, 0			},
+	{ JIGVAL28B, 0, 1, 0			},
+	{ JIGVAL29A, 0, 1, 0			},
+	{ JIGVAL29B, 0, 1, 0			},
+	{ JIGVAL30A, 0, 1, 0			},
+	{ JIGVAL30B, 0, 1, 0			},
+	{ JIGVAL31A, 0, 1, 0			},
+	{ JIGVAL31B, 0, 1, 0			},
+	{ JIGKNAME25, 1, 1, 0			},
+	{ JIGKNAME26, 1, 1, 0			},
+	{ JIGKNAME27, 1, 1, 0			},
+	{ JIGKNAME28, 1, 1, 0			},
+	{ JIGKNAME29, 1, 1, 0			},
+	{ JIGKNAME30, 1, 1, 0			},
+	{	0, 0, 0, 0			}
+};
+
+//'14.08.18
+static FCSUPDOWN_INFO	FCS_ShinJigyou[]	=	{
+	{	JIGKNAME25 		},
+	{	JIGKNAME26 		},
+	{	JIGKNAME27 		},
+	{	JIGKNAME28		},
+	{	JIGKNAME29		},
+	{	JIGKNAME30		},
+	{	JIGVAL01A 		},
+	{	JIGVAL01TA		},
+	{	JIGVAL02A		},
+	{	JIGVAL03A 		},
+	{	JIGVAL04A		},
+	{	JIGVAL05A		},
+	{	JIGVAL06A 		},	
+	{	JIGVAL07A		},	
+	{	JIGVAL08A		},
+	{	JIGVAL09A 		},
+	{	JIGVAL10A		},
+	{	JIGVAL11A		},
+	{	JIGVAL12A 		},
+	{	JIGVAL13A		},
+	{	JIGVAL14A		},
+	{	JIGVAL15A		},
+	{	JIGVAL16A 		},
+	{	JIGVAL17A		},
+	{	JIGVAL18A 		},
+	{	JIGVAL19A		},
+	{	JIGVAL20A		},
+	{	JIGVAL21A		},
+	{	JIGVAL22A		},
+	{	JIGVAL23A		},
+	{	JIGVAL24A		},
+	{	JIGVAL25A		},
+	{	JIGVAL26A		},
+	{	JIGVAL27A		},
+	{	JIGVAL28A		},
+	{	JIGVAL29A		},
+	{	JIGVAL30A		},
+	{	JIGVAL31A		},
+	{	JIGVAL32A		},
+	{	JIGVAL33A		},
+	{	JIGVAL01B 		},
+	{	JIGVAL01TB		},
+	{	JIGVAL02B		},
+	{	JIGVAL03B 		},
+	{	JIGVAL04B		},
+	{	JIGVAL05B		},
+	{	JIGVAL06B 		},
+	{	JIGVAL07B		},
+	{	JIGVAL08B		},
+	{	JIGVAL09B 		},
+	{	JIGVAL10B		},
+	{	JIGVAL11B		},
+	{	JIGVAL12B 		},
+	{	JIGVAL13B		},
+	{	JIGVAL14B		},
+	{	JIGVAL15B		},
+	{	JIGVAL16B 		},
+	{	JIGVAL17B		},
+	{	JIGVAL18B 		},
+	{	JIGVAL19B		},
+	{	JIGVAL20B		},
+	{	JIGVAL21B		},
+	{	JIGVAL22B		},
+	{	JIGVAL23B		},
+	{	JIGVAL24B		},
+	{	JIGVAL25B		},
+	{	JIGVAL26B		},
+	{	JIGVAL27B		},
+	{	JIGVAL28B		},
+	{	JIGVAL29B		},
+	{	JIGVAL30B		},
+	{	JIGVAL31B		},
+	{	JIGVAL32B		},
+	{	JIGVAL33B		},
+	{	JIGVAL01C 		},
+	{	JIGVAL01TC		},
+	{	JIGVAL02C		},
+	{	JIGVAL03C 		},
+	{	JIGVAL04C		},
+	{	JIGVAL05C		},
+	{	JIGVAL06C 		},
+	{	JIGVAL07C		},
+	{	JIGVAL08C		},
+	{	JIGVAL09C 		},
+	{	JIGVAL10C		},
+	{	JIGVAL11C		},
+	{	JIGVAL12C 		},
+	{	JIGVAL13C		},
+	{	JIGVAL14C		},
+	{	JIGVAL15C		},
+	{	JIGVAL16C 		},
+	{	JIGVAL17C		},
+	{	JIGVAL18C 		},
+	{	JIGVAL19C		},
+	{	JIGVAL20C		},
+	{	JIGVAL21C		},
+	{	JIGVAL22C		},
+	{	JIGVAL23C		},
+	{	JIGVAL24C		},
+	{	JIGVAL25C		},
+	{	JIGVAL26C		},
+	{	JIGVAL27C		},
+	{	JIGVAL28C		},
+	{	JIGVAL29C		},
+	{	JIGVAL30C		},
+	{	JIGVAL31C		},
+	{	JIGVAL32C		},
+	{	JIGVAL33C		},
+};
+
+static FCSUPDOWN_INFO	FCS_ShinJigyou_LR[]	=	{
+	{	JIGVAL01A 		},
+	{	JIGVAL01B 		},
+	{	JIGVAL01C 		},
+	{	JIGVAL01TA		},
+	{	JIGVAL01TB		},
+	{	JIGVAL01TC		},
+	{	JIGVAL02A		},
+	{	JIGVAL02B		},
+	{	JIGVAL02C		},
+	{	JIGVAL03A 		},
+	{	JIGVAL03B 		},
+	{	JIGVAL03C 		},
+	{	JIGVAL04A		},
+	{	JIGVAL04B		},
+	{	JIGVAL04C		},
+	{	JIGVAL05A		},
+	{	JIGVAL05B		},
+	{	JIGVAL05C		},
+	{	JIGVAL06A 		},	
+	{	JIGVAL06B 		},	
+	{	JIGVAL06C 		},	
+	{	JIGVAL07A		},	
+	{	JIGVAL07B		},	
+	{	JIGVAL07C		},	
+	{	JIGVAL08A		},
+	{	JIGVAL08B		},
+	{	JIGVAL08C		},
+	{	JIGVAL09A 		},
+	{	JIGVAL09B 		},
+	{	JIGVAL09C 		},
+	{	JIGVAL10A		},
+	{	JIGVAL10B		},
+	{	JIGVAL10C		},
+	{	JIGVAL11A		},
+	{	JIGVAL11B		},
+	{	JIGVAL11C		},
+	{	JIGVAL12A 		},
+	{	JIGVAL12B 		},
+	{	JIGVAL12C 		},
+	{	JIGVAL13A		},
+	{	JIGVAL13B		},
+	{	JIGVAL13C		},
+	{	JIGVAL14A		},
+	{	JIGVAL14B		},
+	{	JIGVAL14C		},
+	{	JIGVAL15A		},
+	{	JIGVAL15B		},
+	{	JIGVAL15C		},
+	{	JIGVAL16A 		},
+	{	JIGVAL16B 		},
+	{	JIGVAL16C 		},
+	{	JIGVAL17A		},
+	{	JIGVAL17B		},
+	{	JIGVAL17C		},
+	{	JIGVAL18A 		},
+	{	JIGVAL18B 		},
+	{	JIGVAL18C 		},
+	{	JIGVAL19A		},
+	{	JIGVAL19B		},
+	{	JIGVAL19C		},
+	{	JIGVAL20A		},
+	{	JIGVAL20B		},
+	{	JIGVAL20C		},
+	{	JIGVAL21A		},
+	{	JIGVAL21B		},
+	{	JIGVAL21C		},
+	{	JIGVAL22A		},
+	{	JIGVAL22B		},
+	{	JIGVAL22C		},
+	{	JIGVAL23A		},
+	{	JIGVAL23B		},
+	{	JIGVAL23C		},
+	{	JIGVAL24A		},
+	{	JIGVAL24B		},
+	{	JIGVAL24C		},
+	{	JIGKNAME25 		},
+	{	JIGVAL25A		},
+	{	JIGVAL25B		},
+	{	JIGVAL25C		},
+	{	JIGKNAME26 		},
+	{	JIGVAL26A		},
+	{	JIGVAL26B		},
+	{	JIGVAL26C		},
+	{	JIGKNAME27 		},
+	{	JIGVAL27A		},
+	{	JIGVAL27B		},
+	{	JIGVAL27C		},
+	{	JIGKNAME28		},
+	{	JIGVAL28A		},
+	{	JIGVAL28B		},
+	{	JIGVAL28C		},
+	{	JIGKNAME29		},
+	{	JIGVAL29A		},
+	{	JIGVAL29B		},
+	{	JIGVAL29C		},
+	{	JIGKNAME30		},
+	{	JIGVAL30A		},
+	{	JIGVAL30B		},
+	{	JIGVAL30C		},
+	{	JIGVAL31A		},
+	{	JIGVAL31B		},
+	{	JIGVAL31C		},
+	{	JIGVAL32A		},
+	{	JIGVAL32B		},
+	{	JIGVAL32C		},
+	{	JIGVAL33A		},
+	{	JIGVAL33B		},
+	{	JIGVAL33C		},
+};
+
+#define		FCS_SHINJIGYOUCNT	108
+
+
+#define		KJIGLINE1	0
+#define		KJIGLINE1TA	33	//返還等対価
+#define		KJIGLINE2	1
+#define		KJIGLINE3	2
+#define		KJIGLINE4	3
+#define		KJIGLINE5	4
+#define		KJIGLINE6	5
+#define		KJIGLINE7	6
+#define		KJIGLINE8	7
+#define		KJIGLINE9	8
+#define		KJIGLINE10	9
+#define		KJIGLINE11	10
+#define		KJIGLINE12	11
+#define		KJIGLINE13	12
+#define		KJIGLINE14	13
+#define		KJIGLINE15	14
+#define		KJIGLINE16	15
+#define		KJIGLINE17	16
+#define		KJIGLINE18	17
+#define		KJIGLINE19	18
+#define		KJIGLINE20	19
+#define		KJIGLINE21	20
+#define		KJIGLINE22	21
+#define		KJIGLINE23	22
+#define		KJIGLINE24	23
+#define		KJIGLINE25	24
+#define		KJIGLINE26	25
+#define		KJIGLINE27	26
+#define		KJIGLINE28	27
+#define		KJIGLINE29	28
+#define		KJIGLINE30	29
+#define		KJIGLINE31	30
+#define		KJIGLINE32	31
+#define		KJIGLINE33	32

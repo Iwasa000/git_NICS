@@ -1,0 +1,6 @@
+; DBSyzAccess8.def : DLL のモジュール パラメータを宣言します。
+
+LIBRARY      "ZIM15_SyzAccessD"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます
