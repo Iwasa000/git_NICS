@@ -1714,6 +1714,13 @@ void CShinFhyo5_01::EditOFFIcsdiag8ctrl2(short index)
 		// 第六種事業
 		case ID501_12D:
 		case ID501_12E:
+			// TISW修正 2026/01/21 START
+			m_Fhyo5_01Diag02.GetData(index, (struct IUnknown*)&DiagData);
+			memmove(CkMy, DiagData.data_val, MONY_BUF_SIZE);
+			if (!m_pArith->l_test(CkMy)) {
+				ResetTaxCellForAmountCell(index);
+			}
+			// TISW修正 2026/01/21 END
 			SyukeiDataSet ( index );
 			Disp_f501data ( 5 );
 			break;
@@ -1880,83 +1887,85 @@ void CShinFhyo5_01::TerminationIcsdiag8ctrl2(short index, short nChar, short len
 			m_Fhyo5_01Diag02.SetPosition( index );
 			break;
 
-		case ID501_7D:
-		case ID501_7E:
-			if( index == ID501_7D ){
-				F501_14c &= ~0x80;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358402" );
-			}
-			else if( index == ID501_7E ){
-				F501_14c &= ~0x800;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358403" );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+			// TISW修正 2026/01/21 START
+		//case ID501_7D:
+		//case ID501_7E:
+		//	if( index == ID501_7D ){
+		//		F501_14c &= ~0x80;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358402" );
+		//	}
+		//	else if( index == ID501_7E ){
+		//		F501_14c &= ~0x800;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358403" );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID501_8D:
-		case ID501_8E:
-			if( index == ID501_8D ){
-				F501_15c &= ~0x80;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358502" );
-			}
-			else if( index == ID501_8E ){
-				F501_15c &= ~0x800;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358503" );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID501_8D:
+		//case ID501_8E:
+		//	if( index == ID501_8D ){
+		//		F501_15c &= ~0x80;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358502" );
+		//	}
+		//	else if( index == ID501_8E ){
+		//		F501_15c &= ~0x800;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358503" );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID501_9D:
-		case ID501_9E:
-			if( index == ID501_9D ){
-				F501_16c &= ~0x80;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358602" );
-			}
-			else if( index == ID501_9E ){
-				F501_16c &= ~0x800;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358603" );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID501_9D:
+		//case ID501_9E:
+		//	if( index == ID501_9D ){
+		//		F501_16c &= ~0x80;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358602" );
+		//	}
+		//	else if( index == ID501_9E ){
+		//		F501_16c &= ~0x800;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358603" );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID501_10D:
-		case ID501_10E:
-			if( index == ID501_10D ){
-				F501_17c &= ~0x80;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358702" );
-			}
-			else if( index == ID501_10E ){
-				F501_17c &= ~0x800;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358703" );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID501_10D:
+		//case ID501_10E:
+		//	if( index == ID501_10D ){
+		//		F501_17c &= ~0x80;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358702" );
+		//	}
+		//	else if( index == ID501_10E ){
+		//		F501_17c &= ~0x800;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358703" );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID501_11D:
-		case ID501_11E:
-			if( index == ID501_11D ){
-				F501_18c &= ~0x80;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358802" );
-			}
-			else if( index == ID501_11E ){
-				F501_18c &= ~0x800;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358803" );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID501_11D:
+		//case ID501_11E:
+		//	if( index == ID501_11D ){
+		//		F501_18c &= ~0x80;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358802" );
+		//	}
+		//	else if( index == ID501_11E ){
+		//		F501_18c &= ~0x800;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358803" );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID501_12D:
-		case ID501_12E:
-			if( index == ID501_12D ){
-				F501_19c &= ~0x80;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358902" );
-			}
-			else if( index == ID501_12E ){
-				F501_19c &= ~0x800;
-				(*m_pSyzSyukei)->ResetShinkokuData( "358903" );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID501_12D:
+		//case ID501_12E:
+		//	if( index == ID501_12D ){
+		//		F501_19c &= ~0x80;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358902" );
+		//	}
+		//	else if( index == ID501_12E ){
+		//		F501_19c &= ~0x800;
+		//		(*m_pSyzSyukei)->ResetShinkokuData( "358903" );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+			// TISW修正 2026/01/21 END
 
 		case ID501_14D:
 		case ID501_14E:
@@ -2052,6 +2061,89 @@ void CShinFhyo5_01::TerminationIcsdiag8ctrl2(short index, short nChar, short len
 		SetRedrawScroll ( ( cpos + rectB.top - rectA.top ) - ( ( rectA.bottom - rectA.top ) / 2 ) );
 	}
 }
+
+// TISW修正 2026/01/21 START
+/// <summary>
+/// 税抜セルに対応する消費税額セルの状態をリセットする
+/// </summary>
+/// <param name="index">税抜セルのインデックス</param>
+void CShinFhyo5_01::ResetTaxCellForAmountCell(int index) {
+	switch (index)
+	{
+	case ID501_7D:
+	case ID501_7E:
+		if (index == ID501_7D) {
+			F501_14c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData("358402");
+		}
+		else if (index == ID501_7E) {
+			F501_14c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData("358403");
+		}
+		break;
+
+	case ID501_8D:
+	case ID501_8E:
+		if (index == ID501_8D) {
+			F501_15c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData("358502");
+		}
+		else if (index == ID501_8E) {
+			F501_15c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData("358503");
+		}
+		break;
+
+	case ID501_9D:
+	case ID501_9E:
+		if (index == ID501_9D) {
+			F501_16c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData("358602");
+		}
+		else if (index == ID501_9E) {
+			F501_16c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData("358603");
+		}
+		break;
+
+	case ID501_10D:
+	case ID501_10E:
+		if (index == ID501_10D) {
+			F501_17c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData("358702");
+		}
+		else if (index == ID501_10E) {
+			F501_17c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData("358703");
+		}
+		break;
+
+	case ID501_11D:
+	case ID501_11E:
+		if (index == ID501_11D) {
+			F501_18c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData("358802");
+		}
+		else if (index == ID501_11E) {
+			F501_18c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData("358803");
+		}
+		break;
+
+	case ID501_12D:
+	case ID501_12E:
+		if (index == ID501_12D) {
+			F501_19c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData("358902");
+		}
+		else if (index == ID501_12E) {
+			F501_19c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData("358903");
+		}
+		break;
+	}
+}
+// TISW修正 2026/01/21 END
 
 
 BOOL CShinFhyo5_01::PreTranslateMessage(MSG* pMsg)

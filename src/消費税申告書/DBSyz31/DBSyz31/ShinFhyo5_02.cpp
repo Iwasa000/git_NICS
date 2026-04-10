@@ -514,6 +514,13 @@ void CShinFhyo5_02::EditOFFIcsdiag8ctrl2(short index)
 	case ID502_13A:
 	case ID502_13B:
 	case ID502_13C:
+		// TISW修正 2026/01/21 START
+		m_Fhyo5_02Diag02.GetData(index, (struct IUnknown*)&DiagData);
+		memmove(CkMy, DiagData.data_val, MONY_BUF_SIZE);
+		if (!m_pArith->l_test(CkMy)) {
+			ResetTaxCellForAmountCell(index);
+		}
+		// TISW修正 2026/01/21 END
 		SyukeiDataSet ( index );
 		Disp_f502data ( 5 );
 		break;
@@ -712,96 +719,98 @@ void CShinFhyo5_02::TerminationIcsdiag8ctrl2(short index, short nChar, short len
 			Disp_f502data ( 6 );
 			m_Fhyo5_02Diag02.SetPosition ( ID502_6C );
 			break;
-		case ID502_7A:
-			F502_14s &= ~0x08;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351401" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_7B:
-			F502_14s &= ~0x80;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351402" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_7C:
-			F502_14s &= ~0x800;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351403" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_8A:
-			F502_15s &= ~0x08;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351501" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_8B:
-			F502_15s &= ~0x80;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351502" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_8C:
-			F502_15s &= ~0x800;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351503" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_9A:
-			F502_16s &= ~0x08;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351601" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_9B:
-			F502_16s &= ~0x80;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351602" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_9C:
-			F502_16s &= ~0x800;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351603" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_10A:
-			F502_17s &= ~0x08;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351701" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_10B:
-			F502_17s &= ~0x80;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351702" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_10C:
-			F502_17s &= ~0x800;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351703" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_11A:
-			F502_18s &= ~0x08;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351801" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_11B:
-			F502_18s &= ~0x80;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351802" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_11C:
-			F502_18s &= ~0x800;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351803" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_12A:
-			F502_19s &= ~0x08;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351901" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_12B:
-			F502_19s &= ~0x80;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351902" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
-		case ID502_12C:
-			F502_19s &= ~0x800;
-			(*m_pSyzSyukei)->ResetShinkokuData( "351903" );
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+			// TISW修正 2026/01/21 START
+		//case ID502_7A:
+		//	F502_14s &= ~0x08;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351401" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_7B:
+		//	F502_14s &= ~0x80;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351402" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_7C:
+		//	F502_14s &= ~0x800;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351403" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_8A:
+		//	F502_15s &= ~0x08;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351501" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_8B:
+		//	F502_15s &= ~0x80;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351502" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_8C:
+		//	F502_15s &= ~0x800;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351503" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_9A:
+		//	F502_16s &= ~0x08;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351601" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_9B:
+		//	F502_16s &= ~0x80;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351602" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_9C:
+		//	F502_16s &= ~0x800;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351603" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_10A:
+		//	F502_17s &= ~0x08;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351701" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_10B:
+		//	F502_17s &= ~0x80;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351702" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_10C:
+		//	F502_17s &= ~0x800;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351703" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_11A:
+		//	F502_18s &= ~0x08;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351801" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_11B:
+		//	F502_18s &= ~0x80;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351802" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_11C:
+		//	F502_18s &= ~0x800;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351803" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_12A:
+		//	F502_19s &= ~0x08;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351901" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_12B:
+		//	F502_19s &= ~0x80;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351902" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+		//case ID502_12C:
+		//	F502_19s &= ~0x800;
+		//	(*m_pSyzSyukei)->ResetShinkokuData( "351903" );
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+			// TISW修正 2026/01/21 END
 
 		case ID502_14A:
 			F502_14s &= ~0x08;
@@ -927,6 +936,90 @@ void CShinFhyo5_02::TerminationIcsdiag8ctrl2(short index, short nChar, short len
 		SetRedrawScroll((cpos + rectB.top - rectA.top) - ((rectA.bottom - rectA.top) / 2));
 	}
 }
+
+// TISW修正 2026/01/21 START
+/// <summary>
+/// 税抜セルに対応する消費税額セルの状態をリセットする
+/// </summary>
+/// <param name="index">税抜セルのインデックス</param>
+void CShinFhyo5_02::ResetTaxCellForAmountCell(int index) {
+	switch (index)
+	{
+	case ID502_7A:
+		F502_14s &= ~0x08;
+		(*m_pSyzSyukei)->ResetShinkokuData("351401");
+		break;
+	case ID502_7B:
+		F502_14s &= ~0x80;
+		(*m_pSyzSyukei)->ResetShinkokuData("351402");
+		break;
+	case ID502_7C:
+		F502_14s &= ~0x800;
+		(*m_pSyzSyukei)->ResetShinkokuData("351403");
+		break;
+	case ID502_8A:
+		F502_15s &= ~0x08;
+		(*m_pSyzSyukei)->ResetShinkokuData("351501");
+		break;
+	case ID502_8B:
+		F502_15s &= ~0x80;
+		(*m_pSyzSyukei)->ResetShinkokuData("351502");
+		break;
+	case ID502_8C:
+		F502_15s &= ~0x800;
+		(*m_pSyzSyukei)->ResetShinkokuData("351503");
+		break;
+	case ID502_9A:
+		F502_16s &= ~0x08;
+		(*m_pSyzSyukei)->ResetShinkokuData("351601");
+		break;
+	case ID502_9B:
+		F502_16s &= ~0x80;
+		(*m_pSyzSyukei)->ResetShinkokuData("351602");
+		break;
+	case ID502_9C:
+		F502_16s &= ~0x800;
+		(*m_pSyzSyukei)->ResetShinkokuData("351603");
+		break;
+	case ID502_10A:
+		F502_17s &= ~0x08;
+		(*m_pSyzSyukei)->ResetShinkokuData("351701");
+		break;
+	case ID502_10B:
+		F502_17s &= ~0x80;
+		(*m_pSyzSyukei)->ResetShinkokuData("351702");
+		break;
+	case ID502_10C:
+		F502_17s &= ~0x800;
+		(*m_pSyzSyukei)->ResetShinkokuData("351703");
+		break;
+	case ID502_11A:
+		F502_18s &= ~0x08;
+		(*m_pSyzSyukei)->ResetShinkokuData("351801");
+		break;
+	case ID502_11B:
+		F502_18s &= ~0x80;
+		(*m_pSyzSyukei)->ResetShinkokuData("351802");
+		break;
+	case ID502_11C:
+		F502_18s &= ~0x800;
+		(*m_pSyzSyukei)->ResetShinkokuData("351803");
+		break;
+	case ID502_12A:
+		F502_19s &= ~0x08;
+		(*m_pSyzSyukei)->ResetShinkokuData("351901");
+		break;
+	case ID502_12B:
+		F502_19s &= ~0x80;
+		(*m_pSyzSyukei)->ResetShinkokuData("351902");
+		break;
+	case ID502_12C:
+		F502_19s &= ~0x800;
+		(*m_pSyzSyukei)->ResetShinkokuData("351903");
+		break;
+	}
+}
+// TISW修正 2026/01/21 END
 
 //===================================
 // データ読み込み
