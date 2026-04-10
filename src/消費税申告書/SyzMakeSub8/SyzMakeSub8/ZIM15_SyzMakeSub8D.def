@@ -1,0 +1,6 @@
+; SyzMakeSub8.def : DLL のモジュール パラメータを宣言します。
+
+LIBRARY      "ZIM15_SyzMakeSubd"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます
