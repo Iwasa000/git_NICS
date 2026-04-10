@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by DBSyzShinMain.rc
+// Microsoft Visual C++ で生成されたインクルード ファイル。
+// DBSyzShinMain.rc で使用
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
@@ -47,6 +47,7 @@
 #define IDD_DIALOG_PRN_PRINT_KANI_EX2   223
 #define IDD_DIALOG_PRN_KAZEI_SUB        225
 #define IDD_DIALOG_PRN_ZEITEMP_SUB      226
+#define IDD_DIALOG_SKJ_USR_SEL          227
 #define IDC_STATIC_B01                  1002
 #define IDC_STATIC_B02                  1003
 #define IDC_STATIC_B03                  1004
@@ -237,6 +238,8 @@
 #define IDC_STATIC_ITEM10               1175
 #define IDC_STATIC_ITEM20               1176
 #define IDC_INVALID                     1187
+#define IDC_TEMP_APPLY                  1188
+#define IDC_USER_COMBO                  1189
 #define IDC_STATICVERS                  2050
 #define IDC_STATICCPY                   2051
 #define ID_SHOW_MDITABS                 32772
@@ -296,9 +299,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        162
+#define _APS_NEXT_RESOURCE_VALUE        228
 #define _APS_NEXT_COMMAND_VALUE         32805
-#define _APS_NEXT_CONTROL_VALUE         1102
+#define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif

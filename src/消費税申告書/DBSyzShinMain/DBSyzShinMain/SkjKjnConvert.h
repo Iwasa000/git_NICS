@@ -16,6 +16,8 @@ public:
 // ダイアログ データ
 	enum { IDD = IDD_DIALOG_SKJKJNCNV };
 
+	bool m_isSkjUsrUnconfirmed; // VerUpで還付申告明細用連動情報設定を採用する利用者が未確定か // TISW修正[22-0676] 2026/03/19
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 

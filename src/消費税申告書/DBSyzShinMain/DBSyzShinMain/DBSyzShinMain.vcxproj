@@ -184,6 +184,8 @@
     <ClCompile Include="ShinMinfoCheck.cpp" />
     <ClCompile Include="SkjHjnConvert.cpp" />
     <ClCompile Include="SkjKjnConvert.cpp" />
+    <ClCompile Include="SkjUserSelectDlg.cpp" />
+    <ClCompile Include="SkjUserSettingsAccessor.cpp" />
     <ClCompile Include="Sn1FData.cpp" />
     <ClCompile Include="SnData.cpp" />
     <ClCompile Include="Snset.cpp" />
@@ -239,6 +241,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SkjHjnConvert.h" />
     <ClInclude Include="SkjKjnConvert.h" />
+    <ClInclude Include="SkjUserSettings.h" />
     <ClInclude Include="Sn1FData.h" />
     <ClInclude Include="Snset.h" />
     <ClInclude Include="SozokuSel.h" />

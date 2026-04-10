@@ -16,7 +16,7 @@
 #include "DenshiInfo.h"
 //2015.12.15 INSERT END
 #include "CDiagException.h"
-
+#include "SkjUserSettings.h" // TISWèCê≥[22-0676] 2026/03/19
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -6611,51 +6611,58 @@ int CDBSyzShinMainView::SaveSkjCnvInfo()
 	// ÉÜÅ[ÉUèÓïÒÇÃéÊìæ
 	mctl_usertbl usertbl = m_pMainFrame->GetUserTbl();
 
-	// éÊÇËè¡Çµ
-	CString	filter;
-	if( m_pZmSub->zvol->apno == 0x52 &&  m_pZmSub->zvol->m_ver == 0x11 ){
-		filter.Format( SKJ_OWNTBL_SQL, DBSYZSHIN_APLNAME, SKJ52_ITMNAME, usertbl.user_id );
-	}
-	else{
-		filter.Format( SKJ_OWNTBL_SQL, DBSYZSHIN_APLNAME, SKJ_ITMNAME, usertbl.user_id );
-	}
-	if( m_pZmSub->owntb->Requery(filter) != -1 ){
-/*- '14.03.27 -*/
-//		while( 1 ){
-//			if( m_pZmSub->owntb->Move( 0 ) == ERR ){
-//				break;
-//			}
-//			if( m_pZmSub->owntb->Delete() == ERR ){
-//				continue;
-//			}
+	// TISWèCê≥[22-0676] 2026/03/19 START
+//	// éÊÇËè¡Çµ
+//	CString	filter;
+//	if( m_pZmSub->zvol->apno == 0x52 &&  m_pZmSub->zvol->m_ver == 0x11 ){
+//		filter.Format( SKJ_OWNTBL_SQL, DBSYZSHIN_APLNAME, SKJ52_ITMNAME, usertbl.user_id );
+//	}
+//	else{
+//		filter.Format( SKJ_OWNTBL_SQL, DBSYZSHIN_APLNAME, SKJ_ITMNAME, usertbl.user_id );
+//	}
+//	if( m_pZmSub->owntb->Requery(filter) != -1 ){
+///*- '14.03.27 -*/
+////		while( 1 ){
+////			if( m_pZmSub->owntb->Move( 0 ) == ERR ){
+////				break;
+////			}
+////			if( m_pZmSub->owntb->Delete() == ERR ){
+////				continue;
+////			}
+////		}
+///*-------------*/
+//		int ownCnt = (int)m_pZmSub->owntb->GetRecordCount();
+//		for( int i=ownCnt; i>0; i-- ){
+//			m_pZmSub->owntb->SetAbsolutePosition( i );
+//			m_pZmSub->owntb->Delete();
 //		}
-/*-------------*/
-		int ownCnt = (int)m_pZmSub->owntb->GetRecordCount();
-		for( int i=ownCnt; i>0; i-- ){
-			m_pZmSub->owntb->SetAbsolutePosition( i );
-			m_pZmSub->owntb->Delete();
-		}
-/*-------------*/
-	}
+///*-------------*/
+//	}
+//
+//	// ï€ë∂
+//	int cnt = 0;
+//	SH_SKJ_CNV	SkjCnv;
+//	while( 1 ){
+//		if( m_pTblhdl->th_rget( &SkjCnv, m_pSkjCnvtbl, cnt ) ) break;
+//		m_pZmSub->owntb->AddNew();
+//		m_pZmSub->owntb->apl_name = DBSYZSHIN_APLNAME;
+//		if( m_pZmSub->zvol->apno == 0x52 &&  m_pZmSub->zvol->m_ver == 0x11 )
+//			m_pZmSub->owntb->itm_name = SKJ52_ITMNAME;
+//		else	m_pZmSub->owntb->itm_name = SKJ_ITMNAME;
+//		m_pZmSub->owntb->itm_seq  = SkjCnv.SKJSeq;
+//		m_pZmSub->owntb->u_id	   = usertbl.user_id;
+//		m_Util.char_to_cstring( &m_pZmSub->owntb->code[0], SkjCnv.SKJCod, 8 );
+//		m_pZmSub->owntb->vl[0]  = SkjCnv.HJNCod;
+//		m_pZmSub->owntb->vl[1]  = SkjCnv.KJNCod;
+//		m_pZmSub->owntb->Update();
+//		cnt++;
+//	}
 
 	// ï€ë∂
-	int cnt = 0;
-	SH_SKJ_CNV	SkjCnv;
-	while( 1 ){
-		if( m_pTblhdl->th_rget( &SkjCnv, m_pSkjCnvtbl, cnt ) ) break;
-		m_pZmSub->owntb->AddNew();
-		m_pZmSub->owntb->apl_name = DBSYZSHIN_APLNAME;
-		if( m_pZmSub->zvol->apno == 0x52 &&  m_pZmSub->zvol->m_ver == 0x11 )
-			m_pZmSub->owntb->itm_name = SKJ52_ITMNAME;
-		else	m_pZmSub->owntb->itm_name = SKJ_ITMNAME;
-		m_pZmSub->owntb->itm_seq  = SkjCnv.SKJSeq;
-		m_pZmSub->owntb->u_id	   = usertbl.user_id;
-		m_Util.char_to_cstring( &m_pZmSub->owntb->code[0], SkjCnv.SKJCod, 8 );
-		m_pZmSub->owntb->vl[0]  = SkjCnv.HJNCod;
-		m_pZmSub->owntb->vl[1]  = SkjCnv.KJNCod;
-		m_pZmSub->owntb->Update();
-		cnt++;
-	}
+	SkjUserSettingsAccessor skjSettingsAccess{ m_pZmSub, usertbl, m_pTblhdl, m_pSkjCnvtbl };
+	skjSettingsAccess.SaveSkjSettings();
+
+	// TISWèCê≥[22-0676] 2026/03/19 END
 
 	return 0;
 }
@@ -6666,11 +6673,13 @@ void CDBSyzShinMainView::OnButtonF9()
 	int st = 0;
 	if( m_pSnHeadData->IsSoleProprietor() ){
 		CSkjKjnConvert	dlg;
+		dlg.m_isSkjUsrUnconfirmed = m_pMainFrame->IsSkjUsrUnconfirmed(); // TISWèCê≥[22-0676] 2026/03/19
 		dlg.InitInfo( m_pZmSub, m_pSnHeadData, m_pTblhdl, m_pSkjCnvtbl);
 		st = (int)dlg.DoModal();
 	}
 	else{
 		CSkjHjnConvert	dlg;
+		dlg.m_isSkjUsrUnconfirmed = m_pMainFrame->IsSkjUsrUnconfirmed(); // TISWèCê≥[22-0676] 2026/03/19
 		dlg.InitInfo( m_pZmSub, m_pSnHeadData, m_pTblhdl, m_pSkjCnvtbl);
 		st = (int)dlg.DoModal();
 	}

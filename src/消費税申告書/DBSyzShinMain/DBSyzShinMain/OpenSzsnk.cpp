@@ -5,6 +5,7 @@
 #include "DBSyzShinMainDoc.h"
 #include "DBSyzShinMainView.h"
 #include "DBBwMast.h"
+#include "SkjUserSettings.h" // TISW修正[22-0676] 2026/03/19
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -715,54 +716,91 @@ int CMainFrame::GetPastSkjData()
 
 	SH_SKJ_CNV	skjcnv;
 	char		codbf[10];
-	CString		filter;
-	if( (m_pZmSub->zvol->apno==0x52) && (m_pZmSub->zvol->m_ver==0x11) ){
-		filter.Format( SKJ_OWNTBL_SQL, DBSYZSHIN_APLNAME, SKJ52_ITMNAME, m_usertbl.user_id );
-	}
-	else{
-		filter.Format( SKJ_OWNTBL_SQL, DBSYZSHIN_APLNAME, SKJ_ITMNAME, m_usertbl.user_id );
-	}
-	if( m_pZmSub->owntb->Requery(filter) != -1 )	{	
-		int cnt = 0;
-		while( 1 ){
-			if( !cnt ){
-				if( m_pZmSub->owntb->MoveFirst() == ERR ){
-					return	FALSE;
-				}
-			}
-			else{
-				if( m_pZmSub->owntb->MoveNext() == ERR ){
-					break;
-				}
-			}
+	// TISW修正[22-0676] 2026/03/19 START
+	//CString		filter;
+	//if( (m_pZmSub->zvol->apno==0x52) && (m_pZmSub->zvol->m_ver==0x11) ){
+	//	filter.Format( SKJ_OWNTBL_SQL, DBSYZSHIN_APLNAME, SKJ52_ITMNAME, m_usertbl.user_id );
+	//}
+	//else{
+	//	filter.Format( SKJ_OWNTBL_SQL, DBSYZSHIN_APLNAME, SKJ_ITMNAME, m_usertbl.user_id );
+	//}
+	
+	//	if( m_pZmSub->owntb->Requery(filter) != -1 )	{	
+	//		int cnt = 0;
+	//		while( 1 ){
+	//			if( !cnt ){
+	//				if( m_pZmSub->owntb->MoveFirst() == ERR ){
+	//					return	FALSE;
+	//				}
+	//			}
+	//			else{
+	//				if( m_pZmSub->owntb->MoveNext() == ERR ){
+	//					break;
+	//				}
+	//			}
+	//
+	//			cnt++;
+	//			// 大文字変換
+	//			memset( codbf, '\0', sizeof( codbf ) );
+	//			m_Util.cstring_to_char( (unsigned char *)codbf, m_pZmSub->owntb->code[0], 8 );
+	//			_strupr_s( codbf, sizeof( codbf ) );
+	//			memset( &skjcnv, '\0', sizeof( SH_SKJ_CNV ) );
+	//			memmove( skjcnv.SKJCod, codbf, 8 );
+	//			if( m_Tblhdl.th_acs( thRead, &skjcnv, &m_SkjCnvtbl ) ){
+	//				continue;
+	//			}
+	////-- '14.10.31 --
+	////			skjcnv.HJNCod = m_pZmSub->owntb->vl[0];
+	////			skjcnv.KJNCod = m_pZmSub->owntb->vl[1];
+	////---------------
+	//			// 不正値が入る可能性があるのでカット
+	//			if( (0<=m_pZmSub->owntb->vl[0]) && (m_pZmSub->owntb->vl[0]<10) ){
+	//				skjcnv.HJNCod = m_pZmSub->owntb->vl[0];
+	//			}
+	//			if( (0<=m_pZmSub->owntb->vl[1]) && (m_pZmSub->owntb->vl[1]<10) ){
+	//				skjcnv.KJNCod = m_pZmSub->owntb->vl[1];
+	//			}
+	////---------------
+	//			if( m_Tblhdl.th_acs( thWritex, &skjcnv, &m_SkjCnvtbl ) ){
+	//				continue;
+	//			}
+	//		}
+	//	}
 
-			cnt++;
-			// 大文字変換
-			memset( codbf, '\0', sizeof( codbf ) );
-			m_Util.cstring_to_char( (unsigned char *)codbf, m_pZmSub->owntb->code[0], 8 );
-			_strupr_s( codbf, sizeof( codbf ) );
-			memset( &skjcnv, '\0', sizeof( SH_SKJ_CNV ) );
-			memmove( skjcnv.SKJCod, codbf, 8 );
-			if( m_Tblhdl.th_acs( thRead, &skjcnv, &m_SkjCnvtbl ) ){
-				continue;
-			}
-//-- '14.10.31 --
-//			skjcnv.HJNCod = m_pZmSub->owntb->vl[0];
-//			skjcnv.KJNCod = m_pZmSub->owntb->vl[1];
-//---------------
-			// 不正値が入る可能性があるのでカット
-			if( (0<=m_pZmSub->owntb->vl[0]) && (m_pZmSub->owntb->vl[0]<10) ){
-				skjcnv.HJNCod = m_pZmSub->owntb->vl[0];
-			}
-			if( (0<=m_pZmSub->owntb->vl[1]) && (m_pZmSub->owntb->vl[1]<10) ){
-				skjcnv.KJNCod = m_pZmSub->owntb->vl[1];
-			}
-//---------------
-			if( m_Tblhdl.th_acs( thWritex, &skjcnv, &m_SkjCnvtbl ) ){
-				continue;
-			}
+	// 複数利用者の設定存在チェックや利用者選択ダイアログの表示等を行う
+	SkjUserSettingsAccessor skjSettingsAccess{ m_pZmSub, m_usertbl, &m_Tblhdl, &m_SkjCnvtbl };
+	bool isBulkPrintMode = m_swBeForked != ID_ORIGINALSTART_BPSTATE;
+	std::vector<COWNTB> skjSettings = skjSettingsAccess.GetSkjSettings(this, isBulkPrintMode, m_isSkjUsrUnconfirmed);
+
+	for (auto& setting : skjSettings)
+	{
+		// 大文字変換
+		memset(codbf, '\0', sizeof(codbf));
+		m_Util.cstring_to_char((unsigned char*)codbf, setting.code[0], 8);
+		_strupr_s(codbf, sizeof(codbf));
+		memset(&skjcnv, '\0', sizeof(SH_SKJ_CNV));
+		memmove(skjcnv.SKJCod, codbf, 8);
+		if (m_Tblhdl.th_acs(thRead, &skjcnv, &m_SkjCnvtbl))
+		{
+			continue;
+		}
+		// 不正値が入る可能性があるのでカット
+		if ((0 <= setting.vl[0]) && (setting.vl[0] < 10))
+		{
+			skjcnv.HJNCod = setting.vl[0];
+		}
+		if ((0 <= setting.vl[1]) && (setting.vl[1] < 10))
+		{
+			skjcnv.KJNCod = setting.vl[1];
+		}
+		//---------------
+		if (m_Tblhdl.th_acs(thWritex, &skjcnv, &m_SkjCnvtbl))
+		{
+			continue;
 		}
 	}
+	// TISW修正[22-0676] 2026/03/19 END
+
 
 	return 0;
 }
