@@ -269,6 +269,7 @@ CMainFrame::CMainFrame()
 //<-- '16.01.30 INS END
 
 	m_isKoketsuKingaku = false;
+	m_isSkjUsrUnconfirmed = false; // TISWC³[22-0676] 2026/03/19
 //----> 20240116
 	m_isScoreLinkCall = -1;
 	m_ScoreLinkPdfNam.Empty();

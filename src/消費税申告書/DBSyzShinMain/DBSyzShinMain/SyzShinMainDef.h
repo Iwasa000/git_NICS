@@ -128,6 +128,8 @@ const	TCHAR	SKJ_OWNTBL_SQL[]		=	_T("apl_name = '%s' and itm_name = '%s' and u_id
 const	TCHAR	TKNEW_OWNTBL_SQL[]		=	_T("apl_name = '%s' and itm_name = '%s' and itm_seq=%d");	// 24/02/27wd_“Á’èû“ü‘Î‰ add
 const	TCHAR	SKJ_ITMNAME[]			=	_T("SKJ_SETUP");
 const	TCHAR	SKJ52_ITMNAME[]			=	_T("SKJ52_SETUP");	// VĞ‰ï•Ÿƒ‘Î‰
+const	TCHAR	SKJ_ITMNAME_2[]			=	_T("SKJ_SETUP_2");		// TISWC³[22-0676] 2026/03/19	
+const	TCHAR	SKJ52_ITMNAME_2[]		=	_T("SKJ52_SETUP_2");	// TISWC³[22-0676] 2026/03/19
 /*- '14.04.28 -*/
 //const	TCHAR	PAST_PROGRAM_PATH[]		=	_T("%s:\\ICSWin\\CMDS\\GR1b\\JOBS30\\H25\\DBSyzShin.exe");
 /*-------------*/

@@ -155,6 +155,7 @@ private:
 	int				m_JcContinuePrint;		// 和暦継続出力？
 
 	bool			m_isKoketsuKingaku;		// 個人決算書金額の取得可能？
+	bool			m_isSkjUsrUnconfirmed;	// VerUpで還付申告明細用連動情報設定を採用する利用者が未確定か // TISW修正[22-0676] 2026/03/19
 
 // 操作
 public:
@@ -632,6 +633,11 @@ public:
 	void CallWriteTaxAgentDB( CDBNpSub* pZms, CSnHeadData* pSh, CWnd* pWnd );
 	BOOL IsUsedZeimud( void );
 // 24/03/26_税務代理書面 add <--
+
+	// TISW修正[22-0676] 2026/03/19 START
+	/// <summary>VerUpで還付申告明細用連動情報設定を採用する利用者が未確定か</summary>
+	bool IsSkjUsrUnconfirmed() { return m_isSkjUsrUnconfirmed; };
+	// TISW修正[22-0676] 2026/03/19 END
 
 protected:
 	// 会社情報クラスの初期化

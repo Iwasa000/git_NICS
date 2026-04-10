@@ -127,6 +127,14 @@ BOOL CSkjKjnConvert::OnInitDialog()
 
 	// TODO:  ここに初期化を追加してください
 
+	// TISW修正[22-0676] 2026/03/19 START
+	if (m_isSkjUsrUnconfirmed)
+	{
+		// 設定を有効にする利用者が未確定の場合は登録不可とする
+		GetDlgItem(IDOK)->EnableWindow(FALSE);
+	}
+	// TISW修正[22-0676] 2026/03/19 END
+
 	// 集計先項目の表示
 	m_ListBox.ResetContent();
 	for( int i = 0; SKJ_NAME[i][0]; i++ ) {
