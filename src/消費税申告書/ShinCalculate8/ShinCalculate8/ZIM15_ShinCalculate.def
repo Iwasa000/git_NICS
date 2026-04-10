@@ -1,0 +1,6 @@
+; ZIM15_ShinCalculate.def : DLL のモジュール パラメータを宣言します。
+
+LIBRARY
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます

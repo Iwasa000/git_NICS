@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SyzMakeSub8", "SyzMakeSub8\SyzMakeSub8.vcproj", "{971430AC-C17E-4375-908F-54102FE28030}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SyzMakeTest", "SyzMakeTest\SyzMakeTest.vcproj", "{56FDA493-B597-41D3-8D1C-04889E52874E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{971430AC-C17E-4375-908F-54102FE28030} = {971430AC-C17E-4375-908F-54102FE28030}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{971430AC-C17E-4375-908F-54102FE28030}.Debug|Win32.ActiveCfg = Debug|Win32
+		{971430AC-C17E-4375-908F-54102FE28030}.Debug|Win32.Build.0 = Debug|Win32
+		{971430AC-C17E-4375-908F-54102FE28030}.Release|Win32.ActiveCfg = Release|Win32
+		{971430AC-C17E-4375-908F-54102FE28030}.Release|Win32.Build.0 = Release|Win32
+		{56FDA493-B597-41D3-8D1C-04889E52874E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{56FDA493-B597-41D3-8D1C-04889E52874E}.Debug|Win32.Build.0 = Debug|Win32
+		{56FDA493-B597-41D3-8D1C-04889E52874E}.Release|Win32.ActiveCfg = Release|Win32
+		{56FDA493-B597-41D3-8D1C-04889E52874E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
