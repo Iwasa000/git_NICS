@@ -258,6 +258,13 @@ void CShinFhyo5_03::EditOFFIcsdiag8ctrl2(short index)
 		// 第六種事業
 	case ID503_12A:
 	case ID503_12B:
+		// TISW修正 2026/01/21 START
+		m_Fhyo5_03Diag02.GetData(index, (struct IUnknown*)&DiagData);
+		memmove(CkMy, DiagData.data_val, MONY_BUF_SIZE);
+		if (!m_pArith->l_test(CkMy)) {
+			ResetTaxCellForAmountCell(index);
+		}
+		// TISW修正 2026/01/21 END
 		SyukeiDataSet ( index );
 		f503data_all ( 5 );
 		break;
@@ -424,84 +431,86 @@ void CShinFhyo5_03::TerminationIcsdiag8ctrl2(short index, short nChar, short len
 			m_Fhyo5_03Diag02.SetPosition( index );
 			break;
 
-		case ID503_7A:
-		case ID503_7B:
-			//if ( index == ID503_7B ) {
-			if ( index == ID503_7A ) {
-				F503_14c &= ~0x80;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358402" ) );
-			}
-			else if ( index == ID503_7B ) {
-				F503_14c &= ~0x800;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358403" ) );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+			// TISW修正 2026/01/21 START
+		//case ID503_7A:
+		//case ID503_7B:
+		//	//if ( index == ID503_7B ) {
+		//	if ( index == ID503_7A ) {
+		//		F503_14c &= ~0x80;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358402" ) );
+		//	}
+		//	else if ( index == ID503_7B ) {
+		//		F503_14c &= ~0x800;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358403" ) );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID503_8A:
-		case ID503_8B:
-			if ( index == ID503_8A ) {
-				F503_15c &= ~0x80;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358502" ) );
-			}
-			else if ( index == ID503_8B ) {
-				F503_15c &= ~0x800;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358503" ) );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID503_8A:
+		//case ID503_8B:
+		//	if ( index == ID503_8A ) {
+		//		F503_15c &= ~0x80;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358502" ) );
+		//	}
+		//	else if ( index == ID503_8B ) {
+		//		F503_15c &= ~0x800;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358503" ) );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID503_9A:
-		case ID503_9B:
-			if( index == ID503_9A ){
-				F503_16c &= ~0x80;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358602" ) );
-			}
-			else if ( index == ID503_9B ) {
-				F503_16c &= ~0x800;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358603" ) );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID503_9A:
+		//case ID503_9B:
+		//	if( index == ID503_9A ){
+		//		F503_16c &= ~0x80;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358602" ) );
+		//	}
+		//	else if ( index == ID503_9B ) {
+		//		F503_16c &= ~0x800;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358603" ) );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID503_10A:
-		case ID503_10B:
-			if ( index == ID503_10A ) {
-				F503_17c &= ~0x80;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358702" ) );
-			}
-			else if ( index == ID503_10B ) {
-				F503_17c &= ~0x800;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358703" ) );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID503_10A:
+		//case ID503_10B:
+		//	if ( index == ID503_10A ) {
+		//		F503_17c &= ~0x80;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358702" ) );
+		//	}
+		//	else if ( index == ID503_10B ) {
+		//		F503_17c &= ~0x800;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358703" ) );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID503_11A:
-		case ID503_11B:
-			if ( index == ID503_11A ) {
-				F503_18c &= ~0x80;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358802" ) );
-			}
-			else if ( index == ID503_11B ) {
-				F503_18c &= ~0x800;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358803" ) );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID503_11A:
+		//case ID503_11B:
+		//	if ( index == ID503_11A ) {
+		//		F503_18c &= ~0x80;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358802" ) );
+		//	}
+		//	else if ( index == ID503_11B ) {
+		//		F503_18c &= ~0x800;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358803" ) );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
 
-		case ID503_12A:
-		case ID503_12B:
-			if ( index == ID503_12A ) {
-				F503_19c &= ~0x80;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358902" ) );
-			}
-			else if ( index == ID503_12B ) {
-				F503_19c &= ~0x800;
-				( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358903" ) );
-			}
-			dsp_cls ( IDC_ICSDIAG8CTRL2, index );
-			break;
+		//case ID503_12A:
+		//case ID503_12B:
+		//	if ( index == ID503_12A ) {
+		//		F503_19c &= ~0x80;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358902" ) );
+		//	}
+		//	else if ( index == ID503_12B ) {
+		//		F503_19c &= ~0x800;
+		//		( *m_pSyzSyukei )->ResetShinkokuData ( _T( "358903" ) );
+		//	}
+		//	dsp_cls ( IDC_ICSDIAG8CTRL2, index );
+		//	break;
+			// TISW修正 2026/01/21 END
 
 		case ID503_14A:
 		case ID503_14B:
@@ -597,6 +606,89 @@ void CShinFhyo5_03::TerminationIcsdiag8ctrl2(short index, short nChar, short len
 		SetRedrawScroll ( ( cpos + rectB.top - rectA.top ) - ( ( rectA.bottom - rectA.top ) / 2 ) );
 	}
 }
+
+// TISW修正 2026/01/21 START
+/// <summary>
+/// 税抜セルに対応する消費税額セルの状態をリセットする
+/// </summary>
+/// <param name="index">税抜セルのインデックス</param>
+void CShinFhyo5_03::ResetTaxCellForAmountCell(int index) 
+{
+	switch (index)	{
+	case ID503_7A:
+	case ID503_7B:
+		if (index == ID503_7A) {
+			F503_14c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358402"));
+		}
+		else if (index == ID503_7B) {
+			F503_14c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358403"));
+		}
+		break;
+
+	case ID503_8A:
+	case ID503_8B:
+		if (index == ID503_8A) {
+			F503_15c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358502"));
+		}
+		else if (index == ID503_8B) {
+			F503_15c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358503"));
+		}
+		break;
+
+	case ID503_9A:
+	case ID503_9B:
+		if (index == ID503_9A) {
+			F503_16c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358602"));
+		}
+		else if (index == ID503_9B) {
+			F503_16c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358603"));
+		}
+		break;
+
+	case ID503_10A:
+	case ID503_10B:
+		if (index == ID503_10A) {
+			F503_17c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358702"));
+		}
+		else if (index == ID503_10B) {
+			F503_17c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358703"));
+		}
+		break;
+
+	case ID503_11A:
+	case ID503_11B:
+		if (index == ID503_11A) {
+			F503_18c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358802"));
+		}
+		else if (index == ID503_11B) {
+			F503_18c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358803"));
+		}
+		break;
+
+	case ID503_12A:
+	case ID503_12B:
+		if (index == ID503_12A) {
+			F503_19c &= ~0x80;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358902"));
+		}
+		else if (index == ID503_12B) {
+			F503_19c &= ~0x800;
+			(*m_pSyzSyukei)->ResetShinkokuData(_T("358903"));
+		}
+		break;
+	}
+}
+// TISW修正 2026/01/21 END
 
 //=========================================================
 // 初期情報のセット

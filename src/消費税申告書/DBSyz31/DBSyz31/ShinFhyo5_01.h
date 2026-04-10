@@ -131,7 +131,15 @@ public:
 	int GetPercentage( int id, unsigned short *pWari, char *pArith );
 
 	// 第二種の項目かどうか？
-	BOOL CheckInputIndex2wari( int index ); 
+	BOOL CheckInputIndex2wari( int index );
+
+	// TISW修正 2026/01/21 START
+	/// <summary>
+	/// 税抜セルに対応する消費税額セルの状態をリセットする
+	/// </summary>
+	/// <param name="index">税抜セルのインデックス</param>
+	void ResetTaxCellForAmountCell(int index);
+	// TISW修正 2026/01/21 END
 
 private:
 	CWnd			*m_pParent;							// 親ウィンドウ
