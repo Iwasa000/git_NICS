@@ -29008,6 +29008,7 @@ void CDBDinpView::SelWndMoveJob( BOOL bShow )
 				}
 			}
 			else {
+				rect.InflateRect(0, -1); // TISWèCê≥[24-0321] 2026/03/19
 				x = rect.left;
 				y = rect.top;
 			}
