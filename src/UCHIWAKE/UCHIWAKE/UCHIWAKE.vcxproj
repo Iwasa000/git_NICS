@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{92C48212-0079-410D-A748-FB9D41209691}</ProjectGuid>
+    <RootNamespace>UCHIWAKE</RootNamespace>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <ProjectName>DBUchiwake</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.27625.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(Configuration)15\</OutDir>
+    <IntDir>$(Configuration)15\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GENd.lib;ICS15_ARITHd.lib;ICSCmnd.lib;ICS15_GENLd.lib;ICS15_Printd.lib;ICS15_XYSPrintd.lib;ICS15_VolDated.lib;ICS15_Bankd.lib;ICS15_ZipAdd.lib;ICS15_COSELd.lib;ZIM15_ZmSubd.lib;odbc32.lib;ICS15_CsvPrnd.lib;..\debug15\ZIM15_UCHIIMPd.lib;ICS15_VLCTLd.lib;ICS15_Mctld.lib;ICS15_PrintSchd.lib;ZIM15_DBPrtbld.lib;ICS15_Kmnctld.lib;ICS15_progress_Modd.lib;ZIM15_ProgTuutiGenD.lib;ZIM15_SubFncd.lib;ZIM15_Gend.lib;ICS15_SecurePwdNfcd.lib;ICS15_KaigenInfod.lib;ZIM15_NpSubd.lib;ICS15_DBAccessd.lib;ZIM15_SyzInvoiced.lib;ICS15_HJAccessd.lib;ZIM15_Zmseld.lib;ICS15_JZ2CLOUDOPTd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <TerminalServerAware>true</TerminalServerAware>
+    </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0411</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ICS15_GEN.lib;ICS15_ARITH.lib;ICSCmn.lib;ICS15_GENL.lib;ICS15_Print.lib;ICS15_XYSPrint.lib;ICS15_VolDate.lib;ICS15_Bank.lib;ICS15_ZipAd.lib;ICS15_COSEL.lib;ZIM15_ZmSub.lib;odbc32.lib;ICS15_CsvPrn.lib;..\release15\ZIM15_UCHIIMP.lib;ICS15_VLCTL.lib;ICS15_Mctl.lib;ICS15_PrintSch.lib;ZIM15_DBPrtbl.lib;ICS15_Kmnctl.lib;ICS15_progress_Mod.lib;ZIM15_ProgTuutiGen.lib;ZIM15_SubFnc.lib;ZIM15_Gen.lib;ICS15_SecurePwdNfc.lib;ICS15_KaigenInfo.lib;ZIM15_NpSub.lib;ICS15_DBAccess.lib;ZIM15_SyzInvoice.lib;ICS15_HJAccess.lib;ZIM15_Zmsel.lib;ICS15_JZ2CLOUDOPT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <TerminalServerAware>true</TerminalServerAware>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="BatchPrt.cpp" />
+    <ClCompile Include="CDICSDBEDT8.cpp" />
+    <ClCompile Include="dbUc081SiharaitegataEx.cpp" />
+    <ClCompile Include="dlgReferenceSub_old.cpp" />
+    <ClCompile Include="frmUc021UketoritegataI.cpp" />
+    <ClCompile Include="colorbtn.cpp" />
+    <ClCompile Include="dlgIkkatuConfirmation.cpp" />
+    <ClCompile Include="CharController.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="CopyOwnData.cpp" />
+    <ClCompile Include="CtrlMainGeneralVar.cpp" />
+    <ClCompile Include="CtrlSubGeneralVar.cpp" />
+    <ClCompile Include="dateConvert.cpp" />
+    <ClCompile Include="dbBase.cpp" />
+    <ClCompile Include="dbIcsVtbl.cpp" />
+    <ClCompile Include="dbKamokuSitei.cpp" />
+    <ClCompile Include="dbPrtWork.cpp" />
+    <ClCompile Include="dbPrtWork2.cpp" />
+    <ClCompile Include="dbPrtWork3.cpp" />
+    <ClCompile Include="dbPrtWorkAd.cpp" />
+    <ClCompile Include="dbPrtWorkBk.cpp" />
+    <ClCompile Include="dbUc000Common.cpp" />
+    <ClCompile Include="dbUc011Yotyokin.cpp" />
+    <ClCompile Include="dbUc021Uketoritegata.cpp" />
+    <ClCompile Include="dbUc021UketoritegataEx.cpp" />
+    <ClCompile Include="dbUc031Urikakekin.cpp" />
+    <ClCompile Include="dbUc041Karibarai.cpp" />
+    <ClCompile Include="dbUc042Kasituke.cpp" />
+    <ClCompile Include="dbUc051Tanaoroshi.cpp" />
+    <ClCompile Include="dbUc052Tanaoroshi2.cpp" />
+    <ClCompile Include="dbUc061Yuukasyouken.cpp" />
+    <ClCompile Include="dbUc071Koteishisan.cpp" />
+    <ClCompile Include="dbUc081Siharaitegata.cpp" />
+    <ClCompile Include="dbUc091Kaikakekin.cpp" />
+    <ClCompile Include="dbUc092Kaikakekin2.cpp" />
+    <ClCompile Include="dbUc101Kariukekin.cpp" />
+    <ClCompile Include="dbUc102Gensen.cpp" />
+    <ClCompile Include="dbUc111Kariirekin.cpp" />
+    <ClCompile Include="dbUc121Totiuriage.cpp" />
+    <ClCompile Include="dbUc131Uriagedaka.cpp" />
+    <ClCompile Include="dbUc141Yakuin.cpp" />
+    <ClCompile Include="dbUc142Jinkenhi.cpp" />
+    <ClCompile Include="dbUc151Tidaiyatin.cpp" />
+    <ClCompile Include="dbUc152Kenrikin.cpp" />
+    <ClCompile Include="dbUc153Kougyou.cpp" />
+    <ClCompile Include="dbUc161Zatueki.cpp" />
+    <ClCompile Include="dbUc162Zatuson.cpp" />
+    <ClCompile Include="dbUc171Sonota1.cpp" />
+    <ClCompile Include="dbUc181Sonota2.cpp" />
+    <ClCompile Include="dbUcInfFormType.cpp" />
+    <ClCompile Include="dbUcInfMain.cpp" />
+    <ClCompile Include="dbUcInfSonotaItem.cpp" />
+    <ClCompile Include="dbUcInfSub.cpp" />
+    <ClCompile Include="dbUcInfSubOmit.cpp" />
+    <ClCompile Include="dbUcInfVer.cpp" />
+    <ClCompile Include="dbUcInfYokuki.cpp" />
+    <ClCompile Include="dbUcLstAddress.cpp" />
+    <ClCompile Include="dbUcLstBank.cpp" />
+    <ClCompile Include="dbUcLstHokan.cpp" />
+    <ClCompile Include="dbUcLstItemSort.cpp" />
+    <ClCompile Include="dbUcLstKamoku.cpp" />
+    <ClCompile Include="dbUcRenDarecTemp.cpp" />
+    <ClCompile Include="dbUcRenKamoku.cpp" />
+    <ClCompile Include="dbUcRenMain.cpp" />
+    <ClCompile Include="dlgAddressSearch.cpp" />
+    <ClCompile Include="dlgAmount.cpp" />
+    <ClCompile Include="dlgCopySettingInfo.cpp" />
+    <ClCompile Include="dlgDeleteDataEachYoushiki.cpp" />
+    <ClCompile Include="dlgDisplay.cpp" />
+    <ClCompile Include="dlgDisplay2.cpp" />
+    <ClCompile Include="dlgIkkatuAdvSetting.cpp" />
+    <ClCompile Include="dlgIkkatuHenkou.cpp" />
+    <ClCompile Include="dlgImportMessage.cpp" />
+    <ClCompile Include="dlgKaikakekin.cpp" />
+    <ClCompile Include="dlgKakuteiKaijyo.cpp" />
+    <ClCompile Include="dlgMessageBox.cpp" />
+    <ClCompile Include="dlgOutputForm.cpp" />
+    <ClCompile Include="dlgPrintAll.cpp" />
+    <ClCompile Include="dlgPrintConfirmation.cpp" />
+    <ClCompile Include="dlgPrintConfirmation2.cpp" />
+    <ClCompile Include="dlgPrintConfirmation4.cpp" />
+    <ClCompile Include="dlgPrintHyoshi.cpp" />
+    <ClCompile Include="dlgPrintSetup.cpp" />
+    <ClCompile Include="dlgReference.cpp" />
+    <ClCompile Include="dlgReference2.cpp" />
+    <ClCompile Include="dlgReferenceDelChk1.cpp" />
+    <ClCompile Include="dlgReferenceDelChk2.cpp" />
+    <ClCompile Include="dlgReferenceSub.cpp" />
+    <ClCompile Include="dlgReference_Old.cpp" />
+    <ClCompile Include="dlgRenKamoku.cpp" />
+    <ClCompile Include="dlgRenKamokuAdd.cpp" />
+    <ClCompile Include="dlgRenKamokuSelect.cpp" />
+    <ClCompile Include="dlgRenMain.cpp" />
+    <ClCompile Include="dlgRenTekiyo.cpp" />
+    <ClCompile Include="dlgSort.cpp" />
+    <ClCompile Include="dlgSpecialRow.cpp" />
+    <ClCompile Include="dlgTanaoroshi.cpp" />
+    <ClCompile Include="dlgTorihikiAmount1.cpp" />
+    <ClCompile Include="dlgTorihikiAmount2.cpp" />
+    <ClCompile Include="dlgUserSet.cpp" />
+    <ClCompile Include="dlgYakuZokuSelect.cpp" />
+    <ClCompile Include="dlgYokukiMessage.cpp" />
+    <ClCompile Include="dlgYoushikiSelect.cpp" />
+    <ClCompile Include="dlgZeroMoneyClear.cpp" />
+    <ClCompile Include="dlgZeroMoneyMove.cpp" />
+    <ClCompile Include="font.cpp" />
+    <ClCompile Include="frmUc000Common.cpp" />
+    <ClCompile Include="frmUc011Yotyokin.cpp" />
+    <ClCompile Include="frmUc011YotyokinK.cpp" />
+    <ClCompile Include="frmUc021Uketoritegata.cpp" />
+    <ClCompile Include="frmUc021UketoritegataK.cpp" />
+    <ClCompile Include="frmUc031UrikakekinI.cpp" />
+    <ClCompile Include="frmUc031Urikakekin.cpp" />
+    <ClCompile Include="frmUc041Karibarai.cpp" />
+    <ClCompile Include="frmUc041KaribaraiI.cpp" />
+    <ClCompile Include="frmUc042Kasituke.cpp" />
+    <ClCompile Include="frmUc042KasitukeI.cpp" />
+    <ClCompile Include="frmUc042KasitukeK.cpp" />
+    <ClCompile Include="frmUc051Tanaorosi.cpp" />
+    <ClCompile Include="frmUc061Yuukasyouken.cpp" />
+    <ClCompile Include="frmUc061YuukasyoukenK.cpp" />
+    <ClCompile Include="frmUc071Koteisisan.cpp" />
+    <ClCompile Include="frmUc071KoteisisanI.cpp" />
+    <ClCompile Include="frmUc081Siharaitegata.cpp" />
+    <ClCompile Include="frmUc081SiharaitegataI.cpp" />
+    <ClCompile Include="frmUc081SiharaitegataK.cpp" />
+    <ClCompile Include="frmUc091Kaikakekin.cpp" />
+    <ClCompile Include="frmUc091KaikakekinI.cpp" />
+    <ClCompile Include="frmUc101Kariukekin.cpp" />
+    <ClCompile Include="frmUc101KariukekinI.cpp" />
+    <ClCompile Include="frmUc102Gensen.cpp" />
+    <ClCompile Include="frmUc111Kariirekin.cpp" />
+    <ClCompile Include="frmUc111KariirekinK.cpp" />
+    <ClCompile Include="frmUc121Totiuriage.cpp" />
+    <ClCompile Include="frmUc121TotiuriageI.cpp" />
+    <ClCompile Include="frmUc131Uriagedaka.cpp" />
+    <ClCompile Include="frmUc131UriagedakaK.cpp" />
+    <ClCompile Include="frmUc141Yakuin.cpp" />
+    <ClCompile Include="frmUc141YakuinK.cpp" />
+    <ClCompile Include="frmUc142Jinkenhi.cpp" />
+    <ClCompile Include="frmUc151Tidaiyatin.cpp" />
+    <ClCompile Include="frmUc151TidaiyatinI.cpp" />
+    <ClCompile Include="frmUc152Kenrikin.cpp" />
+    <ClCompile Include="frmUc152KenrikinI.cpp" />
+    <ClCompile Include="frmUc153Kougyou.cpp" />
+    <ClCompile Include="frmUc153KougyouI.cpp" />
+    <ClCompile Include="frmUc161Zatueki.cpp" />
+    <ClCompile Include="frmUc161ZatuekiI.cpp" />
+    <ClCompile Include="frmUc162Zatuson.cpp" />
+    <ClCompile Include="frmUc162ZatusonI.cpp" />
+    <ClCompile Include="frmUc171Sonota1.cpp" />
+    <ClCompile Include="frmUc171Sonota1I.cpp" />
+    <ClCompile Include="frmUc181Sonota2.cpp" />
+    <ClCompile Include="FuriganaConverter.cpp" />
+    <ClCompile Include="icsdiag.cpp" />
+    <ClCompile Include="icsdiagctrl.cpp" />
+    <ClCompile Include="icsdisp.cpp" />
+    <ClCompile Include="icseditex.cpp" />
+    <ClCompile Include="icshedit.cpp" />
+    <ClCompile Include="icsinput.cpp" />
+    <ClCompile Include="icsknjedit.cpp" />
+    <ClCompile Include="icslistinp.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="OwntbData.cpp" />
+    <ClCompile Include="picture.cpp" />
+    <ClCompile Include="PrintTemp.cpp" />
+    <ClCompile Include="prtJobFunction.cpp" />
+    <ClCompile Include="prtUc011Yotyokin.cpp" />
+    <ClCompile Include="prtUc021Uketoritegata.cpp" />
+    <ClCompile Include="prtUc031Urikakekin.cpp" />
+    <ClCompile Include="prtUc040KaribaraiKasituke.cpp" />
+    <ClCompile Include="prtUc041Karibarai.cpp" />
+    <ClCompile Include="prtUc042Kasituke.cpp" />
+    <ClCompile Include="prtUc051Tanaorosi.cpp" />
+    <ClCompile Include="prtUc061Yuukasyouken.cpp" />
+    <ClCompile Include="prtUc071Koteisisan.cpp" />
+    <ClCompile Include="prtUc081Siharaitegata.cpp" />
+    <ClCompile Include="prtUc091Kaikakekin.cpp" />
+    <ClCompile Include="prtUc100KariukekinGensen.cpp" />
+    <ClCompile Include="prtUc101Kariukekin.cpp" />
+    <ClCompile Include="prtUc102Gensen.cpp" />
+    <ClCompile Include="prtUc111Kariirekin.cpp" />
+    <ClCompile Include="prtUc121Totiuriage.cpp" />
+    <ClCompile Include="prtUc131Uriagedaka.cpp" />
+    <ClCompile Include="prtUc140YakuinJinkenhi.cpp" />
+    <ClCompile Include="prtUc141Yakuin.cpp" />
+    <ClCompile Include="prtUc142Jinkenhi.cpp" />
+    <ClCompile Include="prtUc150TidaiyatinKenrikinKougyou.cpp" />
+    <ClCompile Include="prtUc151Tidaiyatin.cpp" />
+    <ClCompile Include="prtUc152Kenrikin.cpp" />
+    <ClCompile Include="prtUc153Kougyou.cpp" />
+    <ClCompile Include="prtUc160ZatuekiZatuson.cpp" />
+    <ClCompile Include="prtUc161Zatueki.cpp" />
+    <ClCompile Include="prtUc162Zatuson.cpp" />
+    <ClCompile Include="prtUc171Sonota1.cpp" />
+    <ClCompile Include="prtUc181Sonota2.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="tbReference.cpp" />
+    <ClCompile Include="UcFunctionCommon.cpp" />
+    <ClCompile Include="UCHIWAKE.cpp" />
+    <ClCompile Include="UCHIWAKEDoc.cpp" />
+    <ClCompile Include="UCHIWAKEView.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BatchPrt.h" />
+    <ClInclude Include="CDICSDBEDT8.h" />
+    <ClInclude Include="dbUc081SiharaitegataEx.h" />
+    <ClInclude Include="dlgReferenceSub_old.h" />
+    <ClInclude Include="frmUc021UketoritegataI.h" />
+    <ClInclude Include="colorbtn.h" />
+    <ClInclude Include="dlgIkkatuConfirmation.h" />
+    <ClInclude Include="CharController.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="ConvOutRangai.h" />
+    <ClInclude Include="CopyOwnData.h" />
+    <ClInclude Include="CtrlMainGeneralVar.h" />
+    <ClInclude Include="CtrlSubGeneralVar.h" />
+    <ClInclude Include="dateConvert.h" />
+    <ClInclude Include="dbBase.h" />
+    <ClInclude Include="dbErrCode.h" />
+    <ClInclude Include="dbIcsVtbl.h" />
+    <ClInclude Include="dbKamokuSitei.h" />
+    <ClInclude Include="dbPrtWork.h" />
+    <ClInclude Include="dbPrtWork2.h" />
+    <ClInclude Include="dbPrtWork3.h" />
+    <ClInclude Include="dbPrtWorkAd.h" />
+    <ClInclude Include="dbPrtWorkBk.h" />
+    <ClInclude Include="dbUc000Common.h" />
+    <ClInclude Include="dbUc011Yotyokin.h" />
+    <ClInclude Include="dbUc021Uketoritegata.h" />
+    <ClInclude Include="dbUc021UketoritegataEx.h" />
+    <ClInclude Include="dbUc031Urikakekin.h" />
+    <ClInclude Include="dbUc041Karibarai.h" />
+    <ClInclude Include="dbUc042Kasituke.h" />
+    <ClInclude Include="dbUc051Tanaoroshi.h" />
+    <ClInclude Include="dbUc052Tanaoroshi2.h" />
+    <ClInclude Include="dbUc061Yuukasyouken.h" />
+    <ClInclude Include="dbUc071Koteishisan.h" />
+    <ClInclude Include="dbUc081Siharaitegata.h" />
+    <ClInclude Include="dbUc091Kaikakekin.h" />
+    <ClInclude Include="dbUc092Kaikakekin2.h" />
+    <ClInclude Include="dbUc101Kariukekin.h" />
+    <ClInclude Include="dbUc102Gensen.h" />
+    <ClInclude Include="dbUc111Kariirekin.h" />
+    <ClInclude Include="dbUc121Totiuriage.h" />
+    <ClInclude Include="dbUc131Uriagedaka.h" />
+    <ClInclude Include="dbUc141Yakuin.h" />
+    <ClInclude Include="dbUc142Jinkenhi.h" />
+    <ClInclude Include="dbUc151Tidaiyatin.h" />
+    <ClInclude Include="dbUc152Kenrikin.h" />
+    <ClInclude Include="dbUc153Kougyou.h" />
+    <ClInclude Include="dbUc161Zatueki.h" />
+    <ClInclude Include="dbUc162Zatuson.h" />
+    <ClInclude Include="dbUc171Sonota1.h" />
+    <ClInclude Include="dbUc181Sonota2.h" />
+    <ClInclude Include="dbUcInfFormType.h" />
+    <ClInclude Include="dbUcInfMain.h" />
+    <ClInclude Include="dbUcInfSonotaItem.h" />
+    <ClInclude Include="dbUcInfSub.h" />
+    <ClInclude Include="dbUcInfSubOmit.h" />
+    <ClInclude Include="dbUcInfVer.h" />
+    <ClInclude Include="dbUcInfYokuki.h" />
+    <ClInclude Include="dbUcLstAddress.h" />
+    <ClInclude Include="dbUcLstBank.h" />
+    <ClInclude Include="dbUcLstHokan.h" />
+    <ClInclude Include="dbUcLstItemSort.h" />
+    <ClInclude Include="dbUcLstKamoku.h" />
+    <ClInclude Include="dbUcRenDarecTemp.h" />
+    <ClInclude Include="dbUcRenKamoku.h" />
+    <ClInclude Include="dbUcRenMain.h" />
+    <ClInclude Include="dlgAddressSearch.h" />
+    <ClInclude Include="dlgAmount.h" />
+    <ClInclude Include="dlgCopySettingInfo.h" />
+    <ClInclude Include="dlgDeleteDataEachYoushiki.h" />
+    <ClInclude Include="dlgDisplay.h" />
+    <ClInclude Include="dlgDisplay2.h" />
+    <ClInclude Include="dlgIkkatuAdvSetting.h" />
+    <ClInclude Include="dlgIkkatuHenkou.h" />
+    <ClInclude Include="dlgImportMessage.h" />
+    <ClInclude Include="dlgKaikakekin.h" />
+    <ClInclude Include="dlgKakuteiKaijyo.h" />
+    <ClInclude Include="dlgMessageBox.h" />
+    <ClInclude Include="dlgOutputForm.h" />
+    <ClInclude Include="dlgPrintAll.h" />
+    <ClInclude Include="dlgPrintConfirmation.h" />
+    <ClInclude Include="dlgPrintConfirmation2.h" />
+    <ClInclude Include="dlgPrintConfirmation4.h" />
+    <ClInclude Include="dlgPrintHyoshi.h" />
+    <ClInclude Include="dlgPrintSetup.h" />
+    <ClInclude Include="dlgReference.h" />
+    <ClInclude Include="dlgReference2.h" />
+    <ClInclude Include="dlgReferenceDelChk1.h" />
+    <ClInclude Include="dlgReferenceDelChk2.h" />
+    <ClInclude Include="dlgReferenceSub.h" />
+    <ClInclude Include="dlgReference_Old.h" />
+    <ClInclude Include="dlgRenKamoku.h" />
+    <ClInclude Include="dlgRenKamokuAdd.h" />
+    <ClInclude Include="dlgRenKamokuSelect.h" />
+    <ClInclude Include="dlgRenMain.h" />
+    <ClInclude Include="dlgRenTekiyo.h" />
+    <ClInclude Include="dlgSort.h" />
+    <ClInclude Include="dlgSpecialRow.h" />
+    <ClInclude Include="dlgTanaoroshi.h" />
+    <ClInclude Include="dlgTorihikiAmount1.h" />
+    <ClInclude Include="dlgTorihikiAmount2.h" />
+    <ClInclude Include="dlgUserSet.h" />
+    <ClInclude Include="dlgYakuZokuSelect.h" />
+    <ClInclude Include="dlgYokukiMessage.h" />
+    <ClInclude Include="dlgYoushikiSelect.h" />
+    <ClInclude Include="dlgZeroMoneyClear.h" />
+    <ClInclude Include="dlgZeroMoneyMove.h" />
+    <ClInclude Include="font.h" />
+    <ClInclude Include="frmUc000Common.h" />
+    <ClInclude Include="frmUc011Yotyokin.h" />
+    <ClInclude Include="frmUc011YotyokinK.h" />
+    <ClInclude Include="frmUc021Uketoritegata.h" />
+    <ClInclude Include="frmUc021UketoritegataK.h" />
+    <ClInclude Include="frmUc031UrikakekinI.h" />
+    <ClInclude Include="frmUc031Urikakekin.h" />
+    <ClInclude Include="frmUc041Karibarai.h" />
+    <ClInclude Include="frmUc041KaribaraiI.h" />
+    <ClInclude Include="frmUc042Kasituke.h" />
+    <ClInclude Include="frmUc042KasitukeI.h" />
+    <ClInclude Include="frmUc042KasitukeK.h" />
+    <ClInclude Include="frmUc051Tanaorosi.h" />
+    <ClInclude Include="frmUc061Yuukasyouken.h" />
+    <ClInclude Include="frmUc061YuukasyoukenK.h" />
+    <ClInclude Include="frmUc071Koteisisan.h" />
+    <ClInclude Include="frmUc071KoteisisanI.h" />
+    <ClInclude Include="frmUc081Siharaitegata.h" />
+    <ClInclude Include="frmUc081SiharaitegataI.h" />
+    <ClInclude Include="frmUc081SiharaitegataK.h" />
+    <ClInclude Include="frmUc091Kaikakekin.h" />
+    <ClInclude Include="frmUc091KaikakekinI.h" />
+    <ClInclude Include="frmUc101Kariukekin.h" />
+    <ClInclude Include="frmUc101KariukekinI.h" />
+    <ClInclude Include="frmUc102Gensen.h" />
+    <ClInclude Include="frmUc111Kariirekin.h" />
+    <ClInclude Include="frmUc111KariirekinK.h" />
+    <ClInclude Include="frmUc121Totiuriage.h" />
+    <ClInclude Include="frmUc121TotiuriageI.h" />
+    <ClInclude Include="frmUc131Uriagedaka.h" />
+    <ClInclude Include="frmUc131UriagedakaK.h" />
+    <ClInclude Include="frmUc141Yakuin.h" />
+    <ClInclude Include="frmUc141YakuinK.h" />
+    <ClInclude Include="frmUc142Jinkenhi.h" />
+    <ClInclude Include="frmUc151Tidaiyatin.h" />
+    <ClInclude Include="frmUc151TidaiyatinI.h" />
+    <ClInclude Include="frmUc152Kenrikin.h" />
+    <ClInclude Include="frmUc152KenrikinI.h" />
+    <ClInclude Include="frmUc153Kougyou.h" />
+    <ClInclude Include="frmUc153KougyouI.h" />
+    <ClInclude Include="frmUc161Zatueki.h" />
+    <ClInclude Include="frmUc161ZatuekiI.h" />
+    <ClInclude Include="frmUc162Zatuson.h" />
+    <ClInclude Include="frmUc162ZatusonI.h" />
+    <ClInclude Include="frmUc171Sonota1.h" />
+    <ClInclude Include="frmUc171Sonota1I.h" />
+    <ClInclude Include="frmUc181Sonota2.h" />
+    <ClInclude Include="FuriganaConverter.h" />
+    <ClInclude Include="icsdiag.h" />
+    <ClInclude Include="icsdiagctrl.h" />
+    <ClInclude Include="icsdisp.h" />
+    <ClInclude Include="icshedit.h" />
+    <ClInclude Include="icsinput.h" />
+    <ClInclude Include="icsknjedit.h" />
+    <ClInclude Include="icslistinp.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="OwntbData.h" />
+    <ClInclude Include="picture.h" />
+    <ClInclude Include="PrintTemp.h" />
+    <ClInclude Include="prtConstData.h" />
+    <ClInclude Include="prtJobFunction.h" />
+    <ClInclude Include="prtUc011Yotyokin.h" />
+    <ClInclude Include="prtUc021Uketoritegata.h" />
+    <ClInclude Include="prtUc031Urikakekin.h" />
+    <ClInclude Include="prtUc040KaribaraiKasituke.h" />
+    <ClInclude Include="prtUc041Karibarai.h" />
+    <ClInclude Include="prtUc042Kasituke.h" />
+    <ClInclude Include="prtUc051Tanaorosi.h" />
+    <ClInclude Include="prtUc061Yuukasyouken.h" />
+    <ClInclude Include="prtUc071Koteisisan.h" />
+    <ClInclude Include="prtUc081Siharaitegata.h" />
+    <ClInclude Include="prtUc091Kaikakekin.h" />
+    <ClInclude Include="prtUc100KariukekinGensen.h" />
+    <ClInclude Include="prtUc101Kariukekin.h" />
+    <ClInclude Include="prtUc102Gensen.h" />
+    <ClInclude Include="prtUc111Kariirekin.h" />
+    <ClInclude Include="prtUc121Totiuriage.h" />
+    <ClInclude Include="prtUc131Uriagedaka.h" />
+    <ClInclude Include="prtUc140YakuinJinkenhi.h" />
+    <ClInclude Include="prtUc141Yakuin.h" />
+    <ClInclude Include="prtUc142Jinkenhi.h" />
+    <ClInclude Include="prtUc150TidaiyatinKenrikinKougyou.h" />
+    <ClInclude Include="prtUc151Tidaiyatin.h" />
+    <ClInclude Include="prtUc152Kenrikin.h" />
+    <ClInclude Include="prtUc153Kougyou.h" />
+    <ClInclude Include="prtUc160ZatuekiZatuson.h" />
+    <ClInclude Include="prtUc161Zatueki.h" />
+    <ClInclude Include="prtUc162Zatuson.h" />
+    <ClInclude Include="prtUc171Sonota1.h" />
+    <ClInclude Include="prtUc181Sonota2.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="tbReference.h" />
+    <ClInclude Include="UcCommon.h" />
+    <ClInclude Include="UcFunctionCommon.h" />
+    <ClInclude Include="UCHIWAKE.h" />
+    <ClInclude Include="UCHIWAKEDoc.h" />
+    <ClInclude Include="UCHIWAKEView.h" />
+    <ClInclude Include="UcInpMaxCommon.h" />
+    <ClInclude Include="UcRenCommon.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\bitmap3.bmp" />
+    <Image Include="res\bitmap4.bmp" />
+    <Image Include="res\bitmap5.bmp" />
+    <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\caution.ico" />
+    <Image Include="res\referenc.bmp" />
+    <Image Include="res\renkamok.bmp" />
+    <Image Include="res\renkamoku.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar1.bmp" />
+    <Image Include="res\treeicon1.bmp" />
+    <Image Include="res\treeicon2.bmp" />
+    <Image Include="res\treeicon3.bmp" />
+    <Image Include="res\treeicon4.bmp" />
+    <Image Include="res\treeicon5.bmp" />
+    <Image Include="res\UCHIWAKE.ico" />
+    <Image Include="res\UCHIWAKEDoc.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UCHIWAKE.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\UCHIWAKE.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties _x007B_8A8B65FB-AFE2-4D25-A70C-69764E0DC371_x007D_="CYoushikidiag_kei" RESOURCE_FILE="UCHIWAKE.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

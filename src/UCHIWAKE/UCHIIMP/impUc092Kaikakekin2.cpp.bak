@@ -1,0 +1,714 @@
+#include "StdAfx.h"
+#include "impUc092Kaikakekin2.h"
+
+// 修正No.157653 add -->
+extern BOOL	bG_Kanso;
+// 周世No.157653 add <--
+
+// コンストラクタ
+CimpUc092Kaikakekin2::CimpUc092Kaikakekin2(void)
+	: CimpUc000Common()
+{
+	m_pUcData				= NULL;
+	iHaitou					= 0;
+	iSyouyo					= 0;
+// midori 180404 add -->
+	m_FgFunc = 0;
+// midori 180404 add <--
+}
+
+// デストラクタ
+CimpUc092Kaikakekin2::~CimpUc092Kaikakekin2(void)
+{
+}
+
+
+//**********************************************************************
+// 初期処理
+// 
+//	引数
+//			pDB						[IN] DBポインタ
+// 
+//	戻値
+//			エラーコード（DBUchiImpDEF.h参照）
+//**********************************************************************
+//virtual
+int CimpUc092Kaikakekin2::Init(CDatabase* pDB)
+{
+	//--------------------------------------------------
+	// 全帳票共通のコード
+	//--------------------------------------------------
+	// 共通で使用するテーブルとの接続を開始
+	ConnectCmnTables(pDB);
+
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// 各帳票固有のコード
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// 様式シーケンスを指定（ID_FORMNO_XXX）
+	m_nFormSeq = 0;		// [欄外]なので様式シーケンスはない
+
+// midori 160609 add -->
+	m_nKaikakeRangai = 1;
+// midori 160609 add <--
+
+	// 項目数を指定（CSV_XXX_ITEM_CNT）
+	m_nItemCount = CSV_092_ITEM_CNT;
+
+	// 内訳書テーブルとの接続を開始
+	m_pUcCmn = (CdbUc000Common*)(new CdbUc092Kaikakekin2(pDB));
+
+	m_RowMax = CSV_092_ROW_MAX;
+
+// midori 150954 add -->
+	m_pDB = pDB;
+// midori 150954 add <--
+	//--------------------------------------------------
+	// 全帳票共通のコード
+	//--------------------------------------------------
+	// 小計、中計文言の取得
+	//GetKeiStr(m_nFormSeq, &m_strSyokeiName, &m_strChukeiName);		// [欄外]なので計行はない
+
+
+	return IMP_ERRCODE_SUCCESS;
+}
+
+//**********************************************************************
+// CSVの1行分のデータをテーブルに登録（インポート用）
+// midori 180404 del -->
+////		・データの正当性をチェック
+////		・データをテーブルに格納する形式に変換
+////		・テーブルに登録
+// midori 180404 del <--
+// midori 180404 add -->
+// CSV1行分データの正当性をチェック
+// midori 180404 add <--
+// 
+//	引数
+//			pstrCsvDataAry			[IN] CSVの1行分のデータ
+// 
+//	戻値
+//			レコード（行）の種類（DBUchiImpDEF.h参照）
+//**********************************************************************
+//virtual
+int CimpUc092Kaikakekin2::SetCsvOneLineData(CStringArray* pstrCsvDataAry)
+{
+	//--------------------------------------------------
+	// 前処理（全帳票共通のコード）
+	//--------------------------------------------------
+// 修正No.157653 add -->
+	int				len = 0;
+// 修正No.157653 add <--
+// midori 180404 del -->
+//	BYTE			cFgFunc			= 0;			// 特殊行フラグ
+// midori 180404 del <--
+
+// midori 180404 del -->
+//	int nRet = SetCsvOneLineDataSub(pstrCsvDataAry, &cFgFunc);
+// midori 180404 del <--
+// midori 180404 add -->
+	int nRet = SetCsvOneLineDataSub(pstrCsvDataAry, &m_FgFunc);
+// midori 180404 add <--
+	// エラーなら終了
+	if (nRet != ID_FGFUNC_NULL) {
+		return nRet;
+	}
+
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// テーブル操作の準備
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// 一時的にテーブルアクセス領域を拡張
+	m_pUcData = (CdbUc092Kaikakekin2*)m_pUcCmn;
+
+	// 未払配当金/未払役員賞与の判断と行番号計算
+	//int nRow;
+	//CString strTemp = pstrCsvDataAry->GetAt(0);
+	//if ( strTemp.Compare(CSV_ID_HAITOKIN ) == 0) {
+	//	iHaitou++;
+	//	if ( iHaitou < 3 ) {
+	//		nRow = iHaitou;
+	//	} else {
+	//		return IMP_REC_NG;
+	//	}
+	//} else
+	//	if ( strTemp.Compare(CSV_ID_YAKUINSYOYO) == 0) {
+	//	iSyouyo++;
+	//	if ( iSyouyo < 3 ) {
+	//		nRow = iSyouyo + 2;
+	//	} else {
+	//		return IMP_REC_NG;
+	//	}
+	//} else {
+	//	return IMP_REC_NG;
+	//}
+
+// midori 150899 add -->
+	nRet = IMP_REC_OK;
+// midori 150899 add <--
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// データチェック
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	// 01 支払確定年月日
+	long nSpDate = 0;
+// midori 150903 cor -->
+	//if (ConvDateStrToDbVal(IMP_DATE_CONV_TYPE_A, pstrCsvDataAry->GetAt(1), &nSpDate) != TRUE && nSpDate != 0) {
+	//	strcpy_s(m_uImpCsvInfo.szColumn, sizeof(m_uImpCsvInfo.szColumn), CSV_092_ITEM_01);
+	//	return IMP_REC_NG;
+	//}
+// ---------------------
+	if (pstrCsvDataAry->GetAt(1) != _T("")) {
+		if (ConvDateStrToDbVal(IMP_DATE_CONV_TYPE_A, pstrCsvDataAry->GetAt(1), &nSpDate) != TRUE) {
+			strcpy_s(m_uImpCsvInfo.szColumn, sizeof(m_uImpCsvInfo.szColumn), CSV_092_ITEM_01);
+			m_uImpCsvInfo.nKind = 3;	// 3:日付
+			m_ErrMap.SetAt((int)m_ErrMap.GetCount(),m_uImpCsvInfo);
+			CsvInfoClr(&m_uImpCsvInfo);
+			nRet = IMP_REC_NG;
+		}
+	}
+// midori 150903 cor <--
+	
+	// 02 期末現在高
+// 修正No.157653 del -->
+////	if (CheckImportNum(pstrCsvDataAry->GetAt(2), 12) != TRUE) {
+//	if (CheckImportNum(pstrCsvDataAry->GetAt(2), 12, TRUE) != TRUE) {		// [2009/07/09 Minus Value Support]
+//		strcpy_s(m_uImpCsvInfo.szColumn, sizeof(m_uImpCsvInfo.szColumn), CSV_092_ITEM_02);
+//// midori 150899 cor -->
+//		//return IMP_REC_NG;
+//// ---------------------
+//		m_uImpCsvInfo.nLength = 12;
+//		m_uImpCsvInfo.nKind = 1;	// 1:金額
+//		if(pstrCsvDataAry->GetAt(2).Left(1) == '-')	{
+//			m_uImpCsvInfo.nLength--;
+//			m_uImpCsvInfo.nType = 1;
+//		}
+//		m_ErrMap.SetAt((int)m_ErrMap.GetCount(),m_uImpCsvInfo);
+//		CsvInfoClr(&m_uImpCsvInfo);
+//		nRet = IMP_REC_NG;
+//// midori 150895 cor <--
+//	}
+// 修正No.157653 del <--
+// 修正No.157653 add -->
+	if(bG_Kanso == TRUE)	len = 13;
+	else					len = 12;
+	if (CheckImportNum(pstrCsvDataAry->GetAt(2), len, TRUE) != TRUE) {		// [2009/07/09 Minus Value Support]
+		strcpy_s(m_uImpCsvInfo.szColumn, sizeof(m_uImpCsvInfo.szColumn), CSV_092_ITEM_02);
+		m_uImpCsvInfo.nLength = len;
+		m_uImpCsvInfo.nKind = 1;	// 1:金額
+		if(pstrCsvDataAry->GetAt(2).Left(1) == '-')	{
+			m_uImpCsvInfo.nLength--;
+			m_uImpCsvInfo.nType = 1;
+		}
+		m_ErrMap.SetAt((int)m_ErrMap.GetCount(),m_uImpCsvInfo);
+		CsvInfoClr(&m_uImpCsvInfo);
+		nRet = IMP_REC_NG;
+	}
+// 修正No.157653 add <--
+
+// midori 150895 add -->
+	if(nRet == IMP_REC_NG)	{
+		return(nRet);
+	}
+// midori 150895 add <--
+
+// midori 180404 del -->
+//	//++++++++++++++++++++++++++++++++++++++++++++++++++
+//	// 名称テーブルへ登録
+//	//++++++++++++++++++++++++++++++++++++++++++++++++++
+//	// 名称テーブル登録無し
+//
+//// midori 150954 add -->
+//	// インポートしようとした回数をカウント
+//	m_nImportCount++;
+//// midori 150954 add <--
+//
+//	//++++++++++++++++++++++++++++++++++++++++++++++++++
+//	// データ加工
+//	// テーブルへデータ登録
+//	//++++++++++++++++++++++++++++++++++++++++++++++++++
+//	// 新規レコード作成
+//	m_pUcData->CreateNewRecord();
+//
+//	// レコード編集開始
+//	m_pUcData->Edit();
+//
+//	// XX 頁番号
+//	// XX 行番号
+////	CheckNumPageRow(&m_NumPage, &m_NumRow);
+//	m_pUcData->m_NumRow			= GetRow(m_nImportCount - 1);
+//	m_pUcData->m_NumPage		= GetPage(m_nImportCount - 1);
+//
+//	// 00 特殊行フラグ
+//	m_pUcData->m_FgFunc			= cFgFunc;
+//
+//// midori 160609 add -->
+//	// 後からソートを行うために、ダミーエリアに「未払配当金」「未払役員賞与」の区分を
+//	// 書き込んでおく（0:未払配当金 1:未払役員賞与）
+//	if(pstrCsvDataAry->GetAt(0) == CSV_ID_HAITOKIN)	{
+//		m_pUcData->m_RenFgTemp = 0;
+//	}
+//	else	{
+//		m_pUcData->m_RenFgTemp = 1;
+//	}
+//// midori 160609 add <--
+//
+//	// [明細]の場合のみ各項目のデータを登録
+//	// [小計]、[中計]は、計文言と頁番号、行番号、特殊行フラグのみ
+//	// 空行は、頁番号、行番号、特殊行フラグのみ
+//	switch (cFgFunc) {
+//	case	ID_FGFUNC_DATA:			// データ行
+//		// 01 支払確定年月日
+//		m_pUcData->m_SpDate		= nSpDate;
+//
+//		// 02 期末現在高
+//		m_pUcData->m_Val		= pstrCsvDataAry->GetAt(2);
+//
+//		break;
+//	case	ID_FGFUNC_SYOKEI:		// 小計行
+//		m_pUcData->m_KeiStr		= m_strSyokeiName;
+//		break;
+//	case	ID_FGFUNC_CHUKEI:		// 中計行
+//		m_pUcData->m_KeiStr		= m_strChukeiName;
+//		break;
+//	}
+//
+//	// レコード登録
+//	m_pUcData->Update();
+// midori 180404 del <--
+
+	return IMP_REC_OK;
+}
+
+// midori 180404 add -->
+//**********************************************************************
+// CSVの1行分のデータをテーブルに登録（インポート用）
+//		・データをテーブルに格納する形式に変換
+//		・テーブルに登録
+// 
+//	引数
+//			pstrCsvDataAry			[IN] CSVの1行分のデータ
+// 
+//	戻値
+//			レコード（行）の種類（DBUchiImpDEF.h参照）
+//**********************************************************************
+//virtual
+int CimpUc092Kaikakekin2::ImpCsvOneLineData(CStringArray* pstrCsvDataAry)
+{
+	//--------------------------------------------------
+	// 前処理（全帳票共通のコード）
+	//--------------------------------------------------
+	int				ii=0;
+	int				sw=0;
+// 修正No.157653 add -->
+	int				len=0;
+// 修正No.157653 add <--
+	long			nSpDate=0;
+	CString			strTemp = _T("");		// 文字列テンポラリ
+// midori UC_0054 add -->
+	CString			strCsvId = _T("");
+// midori UC_0054 add <--
+
+	// 01 支払確定年月日
+	if (pstrCsvDataAry->GetAt(1) != _T("")) {
+		// エラーの場合、クリアーする
+		if (ConvDateStrToDbVal(IMP_DATE_CONV_TYPE_A, pstrCsvDataAry->GetAt(1), &nSpDate) != TRUE) {
+			nSpDate = 0;
+			strTemp.Empty();
+			pstrCsvDataAry->SetAt(1,strTemp);
+		}
+	}
+
+	// 02 期末現在高
+	// エラーの場合、クリアーする
+// 修正No.157653 del -->
+	//if (CheckImportNum(pstrCsvDataAry->GetAt(2), 12, TRUE) != TRUE) {		// [2009/07/09 Minus Value Support]
+// 修正No.157653 del <--
+// 修正No.157653 add -->
+	if(bG_Kanso == TRUE)	len = 13;
+	else					len = 12;
+	if (CheckImportNum(pstrCsvDataAry->GetAt(2), len, TRUE) != TRUE) {		// [2009/07/09 Minus Value Support]
+// 修正No.157653 add <--
+		strTemp.Empty();
+		pstrCsvDataAry->SetAt(2,strTemp);
+	}
+
+// midori UC_0054 add -->
+	strCsvId = pstrCsvDataAry->GetAt(0);
+// midori 155543 del -->
+	//if ((strCsvId.Compare(CSV_ID_DATA) == 0) ||
+	//	(strCsvId.Compare(CSV_ID_UCHIWAKE) == 0) ||
+	//	(strCsvId.Compare(CSV_ID_HAITOKIN) == 0) ||
+	//	(strCsvId.Compare(CSV_ID_YAKUINSYOYO) == 0)) {
+// midori 155543 del <--
+// midori 155543 add -->
+	if (((strCsvId.Compare(CSV_ID_DATA) == 0) ||
+		(strCsvId.Compare(CSV_ID_UCHIWAKE) == 0) ||
+		(strCsvId.Compare(CSV_ID_HAITOKIN) == 0) ||
+		(strCsvId.Compare(CSV_ID_YAKUINSYOYO) == 0)) && m_ErrMap.GetCount() > 0)	{
+// midori 155543 add <--
+// midori UC_0054 add <--
+		// エラー項目クリア後、全ての項目が空白になった場合、処理を行わない
+		// データがあるか？
+		for (ii = 0; ii <(int)pstrCsvDataAry->GetSize(); ii++) {
+			// 先頭は項目名称が格納されているはずなので無視
+			if (ii == 0) {
+				continue;
+			}
+			// 1項目でもデータがあればデータ行とみなす
+			if (pstrCsvDataAry->GetAt(ii).GetLength() > 0){
+				sw = 1;
+				break;
+			}
+		}
+		if(sw == 0)	{
+			return IMP_REC_OK;
+		}
+// midori UC_0054 add -->
+	}
+// midori UC_0054 add <--
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// テーブル操作の準備
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// 一時的にテーブルアクセス領域を拡張
+	m_pUcData = (CdbUc092Kaikakekin2*)m_pUcCmn;
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// 名称テーブルへ登録
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// 名称テーブル登録無し
+
+	// インポートしようとした回数をカウント
+	m_nImportCount++;
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// データ加工
+	// テーブルへデータ登録
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// 新規レコード作成
+	m_pUcData->CreateNewRecord();
+
+	// レコード編集開始
+	m_pUcData->Edit();
+
+	// XX 頁番号
+	// XX 行番号
+//	CheckNumPageRow(&m_NumPage, &m_NumRow);
+	m_pUcData->m_NumRow			= GetRow(m_nImportCount - 1);
+	m_pUcData->m_NumPage		= GetPage(m_nImportCount - 1);
+
+	// 00 特殊行フラグ
+	m_pUcData->m_FgFunc			= m_FgFunc;
+
+	// 後からソートを行うために、ダミーエリアに「未払配当金」「未払役員賞与」の区分を
+	// 書き込んでおく（0:未払配当金 1:未払役員賞与）
+	if(pstrCsvDataAry->GetAt(0) == CSV_ID_HAITOKIN)	{
+		m_pUcData->m_RenFgTemp = 0;
+	}
+	else	{
+		m_pUcData->m_RenFgTemp = 1;
+	}
+
+	// [明細]の場合のみ各項目のデータを登録
+	// [小計]、[中計]は、計文言と頁番号、行番号、特殊行フラグのみ
+	// 空行は、頁番号、行番号、特殊行フラグのみ
+	switch (m_FgFunc) {
+	case	ID_FGFUNC_DATA:			// データ行
+		// 01 支払確定年月日
+		m_pUcData->m_SpDate		= nSpDate;
+
+		// 02 期末現在高
+		m_pUcData->m_Val		= pstrCsvDataAry->GetAt(2);
+
+		break;
+	case	ID_FGFUNC_SYOKEI:		// 小計行
+		m_pUcData->m_KeiStr		= m_strSyokeiName;
+		break;
+	case	ID_FGFUNC_CHUKEI:		// 中計行
+		m_pUcData->m_KeiStr		= m_strChukeiName;
+		break;
+	}
+
+	// レコード登録
+	m_pUcData->Update();
+
+	return IMP_REC_OK;
+}
+// midori 180404 add <--
+
+//**********************************************************************
+// CSVの1行分のデータをテーブルから取得（エクスポート用）
+//		・データの正当性をチェック
+//		・データをCSVに記述する形式に変換
+// 
+//	引数
+//			pstrCsvDataAry			[OUT]CSVの1行分のデータ
+// 
+//	戻値
+//			レコード（行）の種類（DBUchiImpDEF.h参照）
+//**********************************************************************
+//virtual
+int CimpUc092Kaikakekin2::GetCsvOneLineData(CStringArray* pstrCsvDataAry)
+{
+	//--------------------------------------------------
+	// 前処理（全帳票共通のコード）
+	//--------------------------------------------------
+	CString			strCsvId		= _T("");		// CSVの識別子
+
+	int nRet = GetCsvOneLineDataSub(pstrCsvDataAry, &strCsvId);
+	// エラーもしくはEOFもしくは一括金額の場合終了
+	if (nRet == IMP_REC_NG || 
+		nRet == IMP_REC_EOF || 
+		nRet == IMP_REC_IKKATU) {
+		return nRet;
+	}
+
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// テーブル操作の準備
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// 一時的にテーブルアクセス領域を拡張
+	m_pUcData = (CdbUc092Kaikakekin2*)m_pUcCmn;
+
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// テーブルからデータ取得
+	// データ加工
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	CString			strTemp			= _T("");		// 文字列テンポラリ
+
+	// 00 項目名称
+	if (m_pUcData->m_NumRow < 3) {
+		pstrCsvDataAry->SetAt(0, CSV_ID_HAITOKIN);
+	} else {
+		pstrCsvDataAry->SetAt(0, CSV_ID_YAKUINSYOYO);
+	}
+
+	// [明細]の場合のみ各項目のデータを取得
+	// [小計]、[中計]は識別子のみ
+	if (strCsvId.Compare(CSV_ID_DATA) == 0) {
+		// 01 支払確定年月日
+		strTemp = _T("");			// [2009/09/11 Add]
+		if (m_pUcData->m_SpDate > 0) {
+			ConvDateDbValToStr(IMP_DATE_CONV_TYPE_A, m_pUcData->m_SpDate, &strTemp);
+		}
+		pstrCsvDataAry->SetAt( 1, strTemp);
+		// 02 期末現在高
+		pstrCsvDataAry->SetAt( 2, m_pUcData->m_Val);
+	}
+
+
+	//--------------------------------------------------
+	// 後処理（全帳票共通のコード）
+	//--------------------------------------------------
+	// 次のレコードに移動しておく
+	m_pUcData->MoveNext();
+
+	return nRet;
+}
+
+// midori 160609 cor -->
+//// midori 150954 add -->
+////**********************************************************************
+//// 買掛金の欄外登録用
+//// CSVでインポートしなかった行のデータをテーブルに登録
+////**********************************************************************
+//int CimpUc092Kaikakekin2::SetCsvNullLineData091(void)
+//{
+//	int			numpage;			// ページ番号
+//	int			count;
+//	int			ii=0;				// ループカウント
+//	int			nRow=0;				// 行
+//	char		buf[128];			// バッファ
+//	CString		strQuery=_T("");	// SQL分
+//	CString		strData[2];			// データ用バッファ
+//	CRecordset	rs(m_pDB);
+//	CMap<int,int,int,int>	kaikake;
+//
+//	kaikake.RemoveAll();
+//	strData[0].Empty();
+//	strData[1].Empty();
+//
+//	try{
+//		strQuery = "select NumPage,count(*) from uc_092_kaikakekin2 group by NumPage";
+//		// オープン
+//		if ( !rs.Open( CRecordset::forwardOnly, strQuery ) ) {
+//			rs.Close();
+//			return DB_ERR_OPEN;
+//		}
+//		count=0;
+//		while(!rs.IsEOF())	{
+//			for(ii=0;ii<2;ii++)	{
+//				rs.GetFieldValue((short)ii, strData[ii]);
+//			}
+//			// ページ番号
+//			strcpy_s(buf,128,strData[0]);
+//			numpage = atoi(buf);
+//			// ページごとの行数
+//			strcpy_s(buf,128,strData[1]);
+//			if(atoi(buf) < 4)	{
+//				kaikake.SetAt(count,numpage);
+//				count++;
+//			}
+//			rs.MoveNext();
+//		}
+//	}catch( CDBException *e){
+//		// 開放
+//		e->Delete();
+//		return DB_ERR_OPEN;
+//	}
+//	rs.Close();
+//
+//	if((int)kaikake.GetCount() > 0)	{
+//		for(ii=0;ii<(int)kaikake.GetCount();ii++)	{
+//			kaikake.Lookup(ii,numpage);
+//			for(nRow=0;nRow<4;nRow++)	{
+//				strQuery.Format(_T("NumPage=%d and NumRow=%d"),numpage,nRow+1);
+//				m_pUcData->m_strFilter = strQuery;
+//				m_pUcData->Requery();
+//				if(m_pUcData->IsEOF())	{
+//					// レコード作成
+//					m_pUcData->CreateNewRecord();
+//					m_pUcData->Edit();
+//					m_pUcData->m_NumPage	= numpage;
+//					m_pUcData->m_NumRow		= nRow + 1;
+//					m_pUcData->m_FgFunc		= 0;
+//					m_pUcData->m_FgShow		= 0;
+//					m_pUcData->m_NumGroup	= 0;
+//					m_pUcData->m_SpDate		= 0;
+//					m_pUcData->m_OutRangai	= 0;
+//					m_pUcData->Update();
+//				}
+//			}
+//		}
+//
+//	}
+//
+//	return DB_ERR_OK;
+//}
+//// midori 150954 add <--
+// ---------------------
+//**********************************************************************
+// 買掛金の欄外登録用
+// CSVでインポートしなかった行のデータをテーブルに登録
+//**********************************************************************
+int CimpUc092Kaikakekin2::SetCsvNullLineData091(void)
+{
+	int			count=0;			// カウント
+	int			maxp=0;				// 最大頁
+	int			curp=0;				// 現在頁
+	int			curl=0;				// 現在行
+	int			hno=0;				// 「未払配当金」のカレントレコードＮｏ
+	int			yno=0;				// 「未払役員賞与」のカレントレコードＮｏ
+	int			rv=0;				// 返送値
+	short		ind=0;				// インデックス
+	CString		strQuery=_T("");	// SQL分
+	CString		strData[4];			// データ用バッファ
+	CRecordset	rs(m_pDB);
+	typedef struct	_RANGAI_DATA_	{
+		BYTE	m_FgFunc;
+		long	m_SpDate;
+		CString	m_Val;
+	}RANGAI_DATA;
+	CMap<int,int,RANGAI_DATA,RANGAI_DATA>	m_haitou;
+	CMap<int,int,RANGAI_DATA,RANGAI_DATA>	m_yakuin;
+	RANGAI_DATA								rdata;
+
+	// 「未払配当金」と「未払役員賞与」に分ける
+	m_haitou.RemoveAll();
+	m_yakuin.RemoveAll();
+	try{
+		strQuery = "select FgFunc,RenFgTemp,SpDate,Val from uc_092_kaikakekin2 order by NumPage,NumRow";
+		if(!rs.Open(CRecordset::forwardOnly,strQuery))	{
+			rs.Close();
+			return(DB_ERR_OPEN);
+		}
+		while(!rs.IsEOF())	{
+			for(ind=0; ind<4; ind++)	{
+				rs.GetFieldValue(ind,strData[ind]);
+			}
+			rs.MoveNext();
+			rdata.m_FgFunc = (BYTE)_tstoi(strData[0]);
+			rdata.m_SpDate = (long)_tstoi(strData[2]);
+			rdata.m_Val = strData[3];
+			if(_tstoi(strData[1]) == 0)	{
+				m_haitou.SetAt((int)m_haitou.GetCount(),rdata);
+			}
+			else	{
+				m_yakuin.SetAt((int)m_yakuin.GetCount(),rdata);
+			}
+		}
+	}
+	catch( CDBException *e){
+		e->Delete();
+		return DB_ERR_OPEN;
+	}
+	rs.Close();
+
+	// データが無ければここで終了
+	if((int)(m_haitou.GetCount() + m_yakuin.GetCount()) == 0)	{
+		return(DB_ERR_OK);
+	}
+
+	// 最大頁を割り出す
+	if(m_haitou.GetCount() >= m_yakuin.GetCount())	{
+		count = (int)m_haitou.GetCount();
+	}
+	else	{
+		count = (int)m_yakuin.GetCount();
+	}
+	maxp = count / 2;
+	if(count % 2)	maxp++;
+
+	// 一旦、ｄｂからデータを削除する
+	m_pUcData->m_strFilter = _T("");
+	m_pUcData->m_strSort = _T("NumPage,NumRow");
+	m_pUcData->Requery();
+	m_pUcData->MoveFirst();
+	while(!m_pUcData->IsEOF())	{
+		m_pUcData->Delete();
+		m_pUcData->MoveNext();
+	}
+
+	// 「未払配当金」と「未払役員賞与」を交互にレコードに追加していく
+	hno = 0;
+	yno = 0;
+	for(curp=0; curp<maxp; curp++)	{
+		for(curl=0; curl<4; curl++)	{
+			if(curl == 0 || curl == 1)	{
+				// 「未払配当金」
+				rv = m_haitou.Lookup(hno,rdata);
+				hno++;
+			}
+			else	{
+				// 「未払役員賞与」
+				rv = m_yakuin.Lookup(yno,rdata);
+				yno++;
+			}
+			m_pUcData->CreateNewRecord();
+			m_pUcData->Edit();
+			m_pUcData->m_NumPage	= curp + 1;
+			m_pUcData->m_NumRow		= curl + 1;
+			if(rv == TRUE)	{
+				m_pUcData->m_FgFunc	= rdata.m_FgFunc;
+				m_pUcData->m_SpDate	= rdata.m_SpDate;
+				m_pUcData->m_Val	= rdata.m_Val;
+			}
+			else	{
+				m_pUcData->m_FgFunc	= 0;
+				m_pUcData->m_SpDate	= 0;
+				m_pUcData->m_Val	= _T("");
+			}
+			m_pUcData->m_FgShow		= 0;
+			m_pUcData->m_NumGroup	= 0;
+			m_pUcData->m_OutRangai	= 0;
+			m_pUcData->Update();
+		}
+	}
+
+	return(DB_ERR_OK);
+}
+// midori 160609 cor <--
+

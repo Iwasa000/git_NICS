@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UCHIWAKE", "UCHIWAKE\UCHIWAKE.vcproj", "{92C48212-0079-410D-A748-FB9D41209691}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UCHIIMP", "UCHIIMP\UCHIIMP.vcproj", "{134D3E8F-36DB-4028-A579-EC02BA48FE1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92C48212-0079-410D-A748-FB9D41209691}.Debug|Win32.ActiveCfg = Debug|Win32
+		{92C48212-0079-410D-A748-FB9D41209691}.Release|Win32.ActiveCfg = Release|Win32
+		{134D3E8F-36DB-4028-A579-EC02BA48FE1E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{134D3E8F-36DB-4028-A579-EC02BA48FE1E}.Debug|Win32.Build.0 = Debug|Win32
+		{134D3E8F-36DB-4028-A579-EC02BA48FE1E}.Release|Win32.ActiveCfg = Release|Win32
+		{134D3E8F-36DB-4028-A579-EC02BA48FE1E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

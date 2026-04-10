@@ -1,0 +1,12339 @@
+// dbUc000Common.cpp : インプリメンテーション ファイル
+//
+
+#include "stdafx.h"
+#include "dbUc000Common.h"
+#include "ConvOutRangai.h"
+//#include "UCHIWAKE.h"
+// midori 160610 add -->
+#include ".\dbKamokuSitei.h"
+// midori 160610 add <--
+// midori 161111 add -->
+#include "dbPrtWork2.h"
+// midori 161111 add <--
+// midori 190505 add -->
+#include "dbPrtWork3.h"
+// midori 190505 add <--
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+// midori 190505 add -->
+int KaiCmb = 0;
+int SpaceCmb = 0;
+// midori 157042 del -->
+//int g_PrnHoho[2] = {0};
+// midori 157042 del <--
+// midori 190505 add <--
+
+// 改良No.21-0086,21-0529 add -->
+extern	BOOL	bG_InvNo;
+extern	bool	m_Invoice;
+// 改良No.21-0086,21-0529 add <--
+
+
+/////////////////////////////////////////////////////////////////////////////
+// CdbUc000Common
+
+IMPLEMENT_DYNAMIC(CdbUc000Common, CdbBase)
+
+CdbUc000Common::CdbUc000Common(CDatabase* pdb)
+	: CdbBase(pdb)
+	, m_lo_FormSeq(0)
+{
+	//{{AFX_FIELD_INIT(CdbUc000Common)
+	m_Seq = 0;
+	m_NumPage = 0;
+	m_NumRow = 0;
+	m_FgFunc = 0;
+	m_FgShow = 0;
+	m_KeiStr = _T("");
+	m_NumGroup = 0;
+	m_RenKcd = _T("");
+	m_RenEcd = 0;
+	m_RenFgTemp = 0;
+	m_ShowKeiZero = 0;
+	m_nFields = 11;
+
+	m_OutZeroNull = 0;
+	//}}AFX_FIELD_INIT
+//	m_nDefaultType = snapshot;
+//	m_lo_pdb = pdb;								// データベースポインタを保持
+//	m_lo_TableName = _T("");	// テーブル名を記述
+
+/*
+	m_BkName1 = _T("");
+	m_BkName2 = _T("");
+	m_BkOrder = 0;
+	m_BkSeq = 0;
+	m_KnName = _T("");
+	m_KnOrder = 0;
+	m_KnSeq = 0;
+	m_AcNum = _T("");
+	m_Val = _T("");
+	m_Teki = _T("");
+*/
+}
+
+
+CString CdbUc000Common::GetDefaultSQL()
+{
+	return m_lo_TableName;
+}
+
+void CdbUc000Common::DoFieldExchange(CFieldExchange* pFX)
+{
+	//{{AFX_FIELD_MAP(CdbUc000Common)
+	pFX->SetFieldType(CFieldExchange::outputColumn);
+	RFX_Long(pFX, _T("[Seq]"), m_Seq);
+	RFX_Int(pFX, _T("[NumPage]"), m_NumPage);
+	RFX_Byte(pFX, _T("[NumRow]"), m_NumRow);
+	RFX_Byte(pFX, _T("[FgFunc]"), m_FgFunc);
+	RFX_Byte(pFX, _T("[FgShow]"), m_FgShow);
+	RFX_Text(pFX, _T("[KeiStr]"), m_KeiStr);
+	RFX_Long(pFX, _T("[NumGroup]"), m_NumGroup);
+	RFX_Text(pFX, _T("[RenKcd]"), m_RenKcd);
+	RFX_Long(pFX, _T("[RenEcd]"), m_RenEcd);
+	RFX_Byte(pFX, _T("[RenFgTemp]"), m_RenFgTemp);
+	RFX_Byte(pFX, _T("[ShowKeiZero]"), m_ShowKeiZero);
+	//}}AFX_FIELD_MAP
+
+/*
+	RFX_Text(pFX, _T("[BkName1]"), m_BkName1);
+	RFX_Text(pFX, _T("[BkName2]"), m_BkName2);
+	RFX_Long(pFX, _T("[BkOrder]"), m_BkOrder);
+	RFX_Long(pFX, _T("[BkSeq]"), m_BkSeq);
+	RFX_Text(pFX, _T("[KnName]"), m_KnName);
+	RFX_Long(pFX, _T("[KnOrder]"), m_KnOrder);
+	RFX_Long(pFX, _T("[KnSeq]"), m_KnSeq);
+	RFX_Text(pFX, _T("[AcNum]"), m_AcNum);
+	RFX_Text(pFX, _T("[Val]"), m_Val);
+	RFX_Text(pFX, _T("[Teki]"), m_Teki);
+*/
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CdbUc000Common 診断
+
+#ifdef _DEBUG
+void CdbUc000Common::AssertValid() const
+{
+	CRecordset::AssertValid();
+}
+
+void CdbUc000Common::Dump(CDumpContext& dc) const
+{
+	CRecordset::Dump(dc);
+}
+#endif //_DEBUG
+
+/**********************************************************************
+	GetNumPage()
+		最大ページ番号を取得（総ページ数）
+
+	引数
+			なし
+	戻値
+			int					正の数：ページ番号
+								負の数：失敗
+								0     ：ページなし
+//@
+***********************************************************************/
+int CdbUc000Common::GetNumPage()
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	int			retVal = DB_ERR;
+
+	SqlStr =	_T("SELECT max(NumPage) AS MaxNum ");
+	SqlStr +=	_T("FROM ") + m_lo_TableName + _T(" ");
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("WHERE FormSeq = %d ", m_lo_FormSeq);
+		SqlStr += SqlStrSeq;
+	}
+
+	
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("MaxNum"), val);
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			retVal = 0;
+		}
+		else {								// 値の取得OK
+			retVal = val.m_iVal;
+		}
+	}
+
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	GetNumPageFromTempTable()
+		空白のページ(全ての行が０円またはNULL)を除いた最大ページ番号を取得（総ページ数）
+
+	引数
+			int					現在の様式のSeq
+	戻値
+			int					正の数：ページ番号
+								負の数：失敗
+								0     ：ページなし
+//@
+***********************************************************************/
+// midori 160610 cor -->
+//int CdbUc000Common::GetNumPageFromTempTable(int nFormSeq, int nNameKeiBitArray, int OutZero )
+//{
+//	m_OutZeroNull = OutZero;
+//
+//	// 最大行数の取得
+//	int nMaxRow = GetNumRow( 1 );
+//	if( nMaxRow <= 0 )		return nMaxRow;
+//
+//	// ０円を除いた一時テーブルの構築
+//	int	nRet = DB_ERR;
+//	if( OutZero != 0 )	nRet = CreateNotExistZeroTable( nMaxRow, nFormSeq, nNameKeiBitArray );
+//	else				nRet = CreateKamokuAddTable( nMaxRow, nFormSeq, nNameKeiBitArray );
+//	if( nRet != 0 )		return 0;
+//
+//	// 一時テーブルから最大ページ数取得
+//	CString	strSQL;
+//	strSQL.Format( _T("SELECT MAX(NumPage) AS 'MaxPage' FROM #temp_utiwake_tbl_%d"), nFormSeq );
+//
+//	// オープン
+//	CRecordset rs(m_lo_pdb);
+//	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) )		return 0;
+//
+//	// ページ数取得
+//	int	nPage = 0;
+//	CString strPage;
+//	rs.GetFieldValue( _T("MaxPage"), strPage );
+//	sscanf_s( strPage, _T("%d"), &nPage);
+//
+//	rs.Close();
+//
+//	return nPage;
+//}
+// ---------------------
+// midori 190505 del -->
+//int CdbUc000Common::GetNumPageFromTempTable(int nFormSeq, int nNameKeiBitArray, int OutZero, int KmkOut, int KmkSitei )
+// midori 190505 del <--
+// midori 190505 add -->
+int CdbUc000Common::GetNumPageFromTempTable(int nFormSeq, int nNameKeiBitArray, int OutZero, int KmkOut, int KmkSitei, int nPHoho )
+// midori 190505 add <--
+{
+	int			sw=0;
+// midori M-16113008 del -->
+//// midori 160913 add -->
+//	CString		strTemp = _T("");
+//// midori 160913 add <--
+// midori M-16113008 del <--
+
+// midori 190505 add -->
+	int				phoho=0;
+// midori 20/10/08_2 add -->
+	int				nKaiPage=0;
+// midori 20/10/08_2 add <--
+
+	phoho = nPHoho;
+// midori 157042 del -->
+//// midori 20/10/08_2 del -->
+//	//if(nFormSeq == ID_FORMNO_021)		g_PrnHoho[0] = phoho;
+//	//else if(nFormSeq == ID_FORMNO_111)	g_PrnHoho[1] = phoho;
+//// midori 20/10/08_2 del <--
+//// midori 20/10/08_2 add -->
+//// midori 157047 del -->
+//	//g_PrnHoho[0] = 0;
+//	//g_PrnHoho[1] = 0;
+//// midori 157047 del <--
+//	if(prnConfimationSw == TRUE) {
+//		if(nFormSeq == ID_FORMNO_021)		g_PrnHoho[0] = phoho;
+//		else if(nFormSeq == ID_FORMNO_111)	g_PrnHoho[1] = phoho;
+//	}
+//	else {
+//		if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+//// midori 157047 add -->
+//			if(nFormSeq == ID_FORMNO_021)		g_PrnHoho[0] = 0;
+//			else								g_PrnHoho[1] = 0;
+//// midori 157047 add <--
+//			// 科目指定を行うにチェック無し
+//			if(KmkSitei == 0)	{
+//				nKaiPage = 0;
+//				CdbUcInfSub mfcRec(m_lo_pdb);
+//				if ( mfcRec.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){
+//					//	レコードあり？
+//					if ( !( mfcRec.IsEOF() ) ){
+//						//	レコードを先頭に移動
+//						mfcRec.MoveFirst();
+//						nKaiPage = mfcRec.m_OpKaiPage;
+//					}
+//					//	レコード閉じる
+//					mfcRec.Fin();
+//				}
+//				if(nFormSeq == ID_FORMNO_021)		g_PrnHoho[0] = nKaiPage;
+//				else if(nFormSeq == ID_FORMNO_111)	g_PrnHoho[1] = nKaiPage;
+//			}
+//		}
+//	}
+//// midori 20/10/08_2 add <--
+//// midori 190505 add <--
+// midori 157042 del <--
+
+	m_OutZeroNull = OutZero;
+
+	// 最大行数の取得
+	int nMaxRow = GetNumRow( 1 );
+	if( nMaxRow <= 0 )		return nMaxRow;
+
+	// 一時テーブルの構築
+	int	nRet = DB_ERR;
+
+// midori M-16113008 del -->
+	//if(KmkSitei == 2)	{
+	//	// 科目指定を行う＋科目でソートを行う場合
+// midori M-16113008 del <--
+// midori M-16113008 add -->
+	if(KmkSitei != 0)	{
+		// 科目指定を行う
+// midori M-16113008 add <--
+////////////////////////////////////////////////////////////////////////////////////
+		// 
+		// ①科目指定の処理
+		// 
+		nRet = CreateKamokuSiteiTable(nFormSeq);
+		if(nRet != 0)	return(0);
+		nRet = UpdateKamokuSiteiTable(nMaxRow,nFormSeq,nNameKeiBitArray,0);
+		if(nRet != 0)	return(0);
+		// 
+		// ②以降の処理は、本データ(uc_???_xxxx)からではなく、直前に作成した一時テーブル(#temp_utiwake_tbl_?)からデータを呼び出す
+		// 　但し、一時テーブル(#temp_utiwake_tbl_?)は処理中に一旦削除されるので別のテーブル名にして退避しておく
+		// 
+		nRet = TempTableCopy(nFormSeq);
+		if(nRet != 0)	return(0);
+		// 
+		// ③０円除外(科目行出力)の処理
+		// 
+		if(OutZero != 0)	{
+// midori 190505 del -->
+			//nRet = CreateNotExistZeroTable(nMaxRow,nFormSeq,nNameKeiBitArray,1,0);
+// midori 190505 del <--
+// midori 190505 add -->
+			nRet = CreateNotExistZeroTable(nMaxRow,nFormSeq,nNameKeiBitArray,1,0,phoho);
+// midori 190505 add <--
+		}
+		else if(KmkOut != 0)	{
+			nRet = CreateKamokuAddTable(nMaxRow,nFormSeq,nNameKeiBitArray,1,0);
+		}
+		if(nRet != 0)	return(0);
+////////////////////////////////////////////////////////////////////////////////////
+		//// 
+		//// ①０円除外(科目行出力)の処理
+		//// 
+		//if(OutZero != 0)	{
+		//	nRet = CreateNotExistZeroTable(nMaxRow,nFormSeq,nNameKeiBitArray,0,1);
+		//}
+		//else if(KmkOut != 0)	{
+		//	nRet = CreateKamokuAddTable(nMaxRow,nFormSeq,nNameKeiBitArray,0,1);
+		//}
+		//else	{
+		//	nRet = CreateKamokuSiteiTable(nFormSeq);
+		//}
+		//if(nRet != 0)	return(0);
+		//// 
+		//// ②科目指定の処理
+		//// 
+		//if(OutZero != 0 || KmkOut != 0)	sw=1;
+		//else							sw=0;
+		//nRet = UpdateKamokuSiteiTable(nMaxRow,nFormSeq,nNameKeiBitArray,sw);
+		//if(nRet != 0)	return(0);
+////////////////////////////////////////////////////////////////////////////////////
+	}
+	else	{
+		// 上記以外
+		// 
+		// ①０円除外(科目行出力)の処理
+		// 
+		if(OutZero != 0)	{
+// midori 20/10/08u del -->
+//// midori 190505 del -->
+//			//nRet = CreateNotExistZeroTable(nMaxRow,nFormSeq,nNameKeiBitArray,0,0);
+//// midori 190505 del <--
+//// midori 190505 add -->
+//			// 画面の改頁を保って出力する
+//			if(phoho == 1)	{
+//				nRet = CreateDspPageBreakTable(nMaxRow,nFormSeq,nNameKeiBitArray);
+//			}
+//			// 金額０円データを出力しない もしくは 金額空欄データを出力しない
+//			else	{
+//				nRet = CreateNotExistZeroTable(nMaxRow,nFormSeq,nNameKeiBitArray,0,0,phoho);
+//			}
+//// midori 190505 add <--
+// midori 20/10/08u del <--
+// midori 20/10/08u add -->
+			nRet = CreateNotExistZeroTable(nMaxRow,nFormSeq,nNameKeiBitArray,0,0,phoho);
+// midori 20/10/08u add <--
+		}
+		else if(KmkOut != 0)	{
+			nRet = CreateKamokuAddTable(nMaxRow,nFormSeq,nNameKeiBitArray,0,0);
+		}
+// midori 157099,157119_2 del -->
+//		else	{
+//// midori 157098 del -->
+//			//nRet = CreateKamokuSiteiTable(nFormSeq);
+//// midori 157098 del <--
+//// midori 157098 add -->
+//			nRet = CreateKamokuDelTable(nMaxRow,nFormSeq,nNameKeiBitArray);
+//// midori 157098 add <--
+//		}
+// midori 157099,157119_2 del <--
+		if(nRet != 0)	return(0);
+// midori M-16113008 del -->
+		////// 
+		////// ②以降の処理は、本データ(uc_???_xxxx)からではなく、直前に作成した一時テーブル(#temp_utiwake_tbl_?)からデータを呼び出す
+		////// 　但し、一時テーブル(#temp_utiwake_tbl_?)は処理中に一旦削除されるので別のテーブル名にして退避しておく
+		////// 
+		////nRet = TempTableCopy(nFormSeq);
+		////if(nRet != 0)	return(0);
+		////// 
+		//// 
+		//// ③科目指定の処理を行う
+		//// 
+		//if(KmkSitei != 0)	{
+		//	nRet = UpdateKamokuSiteiTable(nMaxRow,nFormSeq,nNameKeiBitArray,0);
+		//	if(nRet != 0)	return(0);
+		//}
+// midori M-16113008 del <--
+	}
+
+	// 一時テーブルから最大ページ数取得
+	CString	strSQL;
+
+// midori M-16113008 del -->
+//// midori 160913 cor -->
+////#ifdef _DEBUG
+////	strSQL.Format( _T("SELECT MAX(NumPage) AS 'MaxPage' FROM ##temp_utiwake_tbl_%d"), nFormSeq );
+////#else
+////	strSQL.Format( _T("SELECT MAX(NumPage) AS 'MaxPage' FROM #temp_utiwake_tbl_%d"), nFormSeq );
+////#endif
+//// ---------------------
+//	strSQL = _T("SELECT MAX(NumPage) AS 'MaxPage' FROM ");
+//#ifdef _DEBUG
+//	strTemp.Format(_T("##temp_utiwake_tbl_%d"),nFormSeq);
+//#else
+//	strTemp.Format(_T("#temp_utiwake_tbl_%d"),nFormSeq);
+//#endif
+//	strSQL += strTemp;
+//	strTemp.Format(" WHERE FgFunc<>%d AND FgFunc<>%d AND FgFunc<>%d", ID_FGFUNC_NULL, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+//	strTemp += (" AND FgShow=0");
+//	strSQL += strTemp;
+//// midori 160913 cor <--
+// midori M-16113008 del <--
+// midori M-16113008 add -->
+#ifdef _DEBUG
+	strSQL.Format( _T("SELECT MAX(NumPage) AS 'MaxPage' FROM ##temp_utiwake_tbl_%d"), nFormSeq );
+#else
+	strSQL.Format( _T("SELECT MAX(NumPage) AS 'MaxPage' FROM #temp_utiwake_tbl_%d"), nFormSeq );
+#endif
+// midori M-16113008 add -->
+	// オープン
+	CRecordset rs(m_lo_pdb);
+	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) )		return 0;
+
+	// ページ数取得
+	int	nPage = 0;
+	CString strPage;
+	rs.GetFieldValue( _T("MaxPage"), strPage );
+	sscanf_s( strPage, _T("%d"), &nPage);
+
+	rs.Close();
+
+	return nPage;
+}
+// midori 160610 cor <--
+
+/**********************************************************************
+	GetNumRow()
+		指定されたページの行数を取得
+		（登録されている最大行番号）
+
+	引数
+			int		inPage		ページ番号（ 1 =< inPage )
+	戻値
+			int					正の数：行番号
+								負の数：失敗
+								0     ：行なし
+//@
+***********************************************************************/
+int CdbUc000Common::GetNumRow(int inPage)
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	int			retVal = DB_ERR;
+
+	CString SqlStrSub;
+	SqlStrSub.Format(_T("NumPage = %d "), inPage);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	CString	SqlStrSeq;
+	if (m_lo_FormSeq > 0) {
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+	}
+	else {
+		SqlStrSeq = _T("");
+	}
+
+	SqlStr =	_T("SELECT max(NumRow) AS MaxNum ");
+	SqlStr +=	_T("FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	_T("WHERE ") + SqlStrSeq + SqlStrSub;
+
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("MaxNum"), val);
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			retVal = 0;
+		}
+		else {								// 値の取得OK
+			retVal = val.m_chVal;
+		}
+	}
+
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	GetNumGroup()
+		最大グループ番号を取得
+
+	引数
+			なし
+	戻値
+			int					正の数：グループ番号
+								負の数：失敗
+								0     ：グループ番号未使用
+//@
+***********************************************************************/
+int CdbUc000Common::GetNumGroup()
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	int			retVal = DB_ERR;
+
+	SqlStr =	_T("SELECT max(NumGroup) AS MaxNum ");
+	SqlStr +=	_T("FROM ") + m_lo_TableName + _T(" ");
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("WHERE FormSeq = %d ", m_lo_FormSeq);
+		SqlStr += SqlStrSeq;
+	}
+
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("MaxNum"), val);
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			retVal = 0;
+		}
+		else if( val.m_dwType == DBVT_LONG ){
+			retVal = val.m_lVal;			// 値の取得OK(long型)
+		}
+		else {								// 値の取得OK(long型以外)
+			retVal = val.m_iVal;
+		}
+	}
+
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	GetSumVal()
+		合計金額を取得（条件付き）
+
+	引数
+			int			nFgShow		(in )合計金額の集計条件
+			int			nNumGroup	(in )合計金額の集計条件
+			CString*	pSumVal		(out)合計金額の格納領域
+	戻値
+			int						DB_ERR_OK (0)     ：成功
+									DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::GetSumVal(int nFgShow, int nNumGroup, CString* pSumVal)
+{
+	CString	ValFieldName = _T("Val");
+
+	return GetSumValSub(nFgShow, nNumGroup, ValFieldName, pSumVal);
+}
+
+/**********************************************************************
+	GetSumValSub()
+		合計金額を取得（条件付き）
+
+	引数
+			int			nFgShow		(in )合計金額の集計条件
+			int			nFgShow		(in )合計金額の集計条件
+			CString		inFieldName	(in )合計を求めるフィールド名
+			CString*	pSumVal		(out)合計金額の格納領域
+	戻値
+			int						DB_ERR_OK (0)     ：成功
+									DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::GetSumValSub(int nFgShow, int nNumGroup, CString inFieldName, CString* pSumVal)
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	int			retVal = DB_ERR;
+	CString		strWhere;
+
+	char		prmSumVal[32];
+	__int64		i64;
+	BOOL		bCheckFlag = FALSE;
+
+	*pSumVal = "";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		strWhere.Format("WHERE FormSeq = %d AND FgShow = %d AND NumGroup = %d", 
+							m_lo_FormSeq, nFgShow, nNumGroup);
+	}
+	else {
+		strWhere.Format("WHERE FgShow = %d AND NumGroup = %d", 
+							nFgShow, nNumGroup);
+	}
+
+	//SqlStr =	_T("SELECT sum(Val) AS SumVal ");
+	SqlStr =	_T("SELECT sum(") + inFieldName + _T(") AS SumVal ");
+	SqlStr +=	_T("FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	strWhere;
+	
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("SumVal"), val);
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			*pSumVal = _T("0");
+		}
+		else {								// 値の取得OK
+			*pSumVal = *val.m_pstring;
+
+			// 値の範囲チェック：
+			//	　__int64型でテーブルに格納できる範囲(14桁まで)をチェックする。
+			//	　なお、SQL"sum関数"の戻りは"Decimal(38)"なので、sumの桁あふれは無視する
+
+			// Step1: CString型→Char型→__int64型に変換
+			ZeroMemory(prmSumVal, sizeof(prmSumVal));
+			lstrcpy(prmSumVal, *pSumVal);					// CString型→Char型
+			i64 = _strtoi64(prmSumVal, NULL, 10);			// Char型   →__int64型
+
+			// Step2: 範囲チェック
+			if (i64 < DB_DECIMAL_MIN) {
+				i64 = DB_DECIMAL_MIN;
+				bCheckFlag = TRUE;
+			} else if (DB_DECIMAL_MAX < i64) {
+				i64 = DB_DECIMAL_MAX;
+				bCheckFlag = TRUE;
+			}
+
+			// Step3: 上限/下限値をセットする
+			if (bCheckFlag == TRUE) {
+				_i64toa_s(i64, prmSumVal, 32, 10);			// __int64型→Char型
+				*pSumVal = prmSumVal;						// Char型   →CString型
+			}
+		}
+	}
+
+	rs.Close();
+
+	return DB_ERR_OK;
+}
+
+/**********************************************************************
+
+	GetCountVal()
+		指定されたFgShowの値を持つレコード件数
+
+	例) 一括金額で非表示になっているレコード件数を取得
+
+	引数
+			int		inFgShow	FgShow の 値を指定
+			int		inNumGroup	NumGroup の 値を指定
+	戻値
+			int					正の数：件数
+								負の数：失敗
+								0     ：ページなし
+//@
+***********************************************************************/
+int CdbUc000Common::GetCountVal(int inFgShow, int inNumGroup, int bOutZero/* = 0*/)
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	CString		SqlStr1;
+	CString		SqlStr2;
+	CString		SqlStr3;
+	CString		SqlStr4 = _T( "" );
+	int			retVal = DB_ERR;
+
+	SqlStr1 =	_T("SELECT count(Seq) AS Num ");
+	SqlStr2 =	_T("FROM ") + m_lo_TableName + _T(" ");
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		SqlStr3.Format("WHERE FormSeq = %d AND FgShow = %d AND NumGroup = %d", 
+								m_lo_FormSeq, inFgShow, inNumGroup);
+	}
+	else {
+		SqlStr3.Format("WHERE FgShow = %d AND NumGroup = %d", inFgShow, inNumGroup);
+	}
+
+	if( bOutZero == 0x02 ){
+		CString strMoneyField = GetZeroMoneyMoveField();
+
+		SqlStr4.Format( " AND ((%s = '0') OR (%s IS NULL))", strMoneyField, strMoneyField );
+	}
+
+	SqlStr = SqlStr1 + SqlStr2 + SqlStr3 + SqlStr4;
+
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("Num"), val);
+
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			retVal = 0;
+		}
+		else {								// 値の取得OK
+			retVal = val.m_lVal;
+		}
+	}
+
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	GetCountDataRecord()
+		データ行数の取得（空行以外のデータ）
+
+	例) 画面View終了時の全て空行なら全レコード削除の判断に使用
+
+	引数
+			なし
+	戻値
+			int					データ件数
+***********************************************************************/
+// midori 160607,160610 cor -->
+//int CdbUc000Common::GetCountDataRecord()
+// ----------------------------
+int CdbUc000Common::GetCountDataRecord( int pFgShow, int pKnSeq )
+// midori 160607,160610 cor <--
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	CString		SqlStr1;
+	CString		SqlStr2;
+	CString		SqlStr3;
+	CString		strTemp;
+	int			retVal = DB_ERR;
+
+	// 空行以外のデータ
+	strTemp.Format("FgFunc<>%d AND FgFunc<>%d AND FgFunc<>%d", ID_FGFUNC_NULL, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+
+	SqlStr1 =	_T("SELECT count(Seq) AS Num ");
+	SqlStr2 =	_T("FROM ") + m_lo_TableName + _T(" ");
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		SqlStr3.Format("WHERE FormSeq=%d AND %s", m_lo_FormSeq, strTemp);
+	}
+	else {
+		SqlStr3.Format("WHERE %s", strTemp);
+	}
+// midori 160607 add -->
+	if(pFgShow == 1)	{
+		SqlStr3 = SqlStr3 + _T(" AND FgShow=0");
+	}
+// midori 160607 add <--
+// midori 160610 add -->
+	if(pKnSeq == 1)	{
+		// 科目未入力かつ、通常データまたは一括集計金額行(手動)
+		strTemp.Format(_T(" AND (KnOrder=0 OR KnOrder IS NULL) AND (FgFunc=%d OR FgFunc=%d)"),ID_FGFUNC_DATA,ID_FGFUNC_IKKATUMANUAL);
+		SqlStr3 = SqlStr3 + strTemp;
+	}
+// midori 160610 add <--
+
+	SqlStr = SqlStr1 + SqlStr2 + SqlStr3;
+
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("Num"), val);
+
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			retVal = 0;
+		}
+		else {								// 値の取得OK
+			retVal = val.m_lVal;
+		}
+	}
+
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	GetCountVisualDataRecord()
+		保管データを除いた、データ行数の取得
+
+	例) 画面View終了時の全て空行なら全レコード削除の判断に使用
+
+	引数
+			int					0：空行をカウントしない
+								1：空行をカウントする
+	戻値
+			int					データ件数
+***********************************************************************/
+int CdbUc000Common::GetCountVisualDataRecord(int nMode/*=0*/)
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	CString		SqlStr1;
+	CString		SqlStr2;
+	CString		SqlStr3;
+	CString		strTemp;
+	int			retVal = DB_ERR;
+
+	if( nMode == 0 ){
+		// 空行以外+保管以外のデータ
+		strTemp.Format("FgFunc<>%d AND FgFunc<>%d AND FgFunc<>%d AND FgShow<>%d", ID_FGFUNC_NULL, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI, ID_FGSHOW_HOKAN);
+	}
+	else{
+		// 保管以外のデータ
+		strTemp.Format("FgFunc<>%d AND FgFunc<>%d AND FgShow<>%d", ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI, ID_FGSHOW_HOKAN);
+	}
+
+	SqlStr1 =	_T("SELECT count(Seq) AS Num ");
+	SqlStr2 =	_T("FROM ") + m_lo_TableName + _T(" ");
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		SqlStr3.Format("WHERE FormSeq=%d AND %s", m_lo_FormSeq, strTemp);
+	}
+	else {
+		SqlStr3.Format("WHERE %s", strTemp);
+	}
+
+	SqlStr = SqlStr1 + SqlStr2 + SqlStr3;
+
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("Num"), val);
+
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			retVal = 0;
+		}
+		else {								// 値の取得OK
+			retVal = val.m_lVal;
+		}
+	}
+
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	GetCountFgShow()
+		引数で指定されたレコード数を返す　FgShow版
+
+	引数
+			int					m_FgShowの属性
+	戻値
+			int					データ件数
+***********************************************************************/
+int CdbUc000Common::GetCountFgShow(int FgShow)
+{
+	int retVal = 0;
+	CString strSQL, strVal;
+	CRecordset	rs(m_lo_pdb);
+
+	strSQL.Format("SELECT COUNT(*) AS cnt FROM %s ", m_lo_TableName);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("WHERE FormSeq=%d AND FgShow = %d ", m_lo_FormSeq, FgShow);
+		strSQL += SqlStrSeq;
+	}
+	else {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("WHERE FgShow = %d ", FgShow);
+		strSQL += SqlStrSeq;
+	}
+
+	try{
+		if ( ! OpenEx( &rs , strSQL , m_lo_TableName ) ) {
+			return DB_ERR_OPEN;
+		}
+
+		if (!rs.IsEOF()) {
+			rs.GetFieldValue("cnt", strVal);
+			sscanf_s( strVal, _T("%d"), &retVal);
+		}
+		else{
+			return 0;
+		}
+	}
+	catch(...){
+		return 0;
+	}
+
+	return retVal;
+}
+
+/**********************************************************************
+	Init()
+		初期化処理（Open()の代わりとして使用）
+
+	【参照】下記のメソッドを呼び出しています
+	RequeryPage()
+		指定されたページのデータをレコードセットとして取得
+		行番号の小→大の順序でソート
+
+	引数
+			int		inPage		ページ番号（ 1 =< inPage )
+
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+//virtual
+int CdbUc000Common::Init(int inPage)
+{
+	return	RequeryPage(inPage);
+}
+
+/**********************************************************************
+	RequeryPage()
+		指定されたページのデータをレコードセットとして取得
+		行番号の小→大の順序でソート
+
+	引数
+			int		inPage		ページ番号（ 1 =< inPage )
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryPage(int inPage)
+{
+	m_strFilter.Format("NumPage = %d", inPage);
+	m_strSort = "NumRow";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+// midori 161107 add -->
+// midori 155525 del -->
+//int CdbUc000Common::RequeryPageRangai( int pType )
+// midori 155525 del <--
+// midori 155525 add -->
+int CdbUc000Common::RequeryPageRangai( int pType, int pOutZero )
+// midori 155525 add <--
+{
+	return(0);
+}
+// midori 161107 add <--
+
+/**********************************************************************
+	RequeryPageRow()
+		指定されたページ、行ののデータをレコードセットとして取得
+
+	引数
+			int		inPage		ページ番号（ 1 =< inPage )
+			int		inPage		行番号    （ 1 =< inPage )
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryPageRow(int inPage, int inRow)
+{
+	m_strFilter.Format("NumPage = %d AND NumRow = %d", inPage, inRow);
+	m_strSort = "";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryPageRowAfterRecord()
+		指定されたページ、行以降のデータをレコードセットとして取得
+		ただし、空行，ページ計，累計行は含まない
+
+	引数
+			int		inPage		ページ番号（ 1 =< inPage )
+			int		inPage		行番号    （ 1 =< inPage )
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryPageRowAfterRecord(int inPage, int inRow)
+{
+	m_strFilter.Format("((NumPage > %d) OR (NumPage = %d AND NumRow >= %d)) AND (FgFunc != %d AND FgFunc != %d AND FgFunc != %d)"
+						, inPage, inPage, inRow, ID_FGFUNC_NULL, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+	m_strSort = "NumPage ASC, NumRow ASC";
+
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryFgShowZero()
+		一時保管で非表示対象になっているレコードを抽出
+		旧仕様（0円金額を非表示の対象になっているレコードを抽出）
+
+	【抽出条件】
+		FgShow の値が、「一時保管」(非表示)
+	【ソート条件】
+		なし
+
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@@
+***********************************************************************/
+int CdbUc000Common::RequeryFgShowZero()
+{
+	m_strFilter.Format("FgShow = %d", ID_FGSHOW_HOKAN);
+	m_strSort = "";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryFgShowIkkatu()
+		一括金額表示で非表示の対象になっているレコードを抽出
+
+	【抽出条件】
+		FgShow の値が、「一括金額対象(非表示)」
+	【ソート条件】
+		なし
+
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@@
+***********************************************************************/
+int CdbUc000Common::RequeryFgShowIkkatu()
+{
+	m_strFilter.Format("FgShow = %d", ID_FGSHOW_IKKATU);
+	m_strSort = "";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryFgShowIkkatu( int nNumGroup )
+		一括金額表示で非表示の対象になっているレコードをグループ番号別に抽出
+
+	【抽出条件】
+		FgShow の値が、「一括金額対象(非表示)」でNumGrop の値が引数指定値
+	【ソート条件】
+		なし
+
+	引数
+			int					グループ番号
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@@
+***********************************************************************/
+int CdbUc000Common::RequeryFgShowIkkatu( int nNumGroup )
+{
+	m_strFilter.Format( "FgShow = %d AND NumGroup = %d", ID_FGSHOW_IKKATU, nNumGroup );
+	m_strSort = "";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+// No.158072 add -->
+/**********************************************************************
+	RequeryFgShowIkkatuSort(int nNumGroup, CString sSort)
+		一括金額表示で非表示の対象になっているレコードをグループ番号別に抽出（ソート機能付き）
+	【抽出条件】
+		FgShow の値が、「一括金額対象(非表示)」でNumGrop の値が引数指定値
+	【ソート条件】
+		引数による
+
+	引数
+			int					グループ番号
+			CString				ソート項目
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+int CdbUc000Common::RequeryFgShowIkkatuSort(int nNumGroup, CString sSort)
+{
+	m_strFilter.Format( "FgShow = %d AND NumGroup = %d", ID_FGSHOW_IKKATU, nNumGroup );
+	m_strSort = sSort;
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryFgShowIkkatuSort021(int nNumGroup, CString sSort)
+		一括金額表示で非表示の対象になっているレコードをグループ番号別に抽出（ソート機能付き）
+	【抽出条件】
+		FgShow の値が、「一括金額対象(非表示)」でNumGrop の値が引数指定値
+		銀行テーブルを参照するため、RequeryWorkは使用せず、mfcRec.Open(AFX_DB_USE_DEFAULT_TYPE, xxx)で発行
+	【ソート条件】
+		引数による
+	※様式②受取手形の内訳書専用
+
+	引数
+			int					グループ番号
+			CString				ソート項目
+			char				ソートサイン
+	戻値
+			int					作成されたSQL文
+***********************************************************************/
+CString CdbUc000Common::RequeryFgShowIkkatuSort021(int nNumGroup, CString sSort, char pSsw)
+{
+	CString		cs1="", cs2="", cs3="", cs4="", cs5="";
+	CString		strSQL;
+
+// No.158111 del -->
+	//cs1.Format("SELECT * FROM [dbo].%s, [dbo].[uc_lst_Bank] ", m_lo_TableName);
+	//cs2.Format("WHERE [dbo].%s.FgShow = %d AND [dbo].%s.NumGroup = %d ", m_lo_TableName, ID_FGSHOW_IKKATU, m_lo_TableName, nNumGroup);
+	//if((pSsw & 0xf0) == 0x10 || (pSsw & 0xf0) == 0x20)	{
+	//	cs3.Format("AND [dbo].%s.BkOrder = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	//}
+	//else	{
+	//	cs3.Format("AND [dbo].%s.Bk2Order = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	//}
+// No.158111 del <--
+// No.158111 add -->
+	cs1.Format("SELECT * FROM [dbo].%s ", m_lo_TableName);
+	if((pSsw & 0xf0) == 0x10 || (pSsw & 0xf0) == 0x20)	{
+		cs2.Format("LEFT JOIN [dbo].[uc_lst_Bank] on [dbo].%s.BkOrder = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	}
+	else	{
+		cs2.Format("LEFT JOIN [dbo].[uc_lst_Bank] on [dbo].%s.Bk2Order = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	}
+	cs3.Format("WHERE [dbo].%s.FgShow = %d AND [dbo].%s.NumGroup = %d ", m_lo_TableName, ID_FGSHOW_IKKATU, m_lo_TableName, nNumGroup);
+// No.158111 add <--
+	cs4.Format("ORDER BY ");
+	if((pSsw & 0xf0) == 0x10)	{
+		cs4 += _T("[dbo].[uc_lst_Bank].BkKana1");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+	}
+	else if((pSsw & 0xf0) == 0x20) {
+		cs4 += _T("[dbo].[uc_lst_Bank].BkKana2");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+	}
+	else if((pSsw & 0xf0) == 0x30) {
+		cs4 += _T("[dbo].[uc_lst_Bank].BkKana1");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+		cs4 += _T(", [dbo].[uc_lst_Bank].BkKana2");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+	}
+	cs5.Format(_T(", [dbo].%s.Seq"), m_lo_TableName);
+	if((pSsw & 0x0f) == 0x01)	cs5 += _T(" DESC");
+
+	strSQL.Empty();
+	strSQL = cs1 + cs2 + cs3 + cs4 + cs5;
+
+	return strSQL;
+}
+
+/**********************************************************************
+	RequeryFgShowIkkatuSort061(int nNumGroup, CString sSort)
+		一括金額表示で非表示の対象になっているレコードをグループ番号別に抽出（ソート機能付き）
+	【抽出条件】
+		FgShow の値が、「一括金額対象(非表示)」でNumGrop の値が引数指定値
+		銀行テーブルを参照するため、RequeryWorkは使用せず、mfcRec.Open(AFX_DB_USE_DEFAULT_TYPE, xxx)で発行
+	【ソート条件】
+		引数による
+	※様式⑥ 有価証券の内訳書専用
+
+	引数
+			int					グループ番号
+			CString				ソート項目
+			char				ソートサイン
+	戻値
+			int					作成されたSQL文
+***********************************************************************/
+CString CdbUc000Common::RequeryFgShowIkkatuSort061(int nNumGroup, CString sSort, char pSsw)
+{
+	CString		cs1="", cs2="", cs3="", cs4="", cs5="";
+	CString		strSQL;
+	
+	if((pSsw & 0xf0) == 0x10)	{
+		cs1.Format("SELECT *, LEFT(Syurui, CHARINDEX(char(13)+char(10), Syurui)-1) as clm1 ");
+	}
+	else	{
+		cs1.Format("SELECT *, RIGHT(Syurui, len(Syurui)-CHARINDEX(char(13)+char(10), Syurui)) as clm1 ");
+	}
+	cs2.Format("FROM [dbo].%s ", m_lo_TableName);	
+	cs3.Format("WHERE [dbo].%s.FgShow = %d AND [dbo].%s.NumGroup = %d ", m_lo_TableName, ID_FGSHOW_IKKATU, m_lo_TableName, nNumGroup);
+	cs4.Format("ORDER BY clm1");
+// 修正No.158302 add -->
+	if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+// 修正No.158302 add <--
+	cs5.Format(_T(", [dbo].%s.Seq"), m_lo_TableName);
+	if((pSsw & 0x0f) == 0x01)	cs5 += _T(" DESC");
+
+	strSQL.Empty();
+	strSQL = cs1 + cs2 + cs3 + cs4 + cs5;
+
+	return strSQL;
+}
+
+/**********************************************************************
+	RequeryFgShowIkkatuSort081(int nNumGroup, CString sSort)
+		一括金額表示で非表示の対象になっているレコードをグループ番号別に抽出（ソート機能付き）
+	【抽出条件】
+		FgShow の値が、「一括金額対象(非表示)」でNumGrop の値が引数指定値
+		銀行テーブルを参照するため、RequeryWorkは使用せず、mfcRec.Open(AFX_DB_USE_DEFAULT_TYPE, xxx)で発行
+	【ソート条件】
+		引数による
+	※様式⑧支払手形の内訳書専用
+
+	引数
+			int					グループ番号
+			CString				ソート項目
+			char				ソートサイン
+	戻値
+			int					作成されたSQL文
+***********************************************************************/
+CString CdbUc000Common::RequeryFgShowIkkatuSort081(int nNumGroup, CString sSort, char pSsw)
+{
+	CString		cs1="", cs2="", cs3="", cs4="", cs5="";
+	CString		strSQL;
+
+// No.158111 del -->
+	//cs1.Format("SELECT * FROM [dbo].%s, [dbo].[uc_lst_Bank] ", m_lo_TableName);
+	//cs2.Format("WHERE [dbo].%s.FgShow = %d AND [dbo].%s.NumGroup = %d ", m_lo_TableName, ID_FGSHOW_IKKATU, m_lo_TableName, nNumGroup);
+	//cs3.Format("AND [dbo].%s.BkOrder = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+// No.158111 del <--
+// No.158111 add -->
+	cs1.Format("SELECT * FROM [dbo].%s ", m_lo_TableName);
+	cs2.Format("LEFT JOIN [dbo].[uc_lst_Bank] on [dbo].%s.BkOrder = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	cs3.Format("WHERE [dbo].%s.FgShow = %d AND [dbo].%s.NumGroup = %d ", m_lo_TableName, ID_FGSHOW_IKKATU, m_lo_TableName, nNumGroup);
+// No.158111 add <--
+	cs4.Format("ORDER BY ");
+	if((pSsw & 0xf0) == 0x10)	{
+		cs4 += _T("[dbo].[uc_lst_Bank].BkKana1");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+	}
+	else if((pSsw & 0xf0) == 0x20) {
+		cs4 += _T("[dbo].[uc_lst_Bank].BkKana2");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+	}
+	cs5.Format(_T(", [dbo].%s.Seq"), m_lo_TableName);
+	if((pSsw & 0x0f) == 0x01)	cs5 += _T(" DESC");
+
+	strSQL.Empty();
+	strSQL = cs1 + cs2 + cs3 + cs4 + cs5;
+
+	return strSQL;
+}
+
+// No.158072 add <--
+
+
+/**********************************************************************
+	RequeryFgShow(int inFgShow)
+		指定された表示フラグにてレコード抽出
+
+	【抽出条件】
+		FgShow の値をパラメータ指定
+	【ソート条件】
+		なし
+
+	引数
+			int					FgShow
+			int					nData = 1 ：昇順
+								      = 0 ：ソートなし
+									  = -1：降順
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryFgShow(int inFgShow, int nData/*=0*/)
+{
+	CString strSort = _T( "" );
+
+	if( nData == 1 ){
+		strSort = "NumPage ASC, NumRow ASC";
+	}
+	else if( nData == -1 ){
+		strSort = "NumPage DESC, NumRow DESC";
+	}
+
+	m_strFilter.Format("FgShow = %d", inFgShow);
+	m_strSort = strSort;
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequerySortPageRow
+		頁番号/行で昇順番号して全レコード抽出
+
+	【抽出条件】
+		全レコード
+	【ソート条件】
+		NumPageの昇順
+		NumRowの昇順
+
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequerySortPageRow(void)
+{
+	m_strFilter = "";
+	m_strSort = "NumPage ASC, NumRow ASC";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		m_strFilter.Format("FormSeq = %d", m_lo_FormSeq);
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryFgShowSortPageRow(int inFgShow)
+		指定された表示フラグのレコードを頁番号/行で昇順番号してレコード抽出
+
+	【抽出条件】
+		FgShow の値をパラメータ指定
+	【ソート条件】
+		NumPageの昇順
+		NumRowの昇順
+
+	引数
+			int					FgShow
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryFgShowSortPageRow(int inFgShow)
+{
+	m_strFilter.Format("FgShow = %d", inFgShow);
+	m_strSort = "NumPage ASC, NumRow ASC, Seq DESC";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryNextBeforeRecord()
+		１個前のデータ/１個後のデータを取得する
+		
+		上へ/下へ：頁計/累計を含まず
+		項目複写 ：データのみ（特殊行を含まず）
+
+	引数
+			int					指定位置（頁）
+			int					指定位置（行）
+			int					-1:１つ前，1:１つ後ろ
+			int					0:上へ/下へ，1:項目複写
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@@_1@
+***********************************************************************/
+int CdbUc000Common::RequeryNextBeforeRecord(int nPage, int nRow, int nTarget, int nData)
+{
+	CString			str1;		// ページ＋行の抽出条件
+	CString			str2;		// ページ計＋累計を含まないの抽出条件
+	CString			str3;		// 表示のみ（一時保管，一括金額を含まず）の抽出条件
+	
+	// 
+	if (nData == 0) {
+		// 上へ/下へ：頁計/累計を含まず
+		str2.Format("(FgFunc != %d AND FgFunc != %d)", ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+	}
+	else {
+		// 項目複写：データのみ
+		str2.Format("(FgFunc = %d)", ID_FGFUNC_DATA);
+	}
+	
+	// 共通の条件
+	str3.Format("(FgShow = %d)", ID_FGSHOW_OFF);
+	
+	// １つ前のデータを取得
+	if (nTarget == -1) {
+		// 指定位置より前を降順で取得
+		str1.Format("((NumPage = %d AND NumRow < %d) OR (NumPage < %d))", nPage, nRow, nPage);
+
+		// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+		if (m_lo_FormSeq > 0) {
+			CString	SqlStrSeq;
+			SqlStrSeq.Format("(FormSeq = %d) AND ", m_lo_FormSeq);
+			str1 = SqlStrSeq + str1;
+		}
+		
+		m_strFilter = str1 + _T(" AND ") + str2 + _T(" AND ") + str3;
+		m_strSort = "NumPage DESC, NumRow DESC";
+		
+	// １つ後のデータを取得
+	}
+	else if (nTarget == 1) {
+		// 指定位置より後を昇順で取得
+		str1.Format("((NumPage = %d AND NumRow > %d) OR (NumPage > %d))", nPage, nRow, nPage);
+		
+		// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+		if (m_lo_FormSeq > 0) {
+			CString	SqlStrSeq;
+			SqlStrSeq.Format("(FormSeq = %d) AND ", m_lo_FormSeq);
+			str1 = SqlStrSeq + str1;
+		}
+
+		m_strFilter = str1 + _T(" AND ") + str2 + _T(" AND ") + str3;
+		m_strSort = "NumPage ASC, NumRow ASC";
+		
+	}
+	else {
+		// エラー
+		return	DB_ERR;
+	}
+
+	// リクエリを実行すると欲しいデータが先頭に来る
+	return RequeryWork();
+}
+
+/**********************************************************************
+	DeleteFgFunc(int inFgFuncKind)
+		パラメータで指定された特殊行を削除する
+
+	【抽出条件】
+		パラメータで指定された特殊行
+	【ソート条件】
+		なし
+
+	引数
+			int		inFgFuncKind	:削除する特殊行
+	戻値
+			int		DB_ERR_OK (0)     ：成功
+					DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::DeleteFgFunc(int inFgFuncKind)
+{
+//?	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	CString		SqlStrSub;
+//?	int			retVal = DB_ERR;
+
+//?	retVal = DB_ERR_OK;
+
+	SqlStrSub.Format(_T("(FgFunc = %d)"), inFgFuncKind);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		SqlStrSub = SqlStrSeq + SqlStrSub;
+	}
+
+	SqlStr =	_T("DELETE FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	_T("WHERE ") + SqlStrSub;
+
+//?	m_lo_pdb->ExecuteSQL(SqlStr);
+//?	return retVal;
+
+	return ExecuteSQLWork(SqlStr);
+}
+
+/**********************************************************************
+	DeleteFgShow(int inFgShowKind)
+		パラメータで指定された特殊行を削除する
+
+	【抽出条件】
+		パラメータで指定された特殊行
+	【ソート条件】
+		なし
+
+	引数
+			int		inFgShowKind	:削除する特殊行
+	戻値
+			int		DB_ERR_OK (0)     ：成功
+					DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::DeleteFgShow(int inFgShowKind)
+{
+	CString		SqlStr;
+	CString		SqlStrSub;
+
+	SqlStrSub.Format(_T("(FgShow = %d)"), inFgShowKind);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		SqlStrSub = SqlStrSeq + SqlStrSub;
+	}
+
+	SqlStr =	_T("DELETE FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	_T("WHERE ") + SqlStrSub;
+
+	return ExecuteSQLWork(SqlStr);
+}
+
+/**********************************************************************
+	CreateNewRecord()
+		新規レコードを作成、初期値を追加
+		レコードセットには、新規レコードがセットされて戻ります
+
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+
+//??
+	新規レコード追加作業を CdbUc00Common にて実行
+	各データテーブルでは、初期値の代入を実施する。
+***********************************************************************/
+// virtual
+int CdbUc000Common::CreateNewRecord()
+{
+	// 基本的に、このクラスの、このメソッドが呼び出されることは無い。
+	return RequeryWork();
+}
+
+// midori 152765 add -->
+// 157153 del -->
+///**********************************************************************
+//	CreateNewRecord2()
+//		新規レコードを作成（出力形式変更時に使用）
+//		レコードセットには、新規レコードがセットされて戻ります
+//	引数
+//			なし
+//	戻値
+//			int					DB_ERR_OK (0)     ：成功
+//								DB_ERR_OK (0) 以外：失敗
+//
+//	新規レコード追加作業を CdbUc00Common にて実行
+//	各データテーブルでは、初期値の代入を実施する。
+//***********************************************************************/
+//// virtual
+//int CdbUc000Common::CreateNewRecord2(int pNumPage,int pNumRow)
+// 157153 del <--
+// 157153 add -->
+// ------------------------------------------------------------------------------------------------
+//	CreateNewRecord2()
+//		新規レコードを作成
+//		レコードセットには、新規レコードがセットされて戻ります
+//	引数
+//			int			作成するレコードの頁番号
+//			int			作成するレコードの行番号
+//			int			作成する行の種類	0:空行を作成	1:小計NULL行を作成
+//	戻値
+//			int					DB_ERR_OK (0)     ：成功
+//								DB_ERR_OK (0) 以外：失敗
+//
+//	新規レコード追加作業を CdbUc00Common にて実行
+//	各データテーブルでは、初期値の代入を実施する。
+// ------------------------------------------------------------------------------------------------
+// virtual
+int CdbUc000Common::CreateNewRecord2(int pNumPage,int pNumRow,int pNullSw)
+// 157153 add <--
+{
+	return(0);
+}
+// midori 152765 add <--
+
+// 157153 del -->
+//// midori 156188 add -->
+//// ------------------------------------------------------------------------------------------------
+////	CreateNewRecord3()
+////		新規レコードを作成（小計NULL行を作成）（出力形式変更時に使用）
+////		レコードセットには、新規レコードがセットされて戻ります
+////	引数
+////			なし
+////	戻値
+////			int					DB_ERR_OK (0)     ：成功
+////								DB_ERR_OK (0) 以外：失敗
+////
+////	新規レコード追加作業を CdbUc00Common にて実行
+////	各データテーブルでは、初期値の代入を実施する。
+//// ------------------------------------------------------------------------------------------------
+//// virtual
+//int CdbUc000Common::CreateNewRecord3(int pNumPage,int pNumRow)
+//{
+//	return(0);
+//}
+//// midori 156188 add <--
+// 157153 del <--
+
+/**********************************************************************
+	RequerySortParameter()
+		ソートを実行（パラメータ可変）
+
+	引数
+			CString				フィルタ条件
+			CString				ソート条件
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+
+	2006/03/21現在 下記のメソッドから呼び出されている
+	本メソッドのフィルタ条件(strFilter)の指定には、注意が必要。
+	(その他①、②帳表の絞込みを本メソッドで追加しているため)
+		CfrmUc??????(各帳表)::virTblSortSubSortProc()
+		CfrmUc000Common::CmnTblSortSubGetSortParam()
+
+//@@_2@
+***********************************************************************/
+int CdbUc000Common::RequerySortParameter(CString strFilter, CString strSort)
+{
+	m_strFilter = strFilter;
+	m_strSort = strSort;
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("(FormSeq = %d) AND (%s)", m_lo_FormSeq, m_strFilter);
+		m_strFilter = SqlStrSeq;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryFgFunc()
+		指定された特殊行フラグと一致するデータをレコードセットとして取得
+
+	引数
+			int					特殊行フラグ
+			int					昇順／降順フラグ（0:昇順，1:降順）
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryFgFunc(int nFgFunc, int nDescFlag)
+{
+	m_strFilter.Format("FgFunc = %d", nFgFunc);
+	if (nDescFlag == 0) {
+		m_strSort = "NumPage ASC, NumRow ASC";
+	}
+	else {
+		m_strSort = "NumPage DESC, NumRow DESC";
+	}
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryFgFuncGroup()
+		指定された特殊行フラグとグループと一致するデータをレコードセットとして取得
+
+	引数
+			int					特殊行フラグ
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+int CdbUc000Common::RequeryFgFuncGroup(int nFgFunc, int nNumGroup)
+{
+	m_strFilter.Format("FgFunc = %d AND NumGroup = %d", nFgFunc, nNumGroup);
+	m_strSort = "";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	UpdateFgShowRetIkkatu()
+		ソートで使用する "FgShow"項目を更新
+		
+	引数
+			int					"FgShow"の更新後の値
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+int CdbUc000Common::UpdateFgShowRetIkkatu(int nGroup)
+{
+	CString		str1 = "";		// UPDATE xxx SET FgShow=x
+	CString		str2 = "";		// WHERE xxxxx
+	CString		strCommand;
+
+	// SQLコマンド作成
+	str1.Format("UPDATE %s SET FgShow=%d ", m_lo_TableName, ID_FGSHOW_RET_IKKATU);
+	str2.Format("WHERE (FgShow=%d AND NumGroup=%d)", ID_FGSHOW_IKKATU, nGroup);
+	strCommand = str1 + str2;
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		str2.Format(" AND (FormSeq = %d)", m_lo_FormSeq);
+		strCommand += str2;
+	}
+
+	return	ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	UpdateFgShow()
+		ソートで使用する "FgShow"項目を更新
+		
+	引数
+			CString				実行条件（"Val=0", "Val<=xxx"，""，･･･など）
+			int					"FgShow"の更新後の値
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+
+//@@_3@
+***********************************************************************/
+int CdbUc000Common::UpdateFgShow(int nOldFgShow, int nNewFgShow)
+{
+	CString		str1 = "";		// UPDATE xxx SET FgShow=x
+	CString		str2 = "";		// WHERE xxxxx
+	CString		strCommand;
+	
+	// SQLコマンド作成
+	str1.Format("UPDATE %s SET FgShow=%d", m_lo_TableName, nNewFgShow);
+	//str2.Format("WHERE (FgShow = %d)", nOldFgShow);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		str2.Format("WHERE (FormSeq = %d) AND (FgShow = %d)", m_lo_FormSeq, nOldFgShow);
+	}
+	else {
+		str2.Format("WHERE (FgShow = %d)", nOldFgShow);
+	}
+
+	strCommand = str1 + _T(" ") + str2;
+	
+//?	m_lo_pdb->ExecuteSQL(strCommand);
+//?	return	DB_ERR_OK;
+
+	return	ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	UpdateFgShowPageRow()
+		ソートで使用する "FgShow"項目、及び頁番号、行番号を更新
+		
+	引数
+			CString				実行条件（"Val=0", "Val<=xxx"，""，･･･など）
+			int					"FgShow"の更新後の値
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+
+//@@_3@
+***********************************************************************/
+int CdbUc000Common::UpdateFgShowPageRow(int nOldFgShow, int nNewFgShow, int nPage, int nRow)
+{
+	CString		str1 = "";		// UPDATE xxx SET FgShow=x
+	CString		str2 = "";		// WHERE xxxxx
+	CString		strCommand;
+	
+	// SQLコマンド作成
+	str1.Format("UPDATE %s SET FgShow=%d, NumPage=%d, NumRow=%d", m_lo_TableName, nNewFgShow, nPage, nRow);
+	//str2.Format("WHERE (FgShow = %d)", nOldFgShow);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		str2.Format("WHERE (FormSeq = %d) AND (FgShow = %d)", m_lo_FormSeq, nOldFgShow);
+	}
+	else {
+		str2.Format("WHERE (FgShow = %d)", nOldFgShow);
+	}
+
+	strCommand = str1 + _T(" ") + str2;
+	
+//?	m_lo_pdb->ExecuteSQL(strCommand);
+//?	return	DB_ERR_OK;
+
+	return	ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	UpdateFgShowClearPageRow()
+		ソートで使用する"FgShow"項目から頁と行を０クリアする
+		
+	引数
+			int					実行条件となる"FgShow"の値
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::UpdateFgShowClearPageRow(int nFgShow)
+{
+	CString			strCommand;
+	
+	// SQLコマンド作成
+	//strCommand.Format("UPDATE %s SET NumPage=0, NumRow=0 WHERE FgShow=%d", m_lo_TableName, nFgShow);
+	strCommand.Format("UPDATE %s SET NumPage=0, NumRow=0 WHERE ", m_lo_TableName);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	CString	SqlStrSeq;
+	if (m_lo_FormSeq > 0) {
+		SqlStrSeq.Format("FormSeq=%d AND FgShow=%d", m_lo_FormSeq, nFgShow);
+	}
+	else {
+		SqlStrSeq.Format("FgShow=%d", nFgShow);
+	}
+	strCommand += SqlStrSeq;
+
+//?	m_lo_pdb->ExecuteSQL(strCommand);
+//?	return	DB_ERR_OK;
+
+	return	ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	UpdateFgShowClearNumGroup()
+		ソートで使用する"FgShow"項目からグループ番号を０クリアする
+		
+	引数
+			int					実行条件となる"FgShow"の値
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::UpdateFgShowClearGroup(int nFgShow)
+{
+	CString			strCommand;
+	
+	// SQLコマンド作成
+	//strCommand.Format("UPDATE %s SET NumGroup=0 WHERE FgShow=%d", m_lo_TableName, nFgShow);
+	strCommand.Format("UPDATE %s SET NumGroup=0 WHERE ", m_lo_TableName);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	CString	SqlStrSeq;
+	if (m_lo_FormSeq > 0) {
+		SqlStrSeq.Format("FormSeq=%d AND FgShow=%d", m_lo_FormSeq, nFgShow);
+	}
+	else {
+		SqlStrSeq.Format("FgShow=%d", nFgShow);
+	}
+	strCommand += SqlStrSeq;
+	
+//?	m_lo_pdb->ExecuteSQL(strCommand);
+//?	return	DB_ERR_OK;
+
+	return	ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	GetNumRowFgFuncFgShow()
+		パラメータで指定された条件の行数を取得
+
+	引数
+			int		inPage		ページ番号
+			int		inFgFunc	特殊行フラグ
+			int		inFgShow	表示フラグ
+	戻値
+			int					正の数：行数
+								負の数：失敗
+								0     ：行なし
+//@
+***********************************************************************/
+int CdbUc000Common::GetNumRowFgFuncFgShow(int inPage, int inFgFunc, int inFgShow)
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	CString		SqlStrSub;
+	int			retVal = DB_ERR;
+
+	//SqlStrSub.Format("(NumPage = %d AND FgFunc = %d AND FgShow = %d)", inPage, inFgFunc, inFgShow);
+	SqlStrSub.Format("NumPage = %d AND FgFunc = %d AND FgShow = %d", inPage, inFgFunc, inFgShow);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		SqlStrSub = SqlStrSeq + SqlStrSub;
+	}
+
+	SqlStr =	_T("SELECT count(*) AS RowNum ");
+	SqlStr +=	_T("FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	_T("WHERE ") + SqlStrSub;
+
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("RowNum"), val);
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			retVal = 0;
+		}
+		else {								// 値の取得OK
+			retVal = val.m_chVal;
+		}
+	}
+
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	GetNumRowFgShow()
+		パラメータで指定された条件の行数を取得
+
+	引数
+			int		inPage		ページ番号
+			int		inFgShow	表示フラグ
+	戻値
+			int					正の数：行数
+								負の数：失敗
+								0     ：行なし
+//@
+***********************************************************************/
+int CdbUc000Common::GetNumRowFgShow(int inPage, int FgShow)
+{
+	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	CString		SqlStrSub;
+	int			retVal = DB_ERR;
+
+	//SqlStrSub.Format("(NumPage = %d AND FgShow = %d)", inPage, FgShow);
+	SqlStrSub.Format("NumPage = %d AND FgShow = %d", inPage, FgShow);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		SqlStrSub = SqlStrSeq + SqlStrSub;
+	}
+
+	SqlStr =	_T("SELECT count(*) AS RowNum ");
+	SqlStr +=	_T("FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	_T("WHERE ") + SqlStrSub;
+
+	if ( ! OpenEx( &rs , SqlStr , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	retVal = DB_ERR_EOF;
+	if (!rs.IsEOF()) {
+		CDBVariant	val;
+		rs.GetFieldValue(_T("RowNum"), val);
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			retVal = 0;
+		}
+		else {								// 値の取得OK
+			retVal = val.m_chVal;
+		}
+	}
+
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	DeletePage()
+		パラメータで指定された頁以降を削除
+
+	引数
+			int		inPage		ページ番号
+	戻値
+			int		DB_ERR_OK (0)     ：成功
+					DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::DeletePage(int inPage)
+{
+//?	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;		// SQL全文
+	CString		SqlStrSub;	// SQL条件指定部
+//?	int			retVal = DB_ERR;
+
+//?	retVal = DB_ERR_OK;
+
+	SqlStrSub.Format("(NumPage >= %d)", inPage);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("(FormSeq = %d) AND ", m_lo_FormSeq);
+		SqlStrSub = SqlStrSeq + SqlStrSub;
+	}
+
+
+	SqlStr =	_T("DELETE FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	_T("WHERE ") + SqlStrSub;
+
+//	m_lo_pdb->ExecuteSQL(SqlStr);
+//	return retVal;
+
+	return	ExecuteSQLWork(SqlStr);
+}
+
+/**********************************************************************
+	DeleteAllRecord()
+		テーブル内の全レコードを削除
+
+	引数
+			なし
+	戻値
+			int		DB_ERR_OK (0)     ：成功
+					DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::DeleteAllRecord()
+{
+	CString		SqlStr;		// SQL全文
+
+	///////////////////////////////////////////////////////////////
+	// SQL 作成
+	SqlStr =	_T("DELETE FROM ") + m_lo_TableName + _T(" ");
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d ", m_lo_FormSeq);
+		SqlStr +=	_T("WHERE ") + SqlStrSeq;
+	}
+
+	///////////////////////////////////////////////////////////////
+	// SQL 実行
+	return	ExecuteSQLWork(SqlStr);
+}
+
+/**********************************************************************
+	DeleteVisualRecord()
+		テーブル内の表示されているレコード（FgShow != ID_FGSHOW_HOKAN )を全て削除
+
+	引数
+			なし
+	戻値
+			int		DB_ERR_OK (0)     ：成功
+					DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::DeleteVisualRecord()
+{
+	CString		SqlStr;		// SQL全文
+	CString		SqlStr2;
+
+	///////////////////////////////////////////////////////////////
+	// SQL 作成
+	SqlStr =	_T("DELETE FROM ") + m_lo_TableName + _T(" ");
+
+	SqlStr2.Format( "FgShow <> %d ", ID_FGSHOW_HOKAN );
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d ", m_lo_FormSeq);
+		SqlStr +=	_T("WHERE ") + SqlStrSeq + _T("AND ") + SqlStr2;
+	}
+	else{
+		SqlStr += _T( "WHERE " ) + SqlStr2;
+	}
+
+	///////////////////////////////////////////////////////////////
+	// SQL 実行
+	return	ExecuteSQLWork(SqlStr);
+}
+
+/**********************************************************************
+	RequerySeq()
+		指定されたシーケンス番号を持つレコードを抽出
+		※1レコードのみ抽出する
+
+	引数
+			int					シーケンス番号
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequerySeq(int inSeq)
+{
+	m_strFilter.Format( "Seq = %d", inSeq );
+	m_strSort = "";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	UpdatePageNumRowNumAdd()
+		頁番、行番を振り直す
+
+	引数
+			int		inPage		頁番号
+			int		inRow		行番号
+			int		inAdd		加減数
+			int		inAllData	1頁内の行数
+	戻値
+			int		DB_ERR_OK (0)     ：成功
+					DB_ERR_OK (0) 以外：失敗
+//@@_4@
+***********************************************************************/
+int CdbUc000Common::UpdatePageNumRowNumAdd(int inPage, int inRow, int inAdd, int inAddData)
+{
+//?	CRecordset	rs(m_lo_pdb);
+	CString		SqlStr;
+	CString		SqlStrSub1;	// 頁番号設定用
+	CString		SqlStrSub2;	// 行番号設定用
+	CString		SqlStrSub3;	// 条件抽出用
+//?	int			retVal = DB_ERR;
+
+//?	retVal = DB_ERR_OK;
+
+	// 頁番号計算
+	SqlStrSub1.Format(_T("NumPage = (((((NumPage - 1) * %d) + (NumRow - 1)) + %d) / %d) + 1"), 
+						inAddData, inAdd, inAddData);
+	// 行番号計算
+	SqlStrSub2.Format(_T("NumRow =  (((((NumPage - 1) * %d) + (NumRow - 1)) + %d) %% %d) + 1"), 
+						inAddData, inAdd, inAddData);
+	// 対象行抽出
+	SqlStrSub3.Format(_T("(((NumPage >= %d) AND (NumRow >= %d)) OR (NumPage > %d)) AND ((FgFunc <> %d) AND (FgFunc <> %d) AND (FgShow = 0))"), 
+						inPage, inRow, inPage, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("(FormSeq = %d) AND ", m_lo_FormSeq);
+		SqlStrSub3 = SqlStrSeq + SqlStrSub3;
+	}
+
+	SqlStr  = _T("UPDATE ") + m_lo_TableName + _T(" SET ") + SqlStrSub1 + _T(", ") + SqlStrSub2 + _T(" ");
+	SqlStr += _T("WHERE ") + SqlStrSub3;
+
+//?	m_lo_pdb->ExecuteSQL(SqlStr);
+//?	return retVal;
+
+	return	ExecuteSQLWork(SqlStr);
+}
+
+// midori 154714 add -->
+/**********************************************************************
+	UpdateNewPageCheckAndDelete()
+		新しくできた頁に空行以外のデータが無ければ、新しくできた頁を削除する
+	引数	なし
+	戻値	なし
+***********************************************************************/
+void CdbUc000Common::UpdateNewPageCheckAndDelete( void )
+{
+	CString			SqlStr=_T("");
+	CRecordset		mfcRec(m_lo_pdb);
+	CDBVariant		mfcVal;
+	int				nMaxp=0;
+	int				nVal=0;
+
+	// 最大頁数を取得する
+	SqlStr = _T("select max(numpage) as cnt from ") + m_lo_TableName;
+	OpenEx(&mfcRec,SqlStr,m_lo_TableName);
+	if(!mfcRec.IsEOF())	{
+		mfcRec.GetFieldValue(_T("cnt"),mfcVal);
+		if(mfcVal.m_dwType == DBVT_NULL)		nMaxp = 0;
+		else									nMaxp = mfcVal.m_iVal;
+	}
+	mfcRec.Close();
+	if(nMaxp > 0)	{
+		// 最終ページに空行以外のデータが存在するか
+		SqlStr.Format(_T("select numpage as cnt from %s where NumPage = %d AND FgFunc != %d"),m_lo_TableName,nMaxp,ID_FGFUNC_NULL);
+		OpenEx(&mfcRec,SqlStr,m_lo_TableName);
+		if(!mfcRec.IsEOF())	{
+			mfcRec.GetFieldValue(_T("cnt"),mfcVal);
+			if(mfcVal.m_dwType == DBVT_NULL)		nVal = 0;
+			else									nVal = mfcVal.m_iVal;
+		}
+		mfcRec.Close();
+		if(nVal == 0)	{
+			// 空行しか存在しなければ最終ページを削除する
+			SqlStr.Format(_T("delete from %s where NumPage=%d"),m_lo_TableName,nMaxp);
+			ExecuteSQLWork(SqlStr);
+		}
+	}
+}
+// midori 154714 add <--
+
+/**********************************************************************
+	GetFieldValueString()
+		フィールド名称を指定して値を取得する
+
+	引数
+			CString			フィールド名称
+	戻値
+			CString			指定フィールド名の値をCString型で返す
+***********************************************************************/
+CString CdbUc000Common::GetFieldValueString(CString strValue)
+{
+	CDBVariant			val;
+	CString				strRet;
+
+	// パラメータチェック
+	if (strValue == "") {
+		return	"";
+	}
+
+	try{
+		GetFieldValue(strValue, val);
+		if (val.m_dwType == DBVT_NULL) {	// NULLだった場合
+			return	"";
+		}
+		else {								// 値の取得OK
+			// フィールドの型に応じて戻り値を返す
+			switch (val.m_dwType) {
+		case DBVT_UCHAR:
+			strRet.Format("%d", val.m_chVal);			// char
+			break;
+		case DBVT_SHORT:
+			strRet.Format("%d", val.m_iVal);			// short
+			break;
+		case DBVT_LONG:
+			strRet.Format("%d", val.m_lVal);			// long
+			break;
+		case DBVT_STRING:
+			strRet.Format("%s", val.m_pstring);			// CString
+			break;
+		case DBVT_ASTRING:
+			//			strRet.Format("%s", val.m_pstringA);
+			strRet = *(CString*)val.m_pstringA;			// CStringA
+			break;
+		default:
+			strRet = "";
+			break;
+			}
+		}
+	}
+	catch(CDBException* e){
+		// 何かすべき？
+
+		// 解放
+		e->Delete();
+	}
+	return	strRet;
+}
+
+// midori 156189,156190,156191 del -->
+///**********************************************************************
+//	UpdateCalcKei()
+//		各帳表の小計など集計処理で使用する集計結果のレコード更新
+//		
+//	引数
+//			int					シーケンス番号(データテーブルのSeq)
+//			CALCKEI_INFO		可変フィールド名＋集計値
+//	戻値
+//			int					DB_ERR_OK (0)     ：成功
+//								DB_ERR_OK (0) 以外：失敗
+////@@_5@
+//***********************************************************************/
+//int CdbUc000Common::UpdateCalcKei(int intSeq, CALCKEI_INFO uCalcInfo)
+// midori 156189,156190,156191 del <--
+// midori 156189,156190,156191 add -->
+// --------------------------------------------------------------------------------------------------------------------------
+//	UpdateCalcKei()
+//		各帳表の小計など集計処理で使用する集計結果のレコード更新
+//		
+//	引数
+//			int					シーケンス番号(データテーブルのSeq)
+//			CALCKEI_INFO		可変フィールド名＋集計値
+//			int					1:ShowKeiZeroのフラグにBIT_D7（小計名称編集済みサイン 様式②,様式⑪で使用）をONにする
+//	戻値
+//			int					DB_ERR_OK (0)     ：成功
+//								DB_ERR_OK (0) 以外：失敗
+// --------------------------------------------------------------------------------------------------------------------------
+int CdbUc000Common::UpdateCalcKei(int intSeq, CALCKEI_INFO uCalcInfo,int pSw)
+// midori 156189,156190,156191 add <--
+{
+	CString			str1 = "";		// UPDATE xxx SET xxx=999, xxx=999
+	CString			str2 = "";		// WHERE Seq = xx
+	CString			str3 = "";		// , ShowKeiZero = xx
+	CString			strTemp = "";
+	CString			strCommand;
+	int				i;
+	int				nExistNum = 0;
+
+	// フィールド名と集計値から更新情報を作成
+	for (i = 0; i < uCalcInfo.intMaxCount; i++) {
+		// 複数金額に対応
+		nExistNum |= uCalcInfo.bExistNum[i] << i;
+
+		if (strTemp != "") {
+			strTemp = strTemp + ", ";
+		}
+		if (uCalcInfo.strKei[i] == "") {
+			strTemp = strTemp + uCalcInfo.strField[i] + "=NULL";
+		}
+		else {
+			strTemp = strTemp + uCalcInfo.strField[i] + "=" + uCalcInfo.strKei[i];
+		}
+		if( (i+1) == uCalcInfo.intMaxCount ){
+// midori 156189,156190,156191 add -->
+			if(pSw == 1) {
+				nExistNum = (nExistNum | BIT_D7);
+			}
+// midori 156189,156190,156191 add <--
+			// ０円計表示
+			//str3.Format( ", ShowKeiZero = %d", uCalcInfo.bExistNum[i] );
+			str3.Format( ", ShowKeiZero = %d", nExistNum );
+			strTemp = strTemp + str3;
+		}
+	}
+
+	// SQLコマンド作成
+	str1.Format("UPDATE %s SET %s", m_lo_TableName, strTemp);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		str2.Format("WHERE FormSeq = %d AND Seq = %d", m_lo_FormSeq, intSeq);
+	}
+	else {
+		str2.Format("WHERE Seq = %d", intSeq);
+	}
+
+	strCommand = str1 + _T(" ") + str2;
+	
+//?	m_lo_pdb->ExecuteSQL(strCommand);
+//?	return	DB_ERR_OK;
+
+	return	ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	GetKnNameFirstRow()
+		指定ページの最初に出現する科目の名称を取得
+
+	引数
+			int			inPage		(in)頁番号
+			CString*	pstrKnName	(out)科目名称
+			CString		strTable	(in)取得先のテーブル名
+	戻値
+			int						正の数：行数
+									負の数：失敗
+									0     ：行なし
+***********************************************************************/
+int CdbUc000Common::GetKnNameFirstRow(int inPage, CString* pstrKnName, CString strTable)
+{
+	pstrKnName->Empty();
+
+	return 0;
+}
+
+/**********************************************************************
+	GetKnNameFirstRowSub()
+		指定ページの最初に出現する科目の名称を取得
+
+	引数
+			int			inPage		(in)頁番号
+			CString*	pstrKnName	(out)科目名称
+			CString		strTable	(in)取得先のテーブル名
+	戻値
+			int						正の数：行数
+									負の数：失敗
+									0     ：行なし
+//@
+***********************************************************************/
+int CdbUc000Common::GetKnNameFirstRowSub(int inPage, CString* pstrKnName, CString strTable)
+{
+	CString		strRet = _T( "" );
+	int			retVal = DB_ERR;
+
+	CRecordset	rs( m_lo_pdb );
+	CString		SqlStr = _T( "" );
+// midori No.16 add -->
+	CString		dt = _T("");
+// midori No.16 add <--
+
+	CString SqlStrSub;
+
+// midori No.16 add -->
+	// テンポラリテーブルを出力する場合
+	if( strTable.IsEmpty() == FALSE ){
+		// 出力用テンポラリテーブルが作成されていなければ
+		SqlStr.Format(_T("select object_id('tempdb..%s'),'u'"),strTable);
+		rs.Open(CRecordset::forwardOnly,SqlStr);
+		rs.GetFieldValue((short)0,dt);
+		rs.Close();
+		if(dt.IsEmpty() == TRUE)	{
+			return DB_ERR_OPEN;
+		}
+	}
+// midori No.16 add <--
+
+// midori 152219 cor -->
+////	SqlStrSub.Format( _T( "NumPage = %d" ), inPage );
+//	SqlStrSub.Format( _T( "NumPage <= %d" ), inPage );
+// ---------------------
+	SqlStrSub.Format( _T( "NumPage = %d" ), inPage );
+// midori 152219 cor <--
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		SqlStrSub = SqlStrSeq + SqlStrSub;
+	}
+
+	if( strTable.IsEmpty() != FALSE ){
+		strTable = m_lo_TableName;
+	}
+
+	// SQL文作成
+	SqlStr  = _T( "SELECT KnName " );
+	SqlStr += _T( "FROM " ) + strTable + _T( " " );
+	SqlStr += _T( "WHERE " ) + SqlStrSub + _T( " " );
+	SqlStr += _T( "AND KnSeq > 0 " );
+//	SqlStr += _T( "ORDER BY NumRow" );
+	SqlStr += _T( "ORDER BY NumPage DESC, NumRow" );
+
+	// オープンできなければ、NULL文字を返し、処理終了
+	if ( ! OpenEx( &rs , SqlStr , strTable ) ) {
+		return DB_ERR_OPEN;
+	}
+
+	// 科目名の取得
+	retVal = DB_ERR_EOF;
+	if( !rs.IsEOF() ){
+		CDBVariant	val;
+		rs.GetFieldValue( _T( "KnName" ), val );
+		if( val.m_dwType == DBVT_NULL ){
+			// NULLならNULL文字を返す
+			pstrKnName->Empty();
+		}
+		else{
+			// 取得値
+			*pstrKnName = *val.m_pstring;
+			retVal = DB_ERR_OK;
+		}
+	}
+	rs.Close();
+
+	return retVal;
+}
+
+/**********************************************************************
+	UpdateDataTableNullToStrNull()
+
+	データテーブルの文字列フィールド NULL であった場合
+	NULL 文字列("")に更新する
+
+	文字列ソート対象フィールドの場合、NULL よりも、
+	NULL文字列の方が処理として都合が良いため。
+	フィールド同士を文字列連結し、ソートとすることもある。
+	そのとき、
+
+	※ ⑰⑱のその他帳表は、FormSeq にかかわらず、
+	   対象の全レコード更新しても問題ないとおもわれるため、
+	   FormSeq の対応を入れていない
+
+	引数
+			CString inFieldName	データテーブルのフィールド名
+
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+int CdbUc000Common::UpdateDataTableNullToStrNull(
+						CString inFieldName		// フィールド名
+)
+{
+	CString		SqlStr;
+
+	///////////////////////////////////////////////////////////////
+	// SQL 作成
+
+	SqlStr  = _T("UPDATE ") + m_lo_TableName + _T(" ");
+	SqlStr += _T("SET ")   + inFieldName + _T(" = '' ");
+	SqlStr += _T("WHERE ") + inFieldName + _T(" IS NULL ");
+
+	///////////////////////////////////////////////////////////////
+	// SQL 実行
+
+	return	ExecuteSQLWork(SqlStr);
+}
+
+/**********************************************************************
+	UpdateDataTableWork()
+		ソート前にデータを整えるために実行される。
+		例)
+		文字列フィールドが NULL であった場合、NULL文字列("")に変更する
+
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+
+//??
+	新規レコード追加作業を CdbUc00Common にて実行
+	各データテーブルでは、初期値の代入を実施する。
+***********************************************************************/
+// virtual
+int CdbUc000Common::UpdateDataTableWork()
+{
+	// 基本的に、このクラスの、このメソッドが呼び出されることは無い。
+	return DB_ERR_OK;
+}
+
+/**********************************************************************
+	RequeryNextNotNullLine()
+		指定位置（頁、行）以降、次の空行、頁計行、累計行以外の行を検索
+
+	引数
+			int					指定位置（頁）
+			int					指定位置（行）
+
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+
+***********************************************************************/
+int CdbUc000Common::RequeryNextNotNullLine( int nPage, int nRow )
+{
+	CString			str1;		// ページ＋行の抽出条件
+	CString			str2;		// ページ計＋累計を含まないの抽出条件
+	CString			str3;		// 表示のみ（一時保管，一括金額を含まず）の抽出条件
+	CString			SqlStrSeq;	// FormSeq用
+	
+	//	初期化
+	str1.Empty();
+	str2.Empty();
+	str3.Empty();
+	SqlStrSeq.Empty(); 
+
+	// 指定位置以降を検索
+	str1.Format("((NumPage = %d AND NumRow > %d) OR (NumPage > %d))", nPage, nRow, nPage);
+	// 空行、頁計、累計を含まず
+	str2.Format("(FgFunc != %d AND FgFunc != %d AND FgFunc != %d)",ID_FGFUNC_NULL, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+	// 共通の条件
+	str3.Format("(FgShow = %d)", ID_FGSHOW_OFF);
+	
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		SqlStrSeq.Format("(FormSeq = %d) AND ", m_lo_FormSeq);
+		str1 = SqlStrSeq + str1;
+	}
+	
+	//	クエリ作成
+	m_strFilter = str1 + _T(" AND ") + str2 + _T(" AND ") + str3;
+	m_strSort = "NumPage ASC, NumRow ASC";
+	
+	// リクエリを実行すると欲しいデータが先頭に来る
+	return( RequeryWork() );
+}
+
+/**********************************************************************
+	ExecuteDeleteNullLine()
+		指定位置（開始頁、開始行）から指定位置（終了頁、終了行）の間の行を削除（頁計、累計は除く）
+
+	引数
+			int					指定位置（開始頁）
+			int					指定位置（開始行）
+			int					指定位置（終了頁）
+			int					指定位置（終了行）
+	戻値
+			int					削除行数（0より大きい）：成功
+								エラー等（0以下）		：失敗
+
+***********************************************************************/
+int CdbUc000Common::ExecuteDeleteNullLine( int nStartPage, int nStartRow,  int nEndPage, int nEndRow  )
+{
+	CString			str1;				// 削除開始頁
+	CString			str2;				// 削除中間頁
+	CString			str3;				// 削除終了頁
+	CString			str4;				// 対象外の行
+	CString			SqlStr;				// 削除クエリ用
+	CString			SqlStrSeq;			// FormSeq用
+	int				nRet;				// 戻値
+	int				nMidPage;			// 中間頁数
+	CRecordset		mfcRec(m_lo_pdb);	// レコードセット
+	CDBVariant		mfcVal;				// 削除する行数取得用
+	int				nVal;				// 削除する行数
+
+	//	初期化
+	str1.Empty();
+	str2.Empty();
+	str3.Empty();
+	str4.Empty();
+	SqlStr.Empty(); 
+	SqlStrSeq.Empty(); 
+
+	//	削除開始頁
+	str1.Format("((NumPage = %d AND NumRow >= %d) ", nStartPage, nStartRow);
+	
+	//	中間頁算出
+	nMidPage = nEndPage - nStartPage;
+	
+	//	中間頁あり？
+	if ( nMidPage > 1 ){
+		//	削除中間頁
+		str2.Format("OR (NumPage > %d AND NumPage < %d) ", nStartPage, nEndPage);
+	}
+	
+	//	削除終了頁
+	str3.Format(" (NumPage = %d AND NumRow < %d)) ", nEndPage, nEndRow);
+
+	//	削除開始頁と削除終了頁が同一頁内？
+	if ( nMidPage == 0 ){
+		//	条件が論理積になる
+		str3 = "AND" + str3;
+	}
+	else{
+		//	条件が論理和になる
+		str3 = "OR" + str3;
+	}
+	
+	//	頁計、累計を含まず
+	str4.Format("AND (FgFunc != %d AND FgFunc != %d)",ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		SqlStrSeq.Format("(FormSeq = %d) AND ", m_lo_FormSeq);
+		str1 = SqlStrSeq + str1;
+	}
+	
+	//	削除件数取得クエリ作成
+	SqlStr =	_T("SELECT COUNT(Seq) AS Cnt FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	_T("WHERE ") + str1 + str2 + str3 + str4;
+
+	//	開く
+	if ( ! OpenEx( &mfcRec , SqlStr , m_lo_TableName ) ) {
+		return( DB_ERR_OPEN );
+	};
+
+	// 行数カウント値を取得(レコードより取り出し、retValにセット)
+	nRet = DB_ERR_EOF;
+
+	if (!mfcRec.IsEOF()) {
+		
+		//	件数取得
+		mfcRec.GetFieldValue(_T("Cnt"), mfcVal);
+
+		if (mfcVal.m_dwType == DBVT_NULL) {	// NULLだった場合
+			nVal = 0;
+		}
+		else if( mfcVal.m_dwType == DBVT_LONG ){// 値の取得OK(long型)
+			nVal = mfcVal.m_lVal;
+		}
+		else {								// 値の取得OK(long型)
+			nVal = mfcVal.m_iVal;
+		}
+	}
+	
+	//	閉じる
+	mfcRec.Close();
+
+	//	削除クエリ作成
+	SqlStr =	_T("DELETE FROM ") + m_lo_TableName + _T(" ");
+	SqlStr +=	_T("WHERE ") + str1 + str2 + str3 + str4;
+	
+	//	実行
+	nRet = ExecuteSQLWork(SqlStr);
+	
+	//	削除成功？
+	if ( nRet == DB_ERR_OK ){
+		//	削除件数を返す
+		nRet = nVal;
+	}
+	
+	//	戻値を返す
+	return( nRet );
+
+}
+
+// midori 160606 cor -->
+///**********************************************************************
+//	UpdateYokukiZeroClear()
+//		翌期更新により０クリアを行う
+//
+//	引数
+//			なし
+//	戻値
+//			int					DB_ERR_OK (0)     ：成功
+//								DB_ERR_OK (0) 以外：失敗
+//***********************************************************************/
+//// virtual
+//int CdbUc000Common::UpdateYokukiZeroClear()
+//{
+//	// 基本的に、このクラスの、このメソッドが呼び出されることは無い。
+//	return DB_ERR_OK;
+//}
+// ---------------------
+/**********************************************************************
+	UpdateYokukiZeroClear()
+		翌期更新により０クリアを行う
+
+	引数
+			int					0:ゼロクリア　1:空欄クリア
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+// virtual
+int CdbUc000Common::UpdateYokukiZeroClear( int pSw )
+{
+	// 基本的に、このクラスの、このメソッドが呼び出されることは無い。
+	return DB_ERR_OK;
+}
+// midori 160606 cor <--
+
+// midori 180537 del -->
+///**********************************************************************
+//	UpdateYokukiMoveToHokan()
+//		翌期更新により現在データを一時保管へ移動する
+//
+//	引数
+//			なし
+//	戻値
+//			int					DB_ERR_OK (0)     ：成功
+//								DB_ERR_OK (0) 以外：失敗
+//***********************************************************************/
+//// virtual：
+//int CdbUc000Common::UpdateYokukiMoveToHokan()
+//{
+//	CString		strCommand;
+//	CString		strTemp;
+//
+//	//---------------------------------------------------------------- 
+//	//	通常は当処理を実行する
+//	//	ただし、052，092の欄外データは当処理を実行させない
+//	//---------------------------------------------------------------- 
+//
+//	// 一時保管へ移動する
+//	strCommand.Format("UPDATE %s SET ", m_lo_TableName);
+//	strCommand	+=	_T("NumPage = 0, ");					// 頁クリア
+//	strCommand	+=	_T("NumRow = 0, ");						// 行クリア
+//
+//	strTemp.Format("FgShow = %d ", ID_FGSHOW_HOKAN);		// 一時保管の種別を更新
+//	strCommand += strTemp;
+//
+//	// 抽出条件：データ行、一括集計金額行（手動）のみ一時保管が可能
+//	strTemp.Format("WHERE (FgFunc=%d OR FgFunc=%d)", ID_FGFUNC_DATA, ID_FGFUNC_IKKATUMANUAL);
+//	strCommand += strTemp;
+//
+//	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+//	if (m_lo_FormSeq > 0) {
+//		strTemp.Format(" AND (FormSeq=%d)", m_lo_FormSeq);
+//		strCommand += strTemp;
+//	}
+//
+//	return ExecuteSQLWork(strCommand);
+//}
+// midori 180537 del <--
+// midori 180537 add -->
+/**********************************************************************
+	UpdateYokukiMoveToHokan()
+		翌期更新により現在データを一時保管へ移動する
+
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+// virtual：
+int CdbUc000Common::UpdateYokukiMoveToHokan()
+{
+	CString		strCommand;
+	CString		strTemp;
+
+	//---------------------------------------------------------------- 
+	//	通常は当処理を実行する
+	//	ただし、052，092の欄外データは当処理を実行させない
+	//---------------------------------------------------------------- 
+
+	// 一時保管へ移動する
+	strCommand.Format("UPDATE %s SET ", m_lo_TableName);
+	strTemp.Format("FgShow = %d ", ID_FGSHOW_HOKAN);		// 一時保管の種別を更新
+	strCommand += strTemp;
+
+	// 抽出条件：データ行、一括集計金額行（手動）のみ一時保管が可能
+	strTemp.Format("WHERE (FgFunc=%d OR FgFunc=%d)", ID_FGFUNC_DATA, ID_FGFUNC_IKKATUMANUAL);
+	strCommand += strTemp;
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		strTemp.Format(" AND (FormSeq=%d)", m_lo_FormSeq);
+		strCommand += strTemp;
+	}
+
+	return ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	UpdateYokukiMoveToHokan()
+		翌期更新により一時保管データの　頁　、行をクリアする
+
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+// virtual：
+int CdbUc000Common::UpdateYokukiMoveToHokan2()
+{
+	CString		strCommand;
+	CString		strTemp;
+
+	//---------------------------------------------------------------- 
+	//	通常は当処理を実行する
+	//	ただし、052，092の欄外データは当処理を実行させない
+	//---------------------------------------------------------------- 
+
+	// 一時保管へ移動する
+	strCommand.Format("UPDATE %s SET ", m_lo_TableName);
+	strCommand	+=	_T("NumPage = 0, ");					// 頁クリア
+	strCommand	+=	_T("NumRow = 0, ");						// 行クリア
+
+	strTemp.Format("FgShow = %d ", ID_FGSHOW_HOKAN);		// 一時保管の種別を更新
+	strCommand += strTemp;
+
+	// 抽出条件：データ行、一括集計金額行（手動）のみ一時保管が可能
+// midori 155261 del -->
+	//strTemp.Format("WHERE (NumPage > 0 OR NumRow > 0) and FgFunc=%d", ID_FGSHOW_HOKAN);
+// midori 155261 del <--
+// midori 155261 add -->
+	strTemp.Format("WHERE (NumPage > 0 OR NumRow > 0) and FgShow=%d", ID_FGSHOW_HOKAN);
+// midori 155261 add <--
+	strCommand += strTemp;
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		strTemp.Format(" AND (FormSeq=%d)", m_lo_FormSeq);
+		strCommand += strTemp;
+	}
+
+	return ExecuteSQLWork(strCommand);
+}
+// midori 180537 add <--
+
+/**********************************************************************
+	UpdateZeroMoneyMoveToHokan()
+		「一括で一時保管へ移動」により、金額が０円 or 空欄(NULL)のデータを一時保管へ移動する
+
+	引数
+			HOKAN_DATA			保管データ
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+***********************************************************************/
+// virtual：
+int CdbUc000Common::UpdateZeroMoneyMoveToHokan( HOKAN_DATA *hData )
+{
+	CString		strCommand;
+
+	CString		strTemp;
+	CString		strParam1;
+	CString		strParam2;
+	CString		strValField;
+	CString		strZero;
+	CString		strNull;
+	CString		strHokanCond;
+
+	//---------------------------------------------------------------- 
+	//	通常は当処理を実行する
+	//	※ただし、052，092の欄外データは当処理を実行させない
+	//---------------------------------------------------------------- 
+
+	// 一時保管へ移動する
+	strCommand.Format("UPDATE %s SET ", m_lo_TableName);
+	strCommand	+=	_T("NumPage = 0, ");					// 頁クリア
+	strCommand	+=	_T("NumRow = 0, ");						// 行クリア
+
+	strTemp.Format("FgShow = %d ", ID_FGSHOW_HOKAN);		// 一時保管の種別を更新
+	strCommand += strTemp;
+
+	// 抽出条件：
+	strTemp = _T("WHERE ");
+
+	// 条件１：データ行、一括集計金額行（手動）かつ表示行である
+	strParam1.Format("( ( FgFunc=%d AND FgShow=%d ) OR ( FgFunc=%d AND FgShow=%d ) )", ID_FGFUNC_DATA, ID_FGSHOW_OFF, ID_FGFUNC_IKKATUMANUAL, ID_FGSHOW_OFF );
+
+	// 条件２：対象とする金額フィールドが、(1)０円 or NULL、(2)０円、(3)NULLのどちらかである（パラメータで可変）
+	strValField = GetZeroMoneyMoveField();			// 対象の金額フィールドを取得
+	strZero.Format("( %s='0' )", strValField);		// ０円を対象とする
+	strNull.Format("( %s IS NULL )", strValField);	// NULLを対象とする
+
+	// (1)０円 or Null
+	if ( ( hData->blnZeroFg == TRUE ) && ( hData->blnNullFg == TRUE ) ){
+		strParam2.Format("( %s OR %s )", strZero, strNull );
+	}
+	// (2)０円
+	else if ( hData->blnZeroFg == TRUE ){
+		strParam2 = strZero;
+	}
+	// (3)NULL
+	else if ( hData->blnNullFg == TRUE ){
+		strParam2 = strNull;
+	}
+	else{
+		// 何もしない（０円もNULLも対象でない）
+		return DB_ERR_OK;
+	}
+
+	// 条件１、２を結合
+	strTemp += strParam1;
+	strTemp += _T(" AND ");
+	strTemp += strParam2;
+	strCommand += strTemp;
+
+	strHokanCond = strTemp;
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		strTemp.Format(" AND (FormSeq=%d)", m_lo_FormSeq);
+		strCommand += strTemp;
+
+		strHokanCond += strTemp;
+	}
+
+	// 指定レコードを保管テーブルに追加する
+	AddHokanTable( hData->intFormSeq, strHokanCond );
+
+	return ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	GetZeroMoneyMoveField()
+		０円、空欄をチェックする金額フィールドのフィールド名を返す
+		※UpdateZeroMoneyMoveToHokan()で使用
+
+	引数
+			なし
+	戻値
+			CString				フィールド名
+***********************************************************************/
+// virtual
+CString CdbUc000Common::GetZeroMoneyMoveField()
+{
+	// 基本「Val」だが、違う帳表もある（現状は⑥のみ）
+	return _T("Val");
+}
+
+/**********************************************************************
+	RequeryRenKcdRenEcd()
+		財務連動元の情報で検索する
+
+	引数
+			int					財務連動元（科目）
+			int					財務連動元（枝番）
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryRenKcdRenEcd(CString strRenKcd, long lngRenEcd)
+{
+// 修正No.157630 del -->
+//	// 科目＋枝番コードで検索する（科目のみの場合、枝番は"0"を指定する）
+// 修正No.157630 del <--
+// 修正No.157630 add -->
+	// 科目＋枝番コードで検索する（科目のみの場合、枝番は"-1"を指定する）
+// 修正No.157630 add <--
+// midori UC_0028 del -->
+	//m_strFilter.Format("RenKcd = '%s' AND RenEcd = %d", strRenKcd, lngRenEcd);
+// midori UC_0028 del <--
+// midori UC_0028 add -->
+	m_strFilter.Format("RenKcd = '%s' AND RenEcd = %d AND FgShow <> 1", strRenKcd, lngRenEcd);
+// midori UC_0028 add <--
+	m_strSort = "";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	RequeryRenFgTempUpdateNone()
+		財務連動元の情報が設定済みで、"RenFgTemp"未更新データを検索する
+
+	引数
+			CString				財務連動元（科目）
+			long				財務連動元（枝番）
+			int					財務連動テンポラリ情報
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryRenFgTempUpdateNone()
+{
+	// 財務連動元の情報が設定済みで、"RenFgTemp"未更新データを検索する
+	m_strFilter.Format("(RenKcd IS NOT NULL) AND (RenKcd <> '') AND (RenFgTemp = %d)", ID_RENFGTEMP_NORMAL);
+	m_strSort = "NumPage DESC, NumRow DESC";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	UpdateRenFgTempClear()
+		財務連動で使用する"RenFgTemp"項目をクリアする
+		
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::UpdateRenFgTempClear()
+{
+	CString			strCommand;
+
+	// SQLコマンド作成
+	strCommand.Format("UPDATE %s SET RenFgTemp=%d", m_lo_TableName, ID_RENFGTEMP_NORMAL);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	CString	SqlStrSeq;
+	if (m_lo_FormSeq > 0) {
+		SqlStrSeq.Format(" WHERE FormSeq=%d", m_lo_FormSeq);
+	}
+	strCommand += SqlStrSeq;
+
+	return	ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	DeletePage()
+		パラメータで指定された頁以降を削除
+
+	引数
+			int		inPage		ページ番号
+	戻値
+			int		DB_ERR_OK (0)     ：成功
+					DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::DeleteNullLinePageRowAfterAll(int inPage, int inRow)
+{
+	CString			strCommand;
+
+	// SQLコマンド作成
+	strCommand.Format("DELETE FROM %s WHERE (FgFunc=%d) AND ((NumPage=%d AND NumRow>=%d) OR (NumPage>%d))", 
+					  m_lo_TableName, ID_FGFUNC_NULL, inPage, inRow, inPage);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	CString	SqlStrSeq;
+	if (m_lo_FormSeq > 0) {
+		SqlStrSeq.Format(" AND (FormSeq=%d)", m_lo_FormSeq);
+	}
+	strCommand += SqlStrSeq;
+
+	return	ExecuteSQLWork(strCommand);
+}
+
+/**********************************************************************
+	RequeryLastNotNullLine()
+		最終データ行（空行、頁計行、累計行以外）を取得する
+		
+	引数
+			なし
+	戻値
+			int					DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@
+***********************************************************************/
+int CdbUc000Common::RequeryLastNotNullLine()
+{
+	m_strFilter.Format("(FgShow=%d) AND (FgFunc != %d AND FgFunc != %d AND FgFunc != %d)", 
+					   ID_FGSHOW_OFF, ID_FGFUNC_NULL, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+	m_strSort = "NumPage DESC, NumRow DESC";
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format("FormSeq = %d AND ", m_lo_FormSeq);
+		m_strFilter = SqlStrSeq + m_strFilter;
+	}
+
+	return RequeryWork();		// リクエリを実行
+}
+
+/**********************************************************************
+	GetFormType( int nFormSeq )
+		出力形式を返す。この関数は出力形式を選択できる様式からのみ呼び出される。
+
+	引数
+			int					様式シーケンス
+	戻値
+			BYTE				1:個別／0:通常
+//@
+***********************************************************************/
+int CdbUc000Common::GetFormType( int nFormSeq )
+{
+	CdbUcInfFormType	mfcRec( m_lo_pdb );	//	uc_inf_form_typeテーブルクラス
+
+	try{		
+		//	初期化成功？
+		if ( mfcRec.Init( nFormSeq ) == DB_ERR_OK ){			
+			//	レコードあり？
+			if ( !( mfcRec.IsEOF() ) ){
+				mfcRec.MoveFirst();					//	レコードを先頭に移動
+			}
+			//	レコード閉じる
+			mfcRec.Fin();
+		}
+	}
+	catch(...){
+		//	レコード開いてる？
+		if ( mfcRec.IsOpen() ){
+			//	レコード閉じる
+			mfcRec.Fin();
+		}
+	}
+
+	return mfcRec.m_FormType;
+}
+
+/**********************************************************************
+	GetOutKei()
+		計設定から合計行数を返す
+
+	引数
+			int					様式Seq
+	戻値
+			int					合計行の数。全体の行数からこの返り値を引くことで、
+								０円判定すべき行数を算出する
+//@
+***********************************************************************/
+int CdbUc000Common::GetOutKei(int nFormSeq)
+{	
+	int nRet = 0;
+	CdbUcInfSub	mfcRec( m_lo_pdb );		//	メイン情報テーブルクラス
+
+	try{
+	
+		//	初期化成功？
+		if ( mfcRec.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){
+		
+			//	レコードあり？
+			if ( !( mfcRec.IsEOF() ) ){
+				
+				//	レコードを先頭に移動
+				mfcRec.MoveFirst();
+
+				nRet = mfcRec.m_OutKei;
+			}
+			//	レコード終了
+			mfcRec.Fin();
+		}
+	}
+	catch(...){
+		
+		//	レコードセット開かれてる？
+		if ( mfcRec.IsOpen() ){
+			//	レコード終了
+			mfcRec.Fin();
+		}
+	}
+
+	return nRet;
+}
+
+/**********************************************************************
+	ExtendColumn()
+		テーブルを拡張する。
+		１．０円計の表示/非表示を判定するためのカラムを追加する
+		２．「受取手形の内訳書」に科目名欄カラムを追加する
+
+	引数
+			CString strTableName		テーブル名称
+			CString strColumn			追加するカラム名称
+			CString strDesign			追加するカラムの型
+	戻値
+			int					DB_ERR_OK:成功
+								DB_ERR:失敗
+//@
+***********************************************************************/
+int CdbUc000Common::ExtendColumn(CString strTableName, CString strColumn, CString strDesign)
+{
+	CString strSQLCheck;
+
+	strSQLCheck.Format( "if( COLUMNPROPERTY( OBJECT_ID('%s'),'%s','PRECISION') is null ) "
+		"alter table %s add %s %s", strTableName, strColumn, strTableName, strColumn, strDesign);
+
+	return ExecuteSQLWork(strSQLCheck);
+}
+
+/**********************************************************************
+	ExtendColumnEX()
+		テーブルを拡張する。（デフォルト値を設定可）
+
+	引数
+			CString strTableName		テーブル名称
+			CString strColumn			追加するカラム名称
+			CString strDesign			追加するカラムの型
+			int nDefault				追加するカラムのデフォルト値
+			CDatabase* pdb				データベース操作クラス
+	戻値
+			int					DB_ERR_OK:成功
+								DB_ERR:失敗
+//@
+***********************************************************************/
+int CdbUc000Common::ExtendColumnEX(CString strTableName, CString strColumn, CString strDesign, int nDefault)
+{
+	int nRet;
+	CString strCommand1, strCommand2, strCommand3;
+	CString strSQLCheck;
+
+	// 対象のテーブルにstrColumnカラムが存在しない場合、追加する
+	strCommand1.Format("if( COLUMNPROPERTY( OBJECT_ID('%s'),'%s','PRECISION') is null ) ", strTableName, strColumn);
+	strCommand2.Format("alter table %s add %s %s ", strTableName, strColumn, strDesign);
+
+	// 追加したカラムに初期値を設定する
+	strCommand3.Format("update %s set %s = %d where %s is null", strTableName, strColumn, nDefault, strColumn);
+
+	strSQLCheck = strCommand1 + strCommand2;
+
+	// SQL実行
+	nRet = ExecuteSQLWork(strSQLCheck);
+
+	if( nRet ==  DB_ERR ){
+		return nRet;
+	}
+
+	// SQL変更
+	strSQLCheck = strCommand3;
+
+	// SQL実行
+	nRet = ExecuteSQLWork(strSQLCheck);
+
+	return nRet;
+}
+
+/**********************************************************************
+	GetColumnName()
+		カラム名を取得する
+
+	引数
+			CStringArray&		カラム名
+			int					カラムインデックス	3 : seq,NumPage,NumRow以外のカラム
+													4 : seq,NumPage,NumRow,FgFunc以外のカラム
+	戻値
+			int					DB_ERR_OK:成功
+								DB_ERR:失敗
+//@
+***********************************************************************/
+int CdbUc000Common::GetColumnName(CStringArray& strColumn, int clmIndex)
+{
+	int nRet = DB_ERR_OK;
+	CString strSQL, strBuff;
+	CRecordset	rs(m_lo_pdb);
+
+	strSQL.Format(_T("SELECT name FROM sys.columns WHERE object_id = object_id('%s', 'u') AND column_id > %d"), m_lo_TableName, clmIndex);
+
+	if ( ! OpenEx( &rs , strSQL , m_lo_TableName ) ) {
+		return DB_ERR_OPEN;
+	};
+
+	while (!rs.IsEOF()) {
+		//カラム名をアレイに追加する
+		rs.GetFieldValue( _T("name"), strBuff );
+		strColumn.Add( strBuff );
+
+		rs.MoveNext();
+	}
+
+	rs.Close();
+
+	return nRet;
+}
+
+// midori 20/10/08u del -->
+//// midori 190505 add -->
+///**********************************************************************
+//	CreateDspPageBreakTable()
+//		画面の改頁を保った一時テーブルを構築する
+//
+//	引数
+//			int					データ行数（最大行数 -　計行数(1 or 0)）
+//			int					様式シーケンス
+//			int					計の名称のビット配列
+//	戻値
+//			int					DB_ERR_OK:成功
+//								DB_ERR:失敗
+//***********************************************************************/
+//int CdbUc000Common::CreateDspPageBreakTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray )
+//{
+//	int						nKeiRow=GetRowKei(nFormSeq);	// 計あり様式か、計なし様式か
+//	int						nKeiType=GetOutKei(nFormSeq);	// 計設定の種類
+//	int						c_page=0,c_row=0,c_func=0;
+//	int						n_page=0,n_row=0,n_func=0;
+//	int						w_page=0;
+//	int						kaipage=0;
+//	int						ii=0;
+//	int						nLclDataRowMax=nDataRowMax;		// 1ページの最大行数（合計行含む）
+//	BOOL					b_last=FALSE;
+//	BOOL					first = TRUE;
+//	CString					fsykei1=_T("");
+//	CString					fsykei2=_T("");
+//	CString					c_key1=_T(""),c_key2=_T("");
+//	CString					n_key1=_T(""),n_key2=_T("");
+//	CString					strTbl=_T("");					// テーブル名		uc_???_xxxxxxx
+//	CString					strTempUtiwakeTbl=_T("");		// 一時テーブル名	##temp_utiwake_tbl_?
+//	CString					strTempRowIdTbl=_T("");			// 一時テーブル名	##row_id_tbl_?
+//	CString					strQuery=_T("");
+//	CString					strSelect=_T("");
+//	CString					strFilter=_T("");
+//	CString					strSort=_T("");
+//	CString					strData[5];
+//	CString					strColumn=_T("");
+//	CMyStringArray			strColumnArray;
+//	CMap<int,int,int,int>	pmap;							// 削除した０円(空欄)を何頁で調整するかのマップ
+//	CdbUcInfSub				UcInfSub(m_lo_pdb);				// uc_inf_subテーブルクラス
+//	CdbUcLstItemSort		LstItemSort(m_lo_pdb);
+//	CRecordset				rs(m_lo_pdb);
+//
+//	// テーブル名作成
+//	strTbl = GetDefaultSQL();
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 削除した０円(空欄)を何頁で調整するかのマップの作成
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 例)	1-1	→ 1頁は1頁で調整する
+//	//		2-4	→ 2頁は4頁で調整する
+//	//		3-4	→ 3頁は4頁で調整する
+//	//		4-4	→ 4頁は4頁で調整する
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 第１ソート項目の情報を取得する
+//	if(UcInfSub.RequeryFormSeq(nFormSeq) == DB_ERR_OK)	{
+//		if(!(UcInfSub.IsEOF()))	{
+//			UcInfSub.MoveFirst();
+//			if(UcInfSub.m_Sort1 == 0)	{
+//				// 一度も編集～ソートを開いていない場合は、第１ソート項目の項目番号が書かれていない
+//				if(nFormSeq == 2)	UcInfSub.m_Sort1=8;
+//				else				UcInfSub.m_Sort1=1;
+//			}
+//			if(LstItemSort.RequeryFormItem(nFormSeq,UcInfSub.m_Sort1) == DB_ERR_OK)	{
+//				if(!LstItemSort.IsEOF())	{
+//					kaipage = LstItemSort.m_FgPage;			// 1:改頁対象項目
+//					fsykei1 = LstItemSort.m_FieldSykei;
+//					fsykei2 = LstItemSort.m_FieldSykei2;
+//				}
+//			}
+//			LstItemSort.Fin();
+//		}
+//		UcInfSub.Fin();
+//	}
+//	// 
+//	pmap.RemoveAll();
+//
+//	// 画面上のデータ(頁計/累計 以外)を、頁番号/行で昇順にソートしてレコード抽出
+//	strSelect = _T("SELECT NumPage,NumRow,FgFunc");
+//	if(fsykei1.IsEmpty() == TRUE)	strSelect += _T(",NULL");
+//	else							strSelect += _T(",") + fsykei1;
+//	if(fsykei2.IsEmpty() == TRUE)	strSelect += _T(",NULL");
+//	else							strSelect += _T(",") + fsykei2;
+//	strSelect += _T(" FROM ");
+//	strSelect += m_lo_TableName;
+//	strFilter.Format(_T(" WHERE FgShow=%d AND FgFunc!=%d AND FgFunc!=%d"),ID_FGSHOW_OFF,ID_FGFUNC_RUIKEI,ID_FGFUNC_PAGEKEI);
+//	strSort = _T(" ORDER BY NumPage ASC, NumRow ASC, Seq DESC");
+//	if(m_lo_FormSeq > 0)	{
+//		CString	SqlStrSeq;
+//		SqlStrSeq.Format(_T(" AND FormSeq=%d"),m_lo_FormSeq);
+//		strFilter = strFilter + SqlStrSeq;
+//	}
+//	strQuery = strSelect + strFilter + strSort;
+//	if(!OpenEx(&rs,strQuery,m_lo_TableName))	{
+//		return(DB_ERR_OPEN);
+//	}
+//	first = TRUE;
+//	while(!rs.IsEOF())	{
+//		if(first == TRUE)	{
+//			for(ii=0; ii<5; ii++)	{
+//				// 0:NumPage
+//				// 1:NumRow
+//				// 2:FgFunc
+//				// 3:ソート項目１
+//				// 4:ソート項目２
+//				rs.GetFieldValue((short)ii,strData[ii]);
+//			}
+//			c_page	= _tstoi(strData[0]);	// 現在行の頁
+//			c_row	= _tstoi(strData[1]);	// 現在行の行
+//			c_func	= _tstoi(strData[2]);	// 現在行の行区分
+//			c_key1	= strData[3];			// 現在行のソート項目１
+//			c_key2	= strData[4];			// 現在行のソート項目２
+//			first	= FALSE;
+//		}
+//		else	{
+//			c_page	= n_page;
+//			c_row	= n_row;
+//			c_func	= n_func;
+//			c_key1	= n_key1;
+//			c_key2	= n_key2;
+//		}
+//		b_last = FALSE;
+//		// 次の行を読み込む
+//		rs.MoveNext();
+//		if(!rs.IsEOF())	{
+//			for(ii=0; ii<5; ii++)	rs.GetFieldValue((short)ii,strData[ii]);
+//			n_page	= _tstoi(strData[0]);	// 次行の頁
+//			n_row	= _tstoi(strData[1]);	// 次行の行
+//			n_func	= _tstoi(strData[2]);	// 次行の行区分
+//			n_key1	= strData[3];			// 次行のソート項目１
+//			n_key2	= strData[4];			// 次行のソート項目２
+//		}
+//		// 次の行がない または 現在行の次行の頁が異なる
+//		if(rs.IsEOF() || c_page != n_page)	{
+//			b_last = TRUE;
+//		}
+//		if(b_last == TRUE)	{
+//			w_page = 0;
+//			// 1.最終行がデータなしの空白行の場合
+//			if(c_func == ID_FGFUNC_NULL)											w_page = c_page;	// 次頁のデータは改頁して出力する
+//			// 2.最終行がデータ行の場合
+//			else if(c_func == ID_FGFUNC_DATA)	{
+//				// 2-0.次頁がない
+//				if(rs.IsEOF())														w_page = c_page;	// 次頁のデータは改頁して出力する
+//				// 2-1.次頁の先頭行がデータ行
+//				else if(n_func == ID_FGFUNC_DATA)	{
+//					// 2-1-1.編集～ソートの[改頁を行う]が選択可能
+//					if(kaipage != 0)	{
+//						// 2-1-1-1.次頁の先頭行と比較して第１ソート項目が異なる
+//						if(c_key1 != n_key1 || c_key2 != n_key2)					w_page = c_page;	// 次頁のデータは改頁して出力する
+//						// 2-1-1-2.次頁の先頭行と比較して第１ソート項目が同じ
+//						else														w_page = 0;			// 次頁のデータは改頁せずに出力する
+//					}
+//					// 2-1-2.編集～ソートの[改頁を行う]が選択不可(または編集～ソートの機能がない)
+//					else															w_page = 0;			// 次頁のデータは改頁せずに出力する
+//				}
+//				// 2-2.次頁の先頭行が空白行または科目行
+//				else if(n_func == ID_FGFUNC_NULL || n_func == ID_FGFUNC_KAMOKU)		w_page = c_page;	// 次頁のデータは改頁して出力する
+//				// 2-3.次頁の先頭行がデータ行、空白行以外
+//				else																w_page = 0;			// 次頁のデータは改頁せずに出力する
+//			}
+//			// 3.最終行が小計行の場合
+//			else if(c_func == ID_FGFUNC_SYOKEI || c_func == ID_FGFUNC_SYOKEINULL)	{
+//				// 3-1.次頁の先頭行が中計行以外
+//				if(n_func != ID_FGFUNC_CHUKEI && n_func != ID_FGFUNC_CHUKEINULL)	w_page = c_page;	// 次頁のデータは改頁して出力する
+//				// 3-2.次頁の先頭行が中計行
+//				else																w_page = 0;			// 次頁のデータは改頁せずに出力する
+//			}
+//			// 4.最終行が中計行の場合
+//			else if(c_func == ID_FGFUNC_CHUKEI || c_func == ID_FGFUNC_CHUKEINULL)	w_page = c_page;	// 次頁のデータは改頁して出力する
+//			// 5.最終行が一括金額行の場合
+//			else if(c_func == ID_FGFUNC_IKKATUMANUAL || c_func == ID_FGFUNC_IKKATUAUTO)	{
+//				// 5-1.次頁の先頭行が小計行以外
+//				if(n_func != ID_FGFUNC_SYOKEI && n_func != ID_FGFUNC_SYOKEINULL)	w_page = c_page;	// 次頁のデータは改頁して出力する
+//				// 5-2.次頁の先頭行が小計行
+//				else																w_page = 0;			// 次頁のデータは改頁せずに出力する
+//			}
+//			// 6.最終行が科目行の場合
+//			else if(c_func == ID_FGFUNC_KAMOKU)										w_page = 0;			// 次頁のデータは改頁せずに出力する
+//			if(w_page > 0)	{
+//				// マップに書き込む(結果を持ち越している場合は、前の頁から書き込む)
+//				int	mcnt=(int)pmap.GetCount();
+//				for(ii=mcnt+1; ii<=c_page; ii++)	{
+//					pmap.SetAt(ii,w_page);
+//				}
+//			}
+//		}
+//	}
+//
+//	// データ行の設定
+//	if(nKeiRow == 0)	{	// 計なし様式
+//		switch(nKeiType)	{
+//			case ID_OUTKEI_PAGEKEI:
+//			case ID_OUTKEI_BOTH:
+//				nLclDataRowMax = nDataRowMax - 1;
+//				break;
+//		}
+//	}
+//	else	{
+//		nLclDataRowMax = nDataRowMax - 1;
+//	}
+//
+//	int	clmIndex = 4;	// seq,NumPage,NumRow,FgFunc以外
+//
+//	// カラム名取得
+//	if(GetColumnName(strColumnArray,clmIndex) != 0)	{
+//		return DB_ERR_OPEN;
+//	}
+//
+//	// SELECT句のカラム名作成
+//	for(int i=0; i<(int)strColumnArray.GetCount(); i++)	{
+//		strColumn = strColumn + _T(", ") + strColumnArray.GetAt(i);
+//	}
+//
+//#ifdef _DEBUG
+//	// 一時テーブル名作成
+//	strTempRowIdTbl.Format(_T("##row_id_tbl_%d"),nFormSeq);
+//	// 最終結果を持つ一時テーブル名作成
+//	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+//#else
+//	// 一時テーブル名作成
+//	strTempRowIdTbl.Format(_T("#row_id_tbl_%d"),nFormSeq);
+//	// 最終結果を持つ一時テーブル名作成
+//	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+//#endif
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 特定の計行、空白行の削除
+//	// (CreateNotExistZeroTableから呼び出しているのと同じ関数を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	if(DeleteKeiNullZeroRow(strTempRowIdTbl,strTbl,0,nFormSeq) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// データ行のみのテーブルにページ番号、行番号を振り直す
+//	// (CalcPageRowNumToTempTable 関数を変更して作成)
+//	// ------------------------------------------------------------------------------------------------------------
+//	if(CalcPageRowNumToTempTable_Dp(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl,&pmap) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//// midori 156952,156964 add -->
+//	// 頁の先頭にある空白行を削除する
+//	int	nRet=0;
+//	if(DeleteFirstNullLine_Dp(nFormSeq,nLclDataRowMax,&nRet) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//	if(nRet != 0)	{
+//		// 頁の先頭にきた空白行を削除した場合は、再度データ行のみのテーブルにページ番号、行番号を振り直す
+//		if(CalcPageRowNumToTempTable_Dp(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl,&pmap) != DB_ERR_OK)	{
+//			return DB_ERR_EXESQL;
+//		}
+//	}
+//// midori 156952,156964 add <--
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 最終ページ以外を空白行で埋める
+//	// (CreateNotExistZeroTableから改頁を行う場合に呼び出しているのと同じ関数を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	if(InsertNullRowExceptLastPage(strTempUtiwakeTbl,nLclDataRowMax,strColumnArray) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 最終ページ、最終ページの最終行取得
+//	// (CreateNotExistZeroTableから呼び出しているのと同じ処理を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	int nMaxPage, nCurRow;
+//
+//	// 最終ページ取得
+//	nMaxPage = GetMaxPageFromTempTable( strTempUtiwakeTbl );
+//
+//	// 全ページが空行なら、0ページとして処理を抜ける
+//	if(nMaxPage == 0)	{
+//		return BD_ERR_ALL_NULL;
+//	}
+//
+//	// 最終ページの最終行取得
+//	nCurRow = GetMaxRowFromTempTable(strTempUtiwakeTbl,nMaxPage);
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 最終ページを空白行で埋める
+//	// (CreateNotExistZeroTableから呼び出しているのと同じ関数を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	if(InsertNullRowToLastPage(strTempUtiwakeTbl,nKeiType,nKeiRow,nMaxPage,nLclDataRowMax,nCurRow,strColumnArray) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 計行を挿入
+//	// (CreateNotExistZeroTableから呼び出しているのと同じ関数を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	if(InsertKeiRow(strTempUtiwakeTbl,nFormSeq,0,nKeiType,nKeiRow,nMaxPage,nDataRowMax,nNameKeiBitArray,strColumnArray) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	return(DB_ERR_OK);
+//}
+//// midori 190505 add <--
+// midori 20/10/08u del <--
+
+// midori 190505 del -->
+///**********************************************************************
+//	CreateNotExistZeroTable()
+//		０円行（ただし、NULL行{FgFunc = 0}はカウント）を除いた一時テーブルを構築する
+//
+//		流れ：
+//		０円を除いたデータ行のみのテーブルを構築→最終ページの空行を埋める→計行を挿入する
+//	引数
+//			int					データ行数（最大行数 -　計行数(1 or 0)）
+//			int					様式シーケンス
+//			int					計の名称のビット配列
+//	戻値
+//			int					DB_ERR_OK:成功
+//								DB_ERR:失敗
+////@
+//***********************************************************************/
+//// midori 160610 cor -->
+////int CdbUc000Common::CreateNotExistZeroTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray )
+//// ---------------------
+//int CdbUc000Common::CreateNotExistZeroTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray, int pSw, int pSw2 )
+//// midori 160610 cor <--
+// midori 190505 del <--
+// midori 190505 add -->
+/**********************************************************************
+	CreateNotExistZeroTable()
+		０円行（ただし、NULL行{FgFunc = 0}はカウント）を除いた一時テーブルを構築する
+
+		流れ：
+		０円を除いたデータ行のみのテーブルを構築→最終ページの空行を埋める→計行を挿入する
+	引数
+			int					データ行数（最大行数 -　計行数(1 or 0)）
+			int					様式シーケンス
+			int					計の名称のビット配列
+			int					
+			int					
+			int					出力方法
+	戻値
+			int					DB_ERR_OK:成功
+								DB_ERR:失敗
+***********************************************************************/
+int CdbUc000Common::CreateNotExistZeroTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray, int pSw, int pSw2, int nPHoho )
+// midori 190505 add <--
+{
+	int nKeiRow			= GetRowKei( nFormSeq );		// 計あり様式か、計なし様式か
+	int nKeiType		= GetOutKei( nFormSeq );		// 計設定の種類
+	int	nLclDataRowMax	= nDataRowMax;					// 1ページの最大行数（合計行含む）
+	int nKaiPage		= 0;							// ソートダイアログの「改頁を行う」の状態
+// midori 161111 add -->
+	int nOutNullLine	= 0;							// ソートダイアログの「小計行の次に空行を挿入する」の状態
+// midori 161111 add <--
+// midori 152138 add -->
+	int	nRet=0;											// 返送値（1:小計の次行に空行を挿入した）
+// midori 152138 add <--
+// midori UC_0003 add -->
+	int	rv=0;
+	int	sort1=0;
+// midori UC_0003 add <--
+// midori 157107 add -->
+	int insertsw=0;
+// midori 157107 add <--
+
+	CString strColumn;
+	CString strSQL;
+	CString strTempUtiwakeTbl;
+// midori 160610 add -->
+	CString	strTbl=_T("");
+// midori 160610 add <--
+
+	CMyStringArray strColumnArray;
+
+	CdbUcInfSub			mfcRec( m_lo_pdb );	//	uc_inf_subテーブルクラス
+// midori UC_0003 add -->
+	CdbUcLstItemSort	mfcRecSort(m_lo_pdb);	// uc_lst_item_sortテーブルクラス
+	CString				cs=_T("");
+	int					siten=0;
+// midori UC_0003 add <--
+
+// midori 190505 add -->
+	int sw = 0;
+	//sw = KamokuRowEnableSgn(0);				// 改良No.21-0086,21-0529 del
+	sw = KamokuRowEnableSgn(0, nFormSeq);		// 改良No.21-0086,21-0529 add
+// midori 190505 add <--
+// midori 157042 add -->
+	int kmkrowsw = 0;
+// midori 157042 add <--
+
+	// ソートダイアログの改頁チェック取得
+	try{		
+		//	初期化成功？
+		if ( mfcRec.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){
+			//	レコードあり？
+			if ( !( mfcRec.IsEOF() ) ){
+				//	レコードを先頭に移動
+				mfcRec.MoveFirst();
+				// 「改頁を行う」チェックボックスの状態
+// midori 160610 cor -->
+				//nKaiPage = mfcRec.m_OpKaiPage;
+// ---------------------
+				// 科目指定を行う場合、科目指定ダイアログの改頁チェックを取得する
+				if(pSw != 0)	{
+					if(mfcRec.m_GeneralVar[1] & BIT_D5)	nKaiPage=1;
+					else								nKaiPage=0;
+				}
+				else	{
+// midori 20/10/08_2 del -->
+//// midori 190505 del -->
+//					//nKaiPage = mfcRec.m_OpKaiPage;
+//// midori 190505 del <--
+//// midori 190505 add -->
+//					if(sw == 0)	{
+//						nKaiPage = mfcRec.m_OpKaiPage;
+//					}
+//					else	{
+//// midori 20/10/08u del -->
+//						//if(nPHoho == 2)	{
+//// midori 20/10/08u del <--
+//// midori 20/10/08u add -->
+//						if(nPHoho == 1)	{
+//// midori 20/10/08u add <--
+//							nKaiPage = 1;
+//						}
+//					}
+//// midori 190505 add <--
+// midori 20/10/08_2 del <--
+// midori 20/10/08_2 add -->
+					if(prnConfimationSw == TRUE) {
+						if(sw == 0)	{
+							nKaiPage = mfcRec.m_OpKaiPage;
+						}
+						else	{
+							if(nPHoho == 1)	{
+								nKaiPage = 1;
+							}
+						}
+					}
+					else {
+						nKaiPage = mfcRec.m_OpKaiPage;
+					}
+// midori 20/10/08_2 add <--
+				}
+// midori 160610 cor <--
+// midori 161111 add -->
+				nOutNullLine = mfcRec.m_OpOutNullLine;
+// midori 161111 add <--
+// midori 190505 add -->
+				if(mfcRec.m_Sort1 == 0)	{
+					// 一度も編集～ソートを開いていない場合は、第１ソート項目の項目番号が書かれていない
+					// 一度も編集～ソートを開かずに、印刷直前の確認ダイアログで「第１ソート項目で改頁」が選択された場合に起こる
+					if(nFormSeq == 2)	mfcRec.m_Sort1=8;
+					else				mfcRec.m_Sort1=1;
+				}
+// midori 190505 add <--
+// midori UC_0003 add -->
+				// 参照ダイアログ::表示順の取得
+				sort1 = 0;
+				switch(GetSortItem(nFormSeq,mfcRec.m_Sort1))	{
+				case 1:	// 科目（カナ入力有）
+					sort1 = 1;
+					break;
+				case 2:	// 銀行（カナ入力有）
+					sort1 = 2;
+					break;
+				case 3:	// 取引先（カナ入力有）
+					sort1 = 3;
+					break;
+				default:
+					break;
+				}
+// midori UC_0003 add <--
+			}
+		}
+		//	レコード閉じる
+		mfcRec.Fin();
+	}
+	catch(...){
+		//	レコード開いてる？
+		if ( mfcRec.IsOpen() ){
+			//	レコード閉じる
+			mfcRec.Fin();
+		}
+	}
+// midori UC_0003 add -->
+	// uc_lst_item_sortクラスから「改頁、小計の挿入を支店名毎に行う」サインを取得
+	mfcRecSort.RequeryFormItem(nFormSeq,1);	// 1:金融機関名
+	if(!mfcRecSort.IsEOF())	{
+		cs = mfcRecSort.m_FieldSykei2.Trim();
+		if(cs.MakeUpper() == _T("BKNAME2"))	{
+			siten=1;
+		}
+	}
+	mfcRecSort.Fin();
+// midori UC_0003 add <--
+
+	// 最終結果を持つ一時テーブル名作成
+// midori 160610 cor -->
+	//strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+// ---------------------
+#ifdef _DEBUG
+	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+#else
+	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+#endif
+	if(pSw == 0)	strTbl = GetDefaultSQL();
+	else			strTbl = strTempUtiwakeTbl + _T("_s");
+// midori 160610 cor <--
+
+	// データ行の設定
+	if( nKeiRow == 0 ){	// 計なし様式
+		switch(nKeiType){
+			case ID_OUTKEI_PAGEKEI:
+			case ID_OUTKEI_BOTH:
+				nLclDataRowMax = nDataRowMax - 1;
+				break;
+		}
+	}
+	else{
+		nLclDataRowMax = nDataRowMax - 1;
+	}
+
+	int clmIndex = 4;	// seq,NumPage,NumRow,FgFunc以外
+
+	// カラム名取得
+	if( GetColumnName( strColumnArray, clmIndex ) != 0 ){
+		return DB_ERR_OPEN;
+	}
+
+	// SELECT句のカラム名作成
+	for(int i=0; i<(int)strColumnArray.GetCount(); i++){
+		strColumn = strColumn + _T(", ") + strColumnArray.GetAt(i);
+	}
+
+	// 一時テーブル名作成
+	CString strTempRowIdTbl;
+// midori 160610 cor -->
+	//strTempRowIdTbl.Format( _T("#row_id_tbl_%d"), nFormSeq );
+// ---------------------
+#ifdef _DEBUG
+	strTempRowIdTbl.Format( _T("##row_id_tbl_%d"), nFormSeq );
+#else
+	strTempRowIdTbl.Format( _T("#row_id_tbl_%d"), nFormSeq );
+#endif
+// midori 160610 cor <--
+
+	if( nKaiPage == 0 ){	// 「改頁を行う」チェックOFF
+// midori 160610 cor -->
+		//// 特定の計行、空白行の削除
+		//if( DeleteKeiNullZeroRow( strTempRowIdTbl ) != DB_ERR_OK ){
+		//	return DB_ERR_EXESQL;
+		//}
+		//
+		//// ②受取手形の内訳書、⑪借入金の内訳書に科目行を挿入
+		//if( IsInsertKamokuRow( nFormSeq ) != FALSE ){
+		//	// 科目行挿入
+		//	if( InsertKamokuRow( strTempRowIdTbl ) != DB_ERR_OK ){
+		//		return DB_ERR_EXESQL;
+		//	}
+		//}
+
+		//// データ行のみのテーブルにページ番号、行番号を振り直す
+		//if( CalcPageRowNumToTempTable( strTempUtiwakeTbl, strTempRowIdTbl, nLclDataRowMax, strColumn) != DB_ERR_OK ){
+		//	return DB_ERR_EXESQL;
+		//}
+// ---------------------
+		// 特定の計行、空白行の削除
+// midori 157098 del -->
+//// midori 190505 del -->
+//		//if(DeleteKeiNullZeroRow(strTempRowIdTbl,strTbl,pSw2) != DB_ERR_OK)	{
+//// midori 190505 del <--
+//// midori 190505 add -->
+//		if(DeleteKeiNullZeroRow(strTempRowIdTbl,strTbl,pSw2,nFormSeq) != DB_ERR_OK)	{
+//// midori 190505 add <--
+// midori 157098 del <--
+// midori 157098 add -->
+		if(DeleteKeiNullZeroRow(strTempRowIdTbl,strTbl,pSw,pSw2,nFormSeq) != DB_ERR_OK)	{
+// midori 157098 add <--
+			return DB_ERR_EXESQL;
+		}
+// midori 190505 del -->
+		//// ②受取手形の内訳書、⑪借入金の内訳書に科目行を挿入
+		//if(IsInsertKamokuRow(nFormSeq) != FALSE)	{
+		//	// 科目行挿入
+		//	if(InsertKamokuRow(strTempRowIdTbl) != DB_ERR_OK)	{
+		//		return DB_ERR_EXESQL;
+		//	}
+		//}
+// midori 190505 del <--
+// midori 156188 add -->
+		// ②受取手形の内訳書、⑪借入金の内訳書に科目行を挿入
+// midori 157042 del -->
+		//if(IsInsertKamokuRow(nFormSeq) != FALSE)	{
+// midori 157042 del <--
+// midori 157042 add -->
+		kmkrowsw = 0;
+		// 期首が2019年4月以降
+		//if(KamokuRowEnableSgn(0) == 1) {				// 改良No.21-0086,21-0529 del
+		if(KamokuRowEnableSgn(0, nFormSeq) == 1)	{	// 改良No.21-0086,21-0529 add
+			if (pSw == 1) {
+				kmkrowsw = 2;
+			}
+			else {
+				kmkrowsw = GetKmkRowSw();
+			}
+		}
+// midori 157107 add -->
+		insertsw = 0;
+// midori 157107 add <--
+		if(IsInsertKamokuRow(nFormSeq) != FALSE && kmkrowsw == 0)	{
+// midori 157042 add <--
+			// 科目行挿入
+			if(InsertKamokuRow(strTempRowIdTbl) != DB_ERR_OK)	{
+				return DB_ERR_EXESQL;
+			}
+// midori 157107 add -->
+			insertsw = 1;
+// midori 157107 add <--
+		}
+// midori 156188 add <--
+// midori 152138 del -->
+//// midori 161111 cor -->
+//		//// データ行のみのテーブルにページ番号、行番号を振り直す
+//		//if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl) != DB_ERR_OK)	{
+//// ---------------------
+//		if(nOutNullLine != 0)	{
+//			// ソートダイアログの「小計行の次に空行を挿入する」がＯＮの場合
+//			// 頁の最終行が小計でかつ、次の行が空白行以外の場合
+//			// 空白行を挿入する
+//			if(InsertKeiNullLine(nFormSeq,nLclDataRowMax) != DB_ERR_OK)	{
+//				return DB_ERR_EXESQL;
+//			}
+//		}
+//		// データ行のみのテーブルにページ番号、行番号を振り直す
+//		if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl,nFormSeq) != DB_ERR_OK)	{
+//// midori 161111 cor <--
+//			return DB_ERR_EXESQL;
+//		}
+// midori 152138 del <--
+// midori 152138 add -->
+		nRet=0;
+		if(nOutNullLine != 0)	{
+			// ソートダイアログの「小計行の次に空行を挿入する」がＯＮの場合
+			// 頁の最終行が小計でかつ、次の行が空白行以外の場合
+			// 空白行を挿入する
+			if(InsertKeiNullLine(nFormSeq,nLclDataRowMax,&nRet) != DB_ERR_OK)	{
+				return DB_ERR_EXESQL;
+			}
+		}
+		// データ行のみのテーブルにページ番号、行番号を振り直す
+		if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl,nFormSeq,nRet) != DB_ERR_OK)	{
+			return DB_ERR_EXESQL;
+		}
+// midori 157107 del -->
+		//if(nOutNullLine != 0)	{
+// midori 157107 del <--
+// midori 157107 add -->
+		if(nOutNullLine != 0 || insertsw == 1)	{
+// midori 157107 add <--
+			// InsertKeiNullLineで空行の次行に空白を挿入した結果
+			// 頁の先頭にきた空白行を削除する
+			if(DeleteFirstNullLine(nFormSeq,nLclDataRowMax,&nRet) != DB_ERR_OK)	{
+				return DB_ERR_EXESQL;
+			}
+			if(nRet != 0)	{
+				// 頁の先頭にきた空白行を削除した場合は、データ行のみのテーブルにページ番号、行番号を振り直す
+				if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl,nFormSeq,0) != DB_ERR_OK)	{
+					return DB_ERR_EXESQL;
+				}
+			}
+		}
+// midori 152138 add <--
+// midori 160610 cor <--
+// midori 157042 add -->
+		//if (KamokuRowEnableSgn(0) == 1 && kmkrowsw == 0) {			// 改良No.21-0086,21-0529 del
+		if(KamokuRowEnableSgn(0, nFormSeq) == 1 && kmkrowsw == 0)	{	// 改良No.21-0086,21-0529 add
+			// 科目行の科目名称を計名称欄にコピーする
+			strSQL.Format(_T("UPDATE %s SET KeiStr = KnName WHERE FgFunc = %d"),strTempUtiwakeTbl,ID_FGFUNC_KAMOKU);
+
+			try{
+				ExecuteSQLWork( strSQL );
+			}
+			catch(CDBException* e){
+				// 解放
+				e->Delete();
+
+				return DB_ERR_EXESQL;
+			}
+// 157154 add -->
+//2020/12/24 157154の対応は行わないため、コメント。他の157154のコメントは、小計名称の編集サインを無くした対応のため残す
+			//if(IsInsertKamokuRow(nFormSeq) != FALSE)	{
+			//	// 小計名称の編集を行う
+			//	// 【小計(科目名)】を【小計】に変更する
+			//	ClearSyoKeiStr(nFormSeq);
+			//}
+// 157154 add <--
+		}
+// midori 157042 add <--
+	}
+	else{	// 「改頁を行う」チェックON
+		// ソート後、改頁したテーブル作成
+// midori UC_0003 del -->
+//// midori 160610 cor -->
+//		//if( CreateKaiPageTable( nFormSeq, nLclDataRowMax, strColumn , strTempUtiwakeTbl ) != DB_ERR_OK ){
+//// ---------------------
+//		if(CreateKaiPageTable(nFormSeq,nLclDataRowMax,strColumn,strTempUtiwakeTbl,pSw,pSw2) != DB_ERR_OK)	{
+//// midori 160610 cor <--
+//			return DB_ERR_EXESQL;
+//		}
+// midori UC_0003 del <--
+// midori UC_0003 add -->
+		// ------------------------------------------------------------------------------------------------------
+		// 印刷設定の０円出力しないチェックをＯＮにして
+		// ソートダイアログの第１ソート項目が「金融機関」で改頁を行うチェックＯＮの場合
+		// 「改頁、小計の挿入を支店名毎に行う」のチェックをＯＦＦにしていても支店名毎に改頁される件の修正
+		// ------------------------------------------------------------------------------------------------------
+		// 下記の場合は、別関数で処理する
+		// ①科目指定出力ではない（科目指定の場合は第１ソート項目が「科目」固定のため）
+		// ②第１ソート項目が「金融機関」または「取引先」
+		// 改頁有り
+		// 上記条件が一致する様式
+		//   ・①預貯金等の内訳書「金融機関」
+		//   ・②受取手形の内訳書「振出人」
+		//   ・⑧支払手形の内訳書「支払先」
+		if(pSw == 0 && (sort1 == 2 || sort1 == 3))	{
+			if(sort1 == 2)	{
+				rv = CreateKaiPageTableBk(nFormSeq,nLclDataRowMax,strColumn,strTempUtiwakeTbl,siten);
+			}
+			else			{
+				rv = CreateKaiPageTableAd(nFormSeq,nLclDataRowMax,strColumn,strTempUtiwakeTbl);
+			}
+		}
+		else	{
+			// 第１ソート項目が科目
+			rv = CreateKaiPageTable(nFormSeq,nLclDataRowMax,strColumn,strTempUtiwakeTbl,pSw,pSw2);
+// midori 157042 del -->
+//// midori 20/10/08_2 del -->
+////// midori 156947 add -->
+////			// 第１ソート項目で改頁が選択されている
+////// midori 20/10/08u del -->
+////			//if(nPHoho == 2) {
+////// midori 20/10/08u del <--
+////// midori 20/10/08u add -->
+////			if(nPHoho == 1) {
+////// midori 20/10/08u add <--
+////				if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+////					EditSyokeiStr(nFormSeq);
+////				}
+////			}
+////// midori 156947 add <--
+//// midori 20/10/08_2 del <--
+//// midori 20/10/08_2 add -->
+//			if(prnConfimationSw == TRUE) {
+//				if(nPHoho == 1) {
+//					if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+//						EditSyokeiStr(nFormSeq);
+//					}
+//				}
+//			}else {
+//				if(pSw == 0 && nKaiPage == 1) {
+//					if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+//						EditSyokeiStr(nFormSeq);
+//					}
+//				}
+//			}
+//// midori 20/10/08_2 add <--
+// midori 157042 del <--
+		}
+		if(rv != DB_ERR_OK)	{
+			return DB_ERR_EXESQL;
+		}
+// midori UC_0003 add <--
+
+		// 最終ページ以外を空白行で埋める
+		if( InsertNullRowExceptLastPage( strTempUtiwakeTbl, nLclDataRowMax, strColumnArray ) != DB_ERR_OK ){
+			return DB_ERR_EXESQL;
+		}
+	}
+
+	//*****************************************************************
+	// 最終ページ、最終ページの最終行取得
+	//*****************************************************************
+	int nMaxPage, nCurRow;
+
+	// 最終ページ取得
+	nMaxPage = GetMaxPageFromTempTable( strTempUtiwakeTbl );
+
+	// 全ページが空行なら、0ページとして処理を抜ける
+	if( nMaxPage == 0 ){
+		return BD_ERR_ALL_NULL;
+	}
+
+	// 最終ページの最終行取得
+	nCurRow = GetMaxRowFromTempTable( strTempUtiwakeTbl, nMaxPage );
+
+	//*****************************************************************
+	// 改頁を行わない場合の、最終行が空白の場合は削除する
+	//*****************************************************************
+	if( nKaiPage == 0 ){
+		strSQL.Format("IF EXISTS (SELECT * FROM %s WHERE NumPage = %d AND NumRow = %d AND FgFunc = 0 ) DELETE FROM %s WHERE NumPage = %d AND NumRow = %d", 
+			strTempUtiwakeTbl, nMaxPage, nCurRow, strTempUtiwakeTbl, nMaxPage, nCurRow );
+
+		// SQL実行
+		if( ExecuteSQLWork( strSQL ) != 0 ){
+			return DB_ERR_EXESQL;
+		}
+
+		// 最終ページ取得
+		nMaxPage = GetMaxPageFromTempTable( strTempUtiwakeTbl );
+
+		// 全ページが空行なら、0ページとして処理を抜ける
+		if( nMaxPage == DB_ERR_OPEN ){
+			return BD_ERR_ALL_NULL;
+		}
+
+		// 最終ページの最終行取得
+		nCurRow = GetMaxRowFromTempTable( strTempUtiwakeTbl, nMaxPage );
+	}
+
+	// 最終ページを空白行で埋める
+	if( InsertNullRowToLastPage(strTempUtiwakeTbl, nKeiType, nKeiRow, nMaxPage, nLclDataRowMax, nCurRow, strColumnArray) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+// 157154 del -->
+//// midori 157099,157119_2 del -->
+////// midori 157118 add -->
+////	if(pSw == 0) {
+////		ChgSyoKeiStr(nFormSeq);
+////	}
+////// midori 157118 add <--
+//// midori 157099,157119_2 del <--
+//// midori 157099,157119_2 add -->
+//	if(pSw == 0) {
+//		ClearSyoKeiStr(nFormSeq);
+//	}
+//// midori 157099,157119_2 add <--
+// 157154 del <--
+
+	// 計行を挿入
+	if( InsertKeiRow(strTempUtiwakeTbl, nFormSeq, nKaiPage, nKeiType, nKeiRow, nMaxPage, nDataRowMax, nNameKeiBitArray, strColumnArray) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+// midori 157118 del -->
+//// midori157115 del -->
+////// midori 157113 add -->
+////	EditSyokeiStr(nFormSeq);
+////// midori 157113 add <--
+//// midori157115 del <--
+//// midori157115 add -->
+//	if(pSw == 0) {
+//		EditSyokeiStr(nFormSeq);
+//	}
+//// midori157115 add <--
+// midori 157118 del <--
+
+	return DB_ERR_OK;
+}
+
+/**********************************************************************
+	GetRowKei()
+		計あり様式か計なし様式か
+
+	引数
+			int					様式シーケンス
+	戻値
+			int					1:計あり
+								0:計なし
+//@
+***********************************************************************/
+int CdbUc000Common::GetRowKei(int nFormSeq)
+{
+	int nRet = 1;	// 計あり様式
+
+	// 様式シーケンスから、計のあり、なしを判断
+	switch( nFormSeq ){
+		case ID_FORMNO_041:
+		case ID_FORMNO_071:
+		case ID_FORMNO_101:
+		case ID_FORMNO_102:
+		case ID_FORMNO_121:
+		case ID_FORMNO_142:
+		case ID_FORMNO_151:
+		case ID_FORMNO_152:
+		case ID_FORMNO_153:
+		case ID_FORMNO_161:
+		case ID_FORMNO_162:
+			nRet = 0;	// 計なし様式
+	}
+
+	return nRet;
+}
+
+/**********************************************************************
+	GetSQLKeiTbl()
+		計に表示されるフィールドを加味したSQL文を作成する
+
+	引数
+			なし
+	戻値
+			CString				SQL文
+//@
+***********************************************************************/
+CString CdbUc000Common::GetSQLSumColumn()
+{
+	return "";
+}
+
+/**********************************************************************
+	GetColumnNum()
+		計として表示するフィールド数を取得する
+
+	引数
+			なし
+	戻値
+			int				計の個数
+//@
+***********************************************************************/
+int CdbUc000Common::GetColumnNum()
+{
+	return 1;
+}
+
+/**********************************************************************
+	GetSQLKeiInsert()
+		０円対応で、一時テーブルに挿入するためのINSERT文で、カラムの値を設定する
+
+	引数
+			CMyStringArray	カラム名が格納されたアレイ
+			CMyArray		計のフィールドを登録するアレイ
+			int				FgFuncの値
+			CString			計の名称
+	戻値
+			CString			SQL文
+//@
+***********************************************************************/
+CString CdbUc000Common::GetSQLKeiInsert(int nPage, CMyStringArray* arryColumn, CString strKei/*=0*/, int nFgFunc/*=0*/, CMyArray* arryTotalAll/*=NULL*/)
+{
+	int nRuikei = 0;
+	CString strSQL;
+	CString strTmp;
+	strSQL.Empty();
+
+	if( nFgFunc != ID_FGFUNC_RUIKEI ){
+		// 累計はGrouping = 1でとりたいが、時間がないので断念
+		nRuikei = 1;
+	}
+
+	for(int i=0; i<(int)arryColumn->GetCount(); i++){
+		if( arryColumn->GetAt(i).Compare( _T("Val") ) == 0 ){	// 計として表示する
+
+			if(( arryTotalAll != NULL ) && ( arryTotalAll->GetAt( nPage - nRuikei ).GetAt( 0 ).IsEmpty() == FALSE )){
+				strSQL.Format( strSQL + _T("'%s'") , arryTotalAll->GetAt( nPage - nRuikei ).GetAt( 0 ) );
+			}
+			else{
+				strSQL = strSQL + _T("NULL");
+			}
+		}
+		else if( arryColumn->GetAt(i).Compare( _T("KeiStr") ) == 0 ){	//　計の名称
+
+			if( strKei.IsEmpty() ){		// 空の場合はNULLとする
+				strSQL = strSQL + _T("NULL");
+			}
+			else{
+				strSQL.Format( strSQL + _T("'%s'") , strKei);
+			}
+		}
+		else if( arryColumn->GetAt(i).Compare( _T("FgFunc") ) == 0 ){	// FgFunc
+			strTmp.Format("%d", nFgFunc);
+			strSQL = strSQL + strTmp;
+		}
+		else{
+			strSQL = strSQL + _T("NULL");
+		}
+
+		if( i == (int)arryColumn->GetCount() -1 ){
+			break;
+		}
+
+		strSQL = strSQL + _T(",");
+	}
+
+	return strSQL;
+}
+
+// midori M-16083101 del -->
+////********************************************************************************
+////	計名称フラグを取得する
+////		【引数】	int 様式シーケンス
+////					
+////		【戻値】	BOOL 計名称フラグ
+////********************************************************************************
+//int CdbUc000Common::GetFormSeqBit(int nFormSeq)
+//{
+//	int				nFormOrder	= 0;
+//	int				nBit		= BIT_D0;
+//	CdbUcInfSub		mfcRecSub( m_lo_pdb );	//	uc_inf_mainテーブル
+//
+//	// FormOrder番号を取得
+//	if ( mfcRecSub.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ) {
+//		//	レコードあり？
+//		if ( !( mfcRecSub.IsEOF() ) ){
+//			mfcRecSub.MoveFirst();					//	レコードを先頭に移動			
+//			nFormOrder = mfcRecSub.m_FormOrder;	//	現在選択されている様式のオーダー番号取得
+//		}
+//		//	レコード閉じる
+//		mfcRecSub.Fin();
+//	}
+//
+//	for(int i=0; i<UC_ID_FORMNO_MAX; i++){
+//		// FormOrder番号と一致するまでビットをシフト
+//		if( (i+1) != nFormOrder ){
+//			nBit = nBit << 1;
+//		}
+//		else{
+//			break;
+//		}
+//	}
+//
+//	return nBit;
+//}
+// midori M-16083101 del <--
+
+//********************************************************************************
+//	全ての０円判定項目のSQL文を作成する
+//		【引数】	なし
+//					
+//		【戻値】	CString SQLのWHERE句の一部
+//********************************************************************************
+CString CdbUc000Common::GetSQLZeroJudgment()
+{
+	CString strSQL;
+
+	//strSQL.Format("%s <> 0", GetZeroMoneyMoveField() );
+	//strSQL.Format(_T("(%s = 0 or %s IS NULL)"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	if((m_OutZeroNull & BIT_D0) && (m_OutZeroNull & BIT_D1))
+		strSQL.Format(_T("(%s = 0 or %s IS NULL)"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	else if(m_OutZeroNull & BIT_D0)
+		strSQL.Format(_T("((%s = 0) AND (%s IS NOT NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	else if(m_OutZeroNull & BIT_D1)
+		strSQL.Format(_T("(%s IS NULL)"), GetZeroMoneyMoveField());
+
+	return strSQL;
+}
+
+//********************************************************************************
+//	ソートダイアログの「改頁を行う」チェックボックスがONの場合のSQL文を作成する
+//		【引数】	int					様式シーケンス
+//					int					1pの最大行数
+//					CString				seq,NumPage,NumRow以外のカラム(,含み)
+//					CString				最終結果を持つ一時テーブル
+//					
+//		【戻値】	CString SQL文
+//********************************************************************************
+// midori 160610 cor -->
+//int CdbUc000Common::CreateKaiPageTable(int nFormSeq, int nMaxRow, CString strColumn, CString strResultTable)
+// ---------------------
+int CdbUc000Common::CreateKaiPageTable(int nFormSeq, int nMaxRow, CString strColumn, CString strResultTable, int pSw, int pSw2)
+// midori 160610 cor <--
+{
+// midori UC_0003 del -->
+//// midori 152137 add -->
+//	int		kmksort = 0;		// 参照ダイアログ::表示順（科目）		0:番号順	1:50音順
+//	int		banksort = 0;		// 参照ダイアログ::表示順（金融機関）	0:番号順	1:50音順
+//	int		addresssort = 0;	// 参照ダイアログ::表示順（取引先）		0:番号順	1:50音順
+//	int		sw = 0;
+//	int		sw2 = 0;
+//	int		nSort1=0;			// 第１ソートキー
+//// midori 152137 add <--
+// midori UC_0003 del <--
+// midori UC_0003 add -->
+	int		kmksort = 0;		// 参照ダイアログ::表示順（科目）		0:番号順	1:50音順
+	int		sw = 0;
+	int		nSort1=0;			// 第１ソートキー
+// midori UC_0003 add <--
+// midori 190505 add -->
+	int		opKmkTitle = 0;		// ソートダイアログ「科目行を挿入する」			0:チェック無し		1:チェックあり
+// midori 157042 del -->
+	//int		kmkrowsw = 0;		// 0:ソートダイアログ「科目行を挿入する」非表示(画面に科目行挿入を可能にするの対応前）
+	//							// 1:ソートダイアログ「科目行を挿入する」表示(画面に科目行挿入を可能にするの対応後）
+	//							// 2:ソートダイアログ「科目行を挿入する」表示(画面に科目行挿入を可能にするの対応後） かつ ソートダイアログ「科目行を挿入する」にチェックあり
+// midori 157042 del <--
+// midori 157042 add -->
+	int		kmkrowenable = 0;
+	int		kmkrowsw = 0;		// 0:入力データに科目行がない or ソートダイアログ「科目行を挿入する」非表示(画面に科目行挿入を可能にするの対応前）
+								// 1:入力データに科目行がある
+								// 2:科目指定から呼ばれた（科目行に対する処理は不要）
+// midori 157042 add <--
+// midori 190505 add <--
+// midori 152137 add <--
+	CString strItemFirst, strItemAll, strSortType;
+	CString strSQL;
+	CString strId_tbl1, strId_tbl2;
+	CString strResultTablSave = strResultTable;
+// midori 152137 add -->
+	CString strKana=_T("");
+// midori UC_0003 del -->
+//	CString strKana2=_T("");
+// midori UC_0003 del <--
+// midori 152137 add <--
+// midori 160610 add -->
+	CString	strMoto=_T("");
+	if(pSw == 0)	strMoto=GetDefaultSQL();
+	else			strMoto=strResultTable + _T("_s");
+// midori 160610 add <--
+// midori 151400 add -->
+	CdbUcInfSub		mfcRecSub( m_lo_pdb);
+	int				sykeiAuto=0;
+	BYTE			fgItemSort1=0;
+// midori 190505 add -->
+	CString			strFilterKamoku = _T("");
+// midori 190505 add <--
+
+// midori 157042 add -->
+	kmkrowsw = 0;
+	kmkrowenable = 0;
+// 改良No.21-0086,21-0529 cor -->
+	//if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+	//	kmkrowenable = KamokuRowEnableSgn(0);
+// ------------------------------
+	if(nFormSeq == ID_FORMNO_021 || (nFormSeq == ID_FORMNO_081 && bG_InvNo == TRUE) || nFormSeq == ID_FORMNO_111) {
+		kmkrowenable = KamokuRowEnableSgn(0, nFormSeq);
+// 改良No.21-0086,21-0529 cor <--
+		// 期首が2019年4月以降
+		if(kmkrowenable == 1) {
+			// 科目指定から呼ばれた時は科目に対する処理は不要
+			if (pSw == 1) {
+				kmkrowsw = 2;
+			}
+			else {
+				kmkrowsw = GetKmkRowSw();
+			}
+		}
+	}
+// midori 157042 add <--
+
+	if( mfcRecSub.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){
+		if( !(mfcRecSub.IsEOF()) ){
+// midori 152137 del -->
+//			sykeiAuto = mfcRecSub.m_OpSykeiAuto;
+// midori 152137 del <--
+// midori 152137 add -->
+			if(mfcRecSub.m_GeneralVar[1] & BIT_D3)	{
+				// 科目指定を行う場合は、科目指定ダイアログにある
+				// 小計出力サインをセットする
+				if(mfcRecSub.m_GeneralVar[1] & BIT_D6)	{
+					sykeiAuto = 1;
+				}
+				else	{
+					sykeiAuto = 0;
+				}
+			}
+			else	{
+				sykeiAuto = mfcRecSub.m_OpSykeiAuto;
+			}
+// midori 152137 add <--
+// midori 190505 add -->
+			opKmkTitle = 0;
+// midori 157042 del -->
+			//if(mfcRecSub.m_GeneralVar[2] & BIT_D2)	{
+			//	opKmkTitle = 1;
+			//}
+// midori 157042 del <--
+// midori 190505 add <--
+		}
+		mfcRecSub.Fin();
+	}
+// midori 151400 add <--
+
+// midori 157042 del -->
+//// midori 190505 add -->
+//	kmkrowsw = 0;
+//	// 期首が2019年4月以降
+//	if(KamokuRowEnableSgn(0) == 1) {
+//		// 科目指定の場合は科目行に対する処理は不要のため サインに"3"をセット
+//		if(pSw == 1) {
+//			kmkrowsw = 3;
+//		}
+//		else {
+//			// ソート画面の科目行を挿入するにチェックあり
+//			// 科目行を削除して科目行を再作成する
+//			if(opKmkTitle == 1) {
+//				kmkrowsw = 2;
+//			}
+//			// 科目行を削除する
+//			else {
+//				kmkrowsw = 1;
+//			}
+//		}
+//	}
+//// midori 190505 add <--
+// midori 157042 del <--
+
+	// ソート条件取得
+// midori 152137 del -->
+//// midori 151400 del -->
+//	//SetTblSortSubGetSortParam( nFormSeq, &strItemFirst, &strItemAll, &strSortType);
+//// midori 151400 del <--
+//// midori 151400 add -->
+//	SetTblSortSubGetSortParam( nFormSeq, &strItemFirst, &strItemAll, &strSortType, &fgItemSort1);
+//// midori 151400 add <--
+// midori 152137 del <--
+// midori 152137 add -->
+	SetTblSortSubGetSortParam( nFormSeq, &strItemFirst, &strItemAll, &strSortType, &fgItemSort1,&nSort1);
+// midori 152137 add <--
+
+	// 一時テーブル名作成
+	strId_tbl1.Format("#id_tbl1_%d", nFormSeq);
+	strId_tbl2.Format("#id_tbl2_%d", nFormSeq);
+
+	// 自己結合（1行前のレコードを見る）用の一時テーブル
+	CString FilterSonotaFormSeq;
+	if( m_lo_FormSeq > 0 ){		// その他の内訳書の－１、－２等の絞込み
+		FilterSonotaFormSeq.Format("WHERE FormSeq = %d ", m_lo_FormSeq);
+	}
+
+	// 頁計・累計の削除（ページを跨る場合、頁計・累計に値が入ると空行小計の削除判定、ソート時の小計の紐付けができなくなるため）
+	CString FilterNotPageRui;
+	if( FilterSonotaFormSeq.IsEmpty() ) FilterNotPageRui.Format(_T("WHERE FgFunc NOT IN (%d, %d) "), ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+	else								FilterNotPageRui.Format(_T("AND FgFunc NOT IN (%d, %d) "), ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+
+// midori 157042 del -->
+//// midori 190505 add -->
+//	// ソートダイアログ「科目行を挿入する」表示(画面に科目行挿入を可能にするの対応後）されている場合、科目行を削除する
+//	strFilterKamoku.Empty();
+//	if(kmkrowsw == 1 || kmkrowsw == 2) {
+//		if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+//			if(FilterNotPageRui.IsEmpty() == TRUE)		strFilterKamoku.Format(_T("WHERE FgFunc NOT IN (%d) "),ID_FGFUNC_KAMOKU);
+//			else										strFilterKamoku.Format(_T("AND FgFunc NOT IN (%d) "),ID_FGFUNC_KAMOKU);
+//		}
+//	}
+//// midori 190505 add <--
+// midori 157042 del <--
+// midori 157099,157119_2 del -->
+//// midori 157098 add -->
+//	// ソートダイアログ「科目行を挿入する」表示(画面に科目行挿入を可能にするの対応後）されている場合、科目行を削除する
+//	if(kmkrowenable == 1) {
+//		if(pSw == 0) {
+//			if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+//				if( IsInsertKamokuRow( nFormSeq ) == FALSE){
+//					strFilterKamoku.Format(_T("AND FgFunc NOT IN (%d) "),ID_FGFUNC_KAMOKU);
+//				}
+//			}
+//		}
+//	}
+//// midori 157098 add <--
+// midori 157099,157119_2 del <--
+
+// midori 160610 cor -->
+	//strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "
+	//						"SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s "
+	//						"FROM %s %s %s "), strId_tbl1, strId_tbl1, strId_tbl1, GetDefaultSQL(), FilterSonotaFormSeq, FilterNotPageRui);
+
+	//strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s "
+	//						"SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s "
+	//						"FROM %s %s %s "), strId_tbl2, strId_tbl2, strId_tbl2, GetDefaultSQL(), FilterSonotaFormSeq, FilterNotPageRui);
+// ---------------------
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "
+							"SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s "
+// midori 190505 del -->
+							//"FROM %s %s %s "), strId_tbl1, strId_tbl1, strId_tbl1, strMoto, FilterSonotaFormSeq, FilterNotPageRui);
+// midori 190505 del <--
+// midori 190505 add -->
+							"FROM %s %s %s %s "), strId_tbl1, strId_tbl1, strId_tbl1, strMoto, FilterSonotaFormSeq, FilterNotPageRui, strFilterKamoku);
+// midori 190505 add <--
+
+	strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s "
+							"SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s "
+// midori 190505 del -->
+							//"FROM %s %s %s "), strId_tbl2, strId_tbl2, strId_tbl2, strMoto, FilterSonotaFormSeq, FilterNotPageRui);
+// midori 190505 del <--
+// midori 190505 add -->
+							"FROM %s %s %s %s "), strId_tbl2, strId_tbl2, strId_tbl2, strMoto, FilterSonotaFormSeq, FilterNotPageRui, strFilterKamoku);
+// midori 190505 add <--
+// midori 160610 cor <--
+
+	// 最終結果を持つ一時テーブル
+	strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s "), strResultTable, strResultTable);
+
+// midori 190505 del -->
+	//// 科目行追加のための下準備
+	//CString kamoku_ins_tbl;
+	//kamoku_ins_tbl.Format("#temp_utiwake_kamoku_tbl_%d", nFormSeq);
+	//if( IsInsertKamokuRow( nFormSeq ) != FALSE ){
+	//	// 科目行追加用のバッファテーブル
+	//	// 2015/11/24 #temp_utiwake_kamoku_tblの末尾に一意なSeqがついていなかったので追加（②と⑪を同時に出力するとエラーになっていた）
+	//	strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s ")
+	//		, kamoku_ins_tbl, kamoku_ins_tbl);
+
+	//	// 更新対象テーブルをバッファテーブルに変更
+	//	strResultTable = kamoku_ins_tbl;
+	//}
+// midori 190505 del <--
+// midori 156188 add -->
+	// 科目行追加のための下準備
+	CString kamoku_ins_tbl;
+	kamoku_ins_tbl.Format("#temp_utiwake_kamoku_tbl_%d", nFormSeq);
+// midori 157042 del -->
+//// midori 190505 del -->
+//	//if( IsInsertKamokuRow( nFormSeq ) != FALSE ){
+//// midori 190505 del <--
+//// midori 190505 add -->
+//	if(IsInsertKamokuRow( nFormSeq ) != FALSE || kmkrowsw == 2)	{
+//// midori 190505 add <--
+// midori 157042 del <--
+// midori 157042 add -->
+	if(IsInsertKamokuRow( nFormSeq ) != FALSE && kmkrowsw == 0)	{
+// midori 157042 add <--
+		// 科目行追加用のバッファテーブル
+		// 2015/11/24 #temp_utiwake_kamoku_tblの末尾に一意なSeqがついていなかったので追加（②と⑪を同時に出力するとエラーになっていた）
+		strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s ")
+			, kamoku_ins_tbl, kamoku_ins_tbl);
+
+		// 更新対象テーブルをバッファテーブルに変更
+		strResultTable = kamoku_ins_tbl;
+	}
+// midori 156188 add <--
+
+	// 手動・自動一括金額のFgFunc更新（FgFuncソートによって自動・手動一括金額が小計より後にきてしまうため）
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+
+	// Val <> 0でNULLは引っかからないので、「金額０円データを出力しない」の時には Val is nullの条件も付加する
+	CString strSQLNull;
+	//if( !(m_OutZeroNull & BIT_D1) )		strSQLNull = GetSQLValIsNull();
+
+// midori 190505 del -->
+//// midori 152909_2 del -->
+////	// 小計計上対象の行が全て０円判定行なら、小計を削除
+////	strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+////		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+////		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+////		"BEGIN "
+////			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+////			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+////			"SET @start_row = @end_row "
+////			"FETCH cur INTO @end_row "
+////		"END CLOSE cur DEALLOCATE cur "),
+////		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, GetSQLZeroJudgment(), ID_FGFUNC_NULL, strId_tbl2, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl2, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+//// midori 152909_2 del <--
+//// midori 152909_2 add -->
+//	// 小計計上対象の行が全て０円判定行なら、小計を削除
+//	strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+//		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+//		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+//		"BEGIN "
+//			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+//			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+//			"SET @start_row = @end_row "
+//			"FETCH cur INTO @end_row "
+//		"END CLOSE cur DEALLOCATE cur "),
+//		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, 
+//		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL,
+//		strId_tbl2, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+//	// 中計計上対象の行が全て０円判定行なら、中計を削除
+//	strSQL.Format(strSQL + _T("SET @start_row = 0 SET @end_row = 0"
+//		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d "
+//		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+//		"BEGIN "
+//			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+//			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+//			"SET @start_row = @end_row "
+//			"FETCH cur INTO @end_row "
+//		"END CLOSE cur DEALLOCATE cur "),
+//		strId_tbl1, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, 
+//		strId_tbl1, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strId_tbl1, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL,
+//		strId_tbl2, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+//// midori 152909_2 add <--
+// midori 190505 del <--
+// midori 190505 add -->
+	// 小計計上対象の行が全て０円判定行なら、小計を削除
+	strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+		"BEGIN "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"SET @start_row = @end_row "
+			"FETCH cur INTO @end_row "
+		"END CLOSE cur DEALLOCATE cur "),
+		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, 
+		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL, ID_FGFUNC_KAMOKU,
+		strId_tbl2, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL, ID_FGFUNC_KAMOKU);
+	// 中計計上対象の行が全て０円判定行なら、中計を削除
+	strSQL.Format(strSQL + _T("SET @start_row = 0 SET @end_row = 0"
+		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d "
+		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+		"BEGIN "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"SET @start_row = @end_row "
+			"FETCH cur INTO @end_row "
+		"END CLOSE cur DEALLOCATE cur "),
+		strId_tbl1, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, 
+		strId_tbl1, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strId_tbl1, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL, ID_FGFUNC_KAMOKU,
+		strId_tbl2, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL, ID_FGFUNC_KAMOKU);
+// midori 190505 add <--
+
+// midori 152137 del -->
+//	// 小計行の一行前行をチェックし、その第一ソート項目を取得する
+//	strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+//		"SELECT tbl2.seq, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+//		"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 10 "), strItemFirst, strId_tbl1, strId_tbl1);
+//
+//	// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+//	strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s "
+//		"OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+//		"UPDATE %s set %s = @order where seq = @update_seq "
+//		"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2, strItemFirst);
+//
+//// midori 151400 add -->
+//	// 「「小計」を自動挿入する」チェック無しかつ第１ソートが科目の場合
+//	if(sykeiAuto == 0 && fgItemSort1 == 1)	{
+//		// 自動一括金額を最終頁に表示するため、KnOrderを99999で更新する
+//		strSQL.Format(strSQL + _T("UPDATE %s SET KnOrder = 99999 WHERE FgFunc = %d "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+//	}
+//// midori 151400 add <--
+//
+//	// **********************************************
+//	// 仮行番号(row)を振り、NumPageとNumRowを更新
+//	// **********************************************
+//// midori 160610 cor -->
+//	//strSQL.Format(strSQL + _T("DECLARE @per_page_num int SET @per_page_num = %d ;with "
+//	//	"rownum_tbl(seq,order_num,row) AS ( "
+//	//	"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s) FROM %s WHERE FgShow = 0 AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))), "), 
+//	//	nMaxRow, strItemFirst, strItemAll, strId_tbl2, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUAUTO_ZERO, GetSQLZeroJudgment() );
+//// ---------------------
+//	if(pSw2 == 0)	{
+//		strSQL.Format(strSQL + _T("DECLARE @per_page_num int SET @per_page_num = %d ;with "
+//			"rownum_tbl(seq,order_num,row) AS ( "
+//			"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s) FROM %s WHERE FgShow = %d AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))), "), 
+//			nMaxRow, strItemFirst, strItemAll, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUAUTO_ZERO, GetSQLZeroJudgment() );
+//	}
+//	else	{
+//		strSQL.Format(strSQL + _T("DECLARE @per_page_num int SET @per_page_num = %d ;with "
+//			"rownum_tbl(seq,order_num,row) AS ( "
+//			"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s) FROM %s WHERE (FgShow=%d OR FgShow=%d) AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))), "), 
+//			nMaxRow, strItemFirst, strItemAll, strId_tbl2, ID_FGSHOW_OFF, ID_FGSHOW_IKKATU, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUAUTO_ZERO, GetSQLZeroJudgment() );
+//	}
+//// midori 160610 cor <--
+//
+//	strSQL.Format(strSQL + _T("rank_tbl(seq,rank_num,row) AS( "
+//		"SELECT seq, DENSE_RANK() OVER(ORDER BY order_num %s),row FROM rownum_tbl ), "), strSortType);
+// midori 152137 del <--
+// midori UC_0003 del -->
+//// midori 152137 add -->
+	//// 参照ダイアログ::表示順の取得
+	//// 科目
+	//kmksort = IsKamokuSort(nFormSeq,m_lo_pdb);
+	//// 金融機関・取引先
+	//IsSort(nFormSeq,m_lo_pdb,&banksort,&addresssort);
+	//sw = 0;
+	//sw2 = 0;
+	//switch(GetSortItem(nFormSeq,nSort1))	{
+	//case 1:	// 科目（カナ入力有）
+	//	// 0:番号順 1:50音順
+	//	if(kmksort == 1)			sw = 1;
+	//	if(sw == 1)					strKana = _T("KnKana");
+	//	sw2 = 1;
+	//	break;
+	//case 2:	// 銀行（カナ入力有）
+	//	// 0:番号順 1:50音順
+	//	if(banksort == 1)			sw = 2;
+	//	if(sw == 2)	{
+	//		if(nFormSeq == ID_FORMNO_011)	{
+	//			strKana = _T("BkKana1");
+	//			strKana2 = _T("BkKana2");
+	//		}
+	//		else	{
+	//			strKana = _T("AdKana1");
+	//			strKana2 = _T("AdKana2");
+	//		}
+	//	}
+	//	sw2 = 2;
+	//	break;
+	//case 3:	// 取引先（カナ入力有）
+	//	// 0:番号順 1:50音順
+	//	if(addresssort == 1)		sw = 3;
+	//	if(sw == 3)					strKana = _T("AdKana");
+	//	sw2 = 3;
+	//	break;
+	//default:
+	//	break;
+	//}
+
+	//if(sw == 0)	{
+	//	// 小計行の一行前行をチェックし、その第一ソート項目を取得する
+	//	strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+	//		"SELECT tbl2.seq, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+	//		"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 10 "), strItemFirst, strId_tbl1, strId_tbl1);
+
+	//	// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+	//	strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s "
+	//		"OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+	//		"UPDATE %s set %s = @order where seq = @update_seq "
+	//		"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2, strItemFirst);
+
+	//	// 「「小計」を自動挿入する」チェック無しかつ第１ソートが科目の場合
+	//	if(sykeiAuto == 0 && fgItemSort1 == 1)	{
+	//		// 自動一括金額を最終頁に表示するため、KnOrderを99999で更新する
+	//		strSQL.Format(strSQL + _T("UPDATE %s SET KnOrder = 99999,KnKana = 'ﾝﾝﾝﾝﾝﾝ' WHERE FgFunc = %d "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+	//	}
+	//	if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_081)	{
+	//		// 下記の２様式は、ソートの第１項目に「取引先」が指定でき、改頁を行うのチェックも選択可
+	//		// ②.受取手形の内訳書
+	//		// ⑧.支払手形の内訳書
+	//		// 「「小計」を自動挿入する」チェック無しかつ第１ソートが取引先の場合
+	//		if(sykeiAuto == 0 && sw2 == 3)	{
+	//			// 自動一括金額を最終頁に表示するため、AdOrderを99999で更新する
+	//			strSQL.Format(strSQL + _T("UPDATE %s SET AdOrder = 99999,AdKana = 'ﾝﾝﾝﾝﾝﾝ' WHERE FgFunc = %d "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+	//		}
+	//	}
+
+	//	// **********************************************
+	//	// 仮行番号(row)を振り、NumPageとNumRowを更新
+	//	// **********************************************
+	//	strSQL.Format(strSQL + _T("DECLARE @per_page_num int SET @per_page_num = %d ;with "
+	//		"rownum_tbl(seq,order_num,row) AS ( "
+	//		"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s) FROM %s WHERE FgShow = %d AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))), "), 
+	//		nMaxRow, strItemFirst, strItemAll, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUAUTO_ZERO, GetSQLZeroJudgment() );
+
+	//	strSQL.Format(strSQL + _T("rank_tbl(seq,rank_num,row) AS( "
+	//		"SELECT seq, DENSE_RANK() OVER(ORDER BY order_num %s),row FROM rownum_tbl ), "), strSortType);
+	//}
+	//else	{
+	//	// 金融機関
+	//	if(sw == 2)	{
+	//		// 小計行の一行前行をチェックし、その第一ソート項目を取得する
+	//		strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+	//			"SELECT tbl2.seq, tbl1.%s, tbl1.%s, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+	//			"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 10 "), strItemFirst, strKana, strKana2, strId_tbl1, strId_tbl1);
+
+	//		// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+	//		strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s DECLARE @kana varchar(6) DECLARE @kana2 varchar(6) "
+	//			"OPEN cur FETCH cur INTO @update_seq, @order, @kana, @kana2 WHILE @@fetch_status = 0  BEGIN "
+	//			"UPDATE %s set %s = @order, %s = @kana, %s = @kana2 where seq = @update_seq "
+	//			"FETCH cur INTO @update_seq,@order,@kana,@kana2 END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2, strItemFirst, strKana, strKana2);
+
+	//		// **********************************************
+	//		// 仮行番号(row)を振り、NumPageとNumRowを更新
+	//		// **********************************************
+	//		strSQL.Format(strSQL + _T("DECLARE @per_page_num int SET @per_page_num = %d ;with "
+	//			"rownum_tbl(seq,order_num,kana,kana2,row) AS ( "
+	//			"SELECT seq, %s, %s, %s, ROW_NUMBER() OVER(ORDER BY %s) FROM %s WHERE FgShow = %d AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))), "), 
+	//			nMaxRow, strItemFirst, strKana, strKana2, strItemAll, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUAUTO_ZERO, GetSQLZeroJudgment() );
+
+	//		strSQL += _T("rank_tbl(seq,rank_num,row) AS( SELECT seq, DENSE_RANK() OVER(ORDER BY kana ASC, kana2 ASC,order_num ASC),row FROM rownum_tbl ), ");
+	//	}
+	//	// 科目、取引先
+	//	else	{
+
+	//		// 小計行の一行前行をチェックし、その第一ソート項目を取得する
+	//		strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+	//			"SELECT tbl2.seq, tbl1.%s, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+	//			"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 10 "), strItemFirst, strKana, strId_tbl1, strId_tbl1);
+
+	//		// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+	//		strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s DECLARE @kana varchar(6) "
+	//			"OPEN cur FETCH cur INTO @update_seq, @order, @kana WHILE @@fetch_status = 0  BEGIN "
+	//			"UPDATE %s set %s = @order, %s = @kana where seq = @update_seq "
+	//			"FETCH cur INTO @update_seq,@order,@kana END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2, strItemFirst, strKana);
+
+	//		// 科目
+	//		if(sw == 1)	{
+	//			// 「「小計」を自動挿入する」チェック無しかつ第１ソートが科目の場合
+	//			if(sykeiAuto == 0 && fgItemSort1 == 1)	{
+	//				// 自動一括金額を最終頁に表示するため、KnOrderを99999で更新する
+	//				strSQL.Format(strSQL + _T("UPDATE %s SET KnOrder = 99999,KnKana = 'ﾝﾝﾝﾝﾝﾝ' WHERE FgFunc = %d "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+	//			}
+	//		}
+	//		// 枝番
+	//		else	{
+	//			if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_081)	{
+	//				// 下記の２様式は、ソートの第１項目に「取引先」が指定でき、改頁を行うのチェックも選択可
+	//				// ②.受取手形の内訳書
+	//				// ⑧.支払手形の内訳書
+	//				// 「「小計」を自動挿入する」チェック無しかつ第１ソートが取引先の場合
+	//				if(sykeiAuto == 0 && sw2 == 3)	{
+	//					// 自動一括金額を最終頁に表示するため、AdOrderを99999で更新する
+	//					strSQL.Format(strSQL + _T("UPDATE %s SET AdOrder = 99999,AdKana = 'ﾝﾝﾝﾝﾝﾝ' WHERE FgFunc = %d "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+	//				}
+	//			}
+	//		}
+
+	//		// **********************************************
+	//		// 仮行番号(row)を振り、NumPageとNumRowを更新
+	//		// **********************************************
+	//		strSQL.Format(strSQL + _T("DECLARE @per_page_num int SET @per_page_num = %d ;with "
+	//			"rownum_tbl(seq,order_num,kana,row) AS ( "
+	//			"SELECT seq, %s, %s, ROW_NUMBER() OVER(ORDER BY %s) FROM %s WHERE FgShow = %d AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))), "), 
+	//			nMaxRow, strItemFirst, strKana, strItemAll, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUAUTO_ZERO, GetSQLZeroJudgment() );
+
+	//		strSQL += _T("rank_tbl(seq,rank_num,row) AS( SELECT seq, DENSE_RANK() OVER(ORDER BY kana ASC, order_num ASC),row FROM rownum_tbl ), ");
+	//	}
+	//}
+//// midori 152137 add <--
+// midori UC_0003 del <--
+// midori UC_0003 add -->
+	// 参照ダイアログ::表示順の取得
+	// 科目
+	kmksort = IsKamokuSort(nFormSeq,m_lo_pdb);
+	sw = 0;
+	// 科目（カナ入力有）
+	if(GetSortItem(nFormSeq,nSort1) == 1)	{
+		// 0:番号順 1:50音順
+		if(kmksort == 1)			sw = 1;
+		if(sw == 1)					strKana = _T("KnKana");
+	}
+	if(sw == 0)	{
+		// 小計行の一行前行をチェックし、その第一ソート項目を取得する
+		strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+			"SELECT tbl2.seq, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+			"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 10 "), strItemFirst, strId_tbl1, strId_tbl1);
+
+		// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+		strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s "
+			"OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+			"UPDATE %s set %s = @order where seq = @update_seq "
+			"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2, strItemFirst);
+
+// midori 152866 add -->
+		// 中計行の一行前行をチェックし、その第一ソート項目を取得する
+		strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+			"SELECT tbl2.seq, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+			"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 12 "), strItemFirst, strId_tbl2, strId_tbl2);
+
+		// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+		strSQL.Format(strSQL + _T("OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+			"UPDATE %s set %s = @order where seq = @update_seq "
+			"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), strId_tbl2, strItemFirst);
+// midori 152866 add <--
+
+		// 「「小計」を自動挿入する」チェック無しかつ第１ソートが科目の場合
+// No.200905 del -->
+		//if(sykeiAuto == 0 && fgItemSort1 == 1)	{
+		//	// 自動一括金額を最終頁に表示するため、KnOrderを99999で更新する
+		//	strSQL.Format(strSQL + _T("UPDATE %s SET KnOrder = 99999,KnKana = 'ﾝﾝﾝﾝﾝﾝ' WHERE FgFunc = %d "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+		//}
+// No.200905 del <--
+// No.200905 add -->
+		// 第１ソートが科目の場合
+		if(fgItemSort1 == 1)	{
+			// 科目が選択されていない自動一括金額を最終頁に表示するため、KnOrderを99999で更新する
+			strSQL.Format(strSQL + _T("UPDATE %s SET KnOrder = 99999,KnKana = 'ﾝﾝﾝﾝﾝﾝ' WHERE FgFunc = %d AND KnSeq = 0 "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+		}
+// No.200905 add <--
+
+// midori 190505 add -->
+// midori 157042 del -->
+		//if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+// midori 157042 del <--
+// midori 157042 add -->
+		if(kmkrowsw == 1) {
+// midori 157042 add <--
+			// SQL実行
+			if( ExecuteSQLWork( strSQL ) != 0 ){
+				return DB_ERR_EXESQL;
+			}
+			DeleteKamokuRow(nFormSeq,sw,strId_tbl2);
+
+// midori 157042 add -->
+			// 科目行の一行後の行をチェックし、その第一ソート項目を取得する
+			strSQL.Format(_T("DECLARE cur cursor for "
+				"SELECT tbl2.seq, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+				"WHERE tbl1.row = tbl2.row + 1  AND tbl2.FgFunc = %d "), strItemFirst, strId_tbl2, strId_tbl2, ID_FGFUNC_KAMOKU);
+		
+			// 科目行の第一ソート条件に、一行後の第一ソード項目を更新（紐付け）
+			strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s "
+				"OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+				"UPDATE %s set %s = @order where seq = @update_seq "
+				"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2, strItemFirst);
+			// SQL実行
+			if( ExecuteSQLWork( strSQL ) != 0 ){
+				return DB_ERR_EXESQL;
+			}
+// midori 157042 add <--
+
+			strSQL.Empty();
+		}
+// midori 190505 add <--
+
+		// **********************************************
+		// 仮行番号(row)を振り、NumPageとNumRowを更新
+		// **********************************************
+		strSQL.Format(strSQL + _T("DECLARE @per_page_num int SET @per_page_num = %d ;with "
+			"rownum_tbl(seq,order_num,row) AS ( "
+			"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s) FROM %s WHERE FgShow = %d AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))), "), 
+			nMaxRow, strItemFirst, strItemAll, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUAUTO_ZERO, GetSQLZeroJudgment() );
+
+		strSQL.Format(strSQL + _T("rank_tbl(seq,rank_num,row) AS( "
+			"SELECT seq, DENSE_RANK() OVER(ORDER BY order_num %s),row FROM rownum_tbl ), "), strSortType);
+	}
+	// 50音
+	else	{
+		// 小計行の一行前行をチェックし、その第一ソート項目を取得する
+		strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+			"SELECT tbl2.seq, tbl1.%s, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+			"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 10 "), strItemFirst, strKana, strId_tbl1, strId_tbl1);
+
+		// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+		strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s DECLARE @kana varchar(6) "
+			"OPEN cur FETCH cur INTO @update_seq, @order, @kana WHILE @@fetch_status = 0  BEGIN "
+			"UPDATE %s set %s = @order, %s = @kana where seq = @update_seq "
+			"FETCH cur INTO @update_seq,@order,@kana END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2, strItemFirst, strKana);
+
+// midori 152866 add -->
+		// 中計行の一行前行をチェックし、その第一ソート項目を取得する
+		strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+			"SELECT tbl2.seq, tbl1.%s, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+			"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 12 "), strItemFirst, strKana, strId_tbl2, strId_tbl2);
+
+		// 中計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+		strSQL.Format(strSQL + _T("OPEN cur FETCH cur INTO @update_seq, @order, @kana WHILE @@fetch_status = 0  BEGIN "
+			"UPDATE %s set %s = @order, %s = @kana where seq = @update_seq "
+			"FETCH cur INTO @update_seq,@order,@kana END CLOSE cur DEALLOCATE cur "), strId_tbl2, strItemFirst, strKana);
+// midori 152866 add <--
+
+// No.200905 del -->
+		//// 「「小計」を自動挿入する」チェック無しかつ第１ソートが科目の場合
+		//if(sykeiAuto == 0 && fgItemSort1 == 1)	{
+		//	// 自動一括金額を最終頁に表示するため、KnOrderを99999で更新する
+		//	strSQL.Format(strSQL + _T("UPDATE %s SET KnOrder = 99999,KnKana = 'ﾝﾝﾝﾝﾝﾝ' WHERE FgFunc = %d "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+		//}
+// No.200905 del <--
+// No.200905 add -->
+		// 第１ソートが科目の場合
+		if(fgItemSort1 == 1)	{
+			// 自動一括金額を最終頁に表示するため、KnOrderを99999で更新する
+			strSQL.Format(strSQL + _T("UPDATE %s SET KnOrder = 99999,KnKana = 'ﾝﾝﾝﾝﾝﾝ' WHERE FgFunc = %d ND KnSeq = 0 "),strId_tbl2,ID_FGFUNC_IKKATUAUTO_ZERO);
+		}
+// No.200905 add <--
+
+// midori 190505 add -->
+// midori 157042 del -->
+		//if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+// midori 157042 del <--
+// midori 157042 add -->
+		if(kmkrowsw == 1) {
+// midori 157042 add <--
+			// SQL実行
+			if( ExecuteSQLWork( strSQL ) != 0 ){
+				return DB_ERR_EXESQL;
+			}
+			DeleteKamokuRow(nFormSeq,sw,strId_tbl2);
+
+// midori 157042 add -->
+			// 科目行の一行後の行をチェックし、その第一ソート項目を取得する
+			strSQL.Format(_T("DECLARE cur cursor for "
+				"SELECT tbl2.seq, tbl1.%s, tbl1.%s FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+				"WHERE tbl1.row = tbl2.row + 1  AND tbl2.FgFunc = %d "), strItemFirst, strKana, strId_tbl2, strId_tbl2, ID_FGFUNC_KAMOKU);
+
+			// 科目行の第一ソート条件に、一行後の第一ソード項目を更新（紐付け）
+			strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s DECLARE @kana varchar(6) "
+				"OPEN cur FETCH cur INTO @update_seq, @order, @kana WHILE @@fetch_status = 0  BEGIN "
+				"UPDATE %s set %s = @order, %s = @kana where seq = @update_seq "
+				"FETCH cur INTO @update_seq,@order,@kana END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2, strItemFirst, strKana);
+			// SQL実行
+			if (ExecuteSQLWork(strSQL) != 0) {
+				return DB_ERR_EXESQL;
+			}
+// midori 157042 add <--
+
+			strSQL.Empty();
+		}
+// midori 190505 add <--
+
+		// **********************************************
+		// 仮行番号(row)を振り、NumPageとNumRowを更新
+		// **********************************************
+		strSQL.Format(strSQL + _T("DECLARE @per_page_num int SET @per_page_num = %d ;with "
+			"rownum_tbl(seq,order_num,kana,row) AS ( "
+			"SELECT seq, %s, %s, ROW_NUMBER() OVER(ORDER BY %s) FROM %s WHERE FgShow = %d AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))), "), 
+			nMaxRow, strItemFirst, strKana, strItemAll, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUAUTO_ZERO, GetSQLZeroJudgment() );
+
+		strSQL += _T("rank_tbl(seq,rank_num,row) AS( SELECT seq, DENSE_RANK() OVER(ORDER BY kana ASC, order_num ASC),row FROM rownum_tbl ), ");
+	}
+// midori UC_0003 add <--
+
+	strSQL.Format(strSQL + _T("partition_tbl(seq,rank_num,row) AS( "
+		"SELECT seq,rank_num,ROW_NUMBER() OVER (PARTITION BY rank_num order by row) FROM rank_tbl ),"));
+
+	strSQL.Format(strSQL + _T("ceiling_num(seq,rank_num,ceiling_num,row) AS( "
+		"SELECT seq,rank_num,CAST( CEILING(CAST(row as float) / CAST(@per_page_num as float)) as int ),row FROM partition_tbl ), "));
+
+	strSQL.Format(strSQL + _T("page_tbl(seq,pg,row) AS( "
+		"SELECT seq, DENSE_RANK() OVER(ORDER BY rank_num,ceiling_num) ,row FROM ceiling_num ), "));
+
+	strSQL.Format(strSQL + _T("page_row_tbl(seq,NumPage,NumRow) AS( "
+		"SELECT seq,pg,ROW_NUMBER() OVER(PARTITION BY pg ORDER BY row ) FROM page_tbl ) "));
+
+	strSQL.Format(strSQL + _T("SELECT row, page_row_tbl.seq, page_row_tbl.NumPage,page_row_tbl.NumRow, FgFunc %s "
+		"INTO %s FROM page_row_tbl,%s "
+		"WHERE page_row_tbl.seq = %s.seq "
+		"ORDER BY page_row_tbl.NumPage,page_row_tbl.NumRow "), strColumn, strResultTable, strId_tbl2, strId_tbl2);
+
+// midori 190505 del -->
+//	if( IsInsertKamokuRow( nFormSeq ) == FALSE ){
+//		// SQL実行
+//		if( ExecuteSQLWork( strSQL ) != 0 ){
+//			return DB_ERR_EXESQL;
+//		}
+//
+//		// カラムrowを削除
+//		CString strSQL2;
+//		strSQL2.Format(_T("ALTER TABLE %s DROP COLUMN row"), strResultTable);
+//
+//		// SQL実行
+//		if( ExecuteSQLWork( strSQL2 ) != 0 ){
+//			return DB_ERR_EXESQL;
+//		}
+//
+//		return DB_ERR_OK;
+//	}
+//	
+//	// 科目行追加SQL取得
+//	strSQL = strSQL + GetSQLInsertKamokuRow( kamoku_ins_tbl );
+//
+//	// ****************************************************************************
+//	// 仮行番号(row)を振り、NumPageとNumRowを更新(科目行が追加されたので振り直し)
+//	// ****************************************************************************
+//	strResultTable = strResultTablSave;
+//
+//// midori 152137 del -->
+//	//strSQL.Format(strSQL + _T(" ;with rownum_tbl(seq,order_num,row,FgFunc,KnSeq,KnOrder,KnName) AS ( "
+//	//	"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s),FgFunc,KnSeq,KnOrder,KnName FROM %s ), "), 
+//	//	strItemFirst, strItemAll, kamoku_ins_tbl);
+//
+//	//strSQL.Format(strSQL + _T("rank_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName) AS( "
+//	//	"SELECT seq, DENSE_RANK() OVER(ORDER BY order_num %s),row,FgFunc,KnSeq,KnOrder,KnName FROM rownum_tbl ), "), strSortType);
+//
+//	//strSQL.Format(strSQL + _T("partition_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName) AS( "
+//	//	"SELECT seq,rank_num,ROW_NUMBER() OVER (PARTITION BY rank_num order by row),FgFunc,KnSeq,KnOrder,KnName FROM rank_tbl ),"));
+//
+//	//strSQL.Format(strSQL + _T("ceiling_num(seq,rank_num,ceiling_num,row,FgFunc,KnSeq,KnOrder,KnName) AS( "
+//	//	"SELECT seq,rank_num,CAST( CEILING(CAST(row as float) / CAST(@per_page_num as float)) as int ),row,FgFunc,KnSeq,KnOrder,KnName FROM partition_tbl ), "));
+//
+//	//strSQL.Format(strSQL + _T("page_tbl(seq,pg,row,FgFunc,KnSeq,KnOrder,KnName) AS( "
+//	//	"SELECT seq, DENSE_RANK() OVER(ORDER BY rank_num,ceiling_num) ,row,FgFunc,KnSeq,KnOrder,KnName FROM ceiling_num ), "));
+//
+//	//strSQL.Format(strSQL + _T("page_row_tbl(seq,NumPage,NumRow,FgFunc,KnSeq,KnOrder,KnName) AS( "
+//	//	"SELECT seq,pg,ROW_NUMBER() OVER(PARTITION BY pg ORDER BY row ),FgFunc,KnSeq,KnOrder,KnName FROM page_tbl ) "));
+//
+//	//strSQL.Format(strSQL + _T("SELECT page_row_tbl.seq, page_row_tbl.NumPage,page_row_tbl.NumRow, page_row_tbl.FgFunc %s "
+//	//	"INTO %s FROM page_row_tbl LEFT OUTER JOIN %s "
+//	//	"ON page_row_tbl.seq = %s.seq "
+//	//	"ORDER BY page_row_tbl.NumPage,page_row_tbl.NumRow "), GetSQLResultSelect("page_row_tbl"), strResultTable, strId_tbl2, strId_tbl2);
+//// midori 152137 del <--
+//// midori 152137 add -->
+//	if(kmksort == 0)			{
+//		strSQL.Format(strSQL + _T(" ;with rownum_tbl(seq,order_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS ( "
+//			"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM %s ), "), 
+//			strItemFirst, strItemAll, kamoku_ins_tbl);
+//
+//		strSQL.Format(strSQL + _T("rank_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq, DENSE_RANK() OVER(ORDER BY order_num %s),row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM rownum_tbl ), "), strSortType);
+//
+//		strSQL.Format(strSQL + _T("partition_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq,rank_num,ROW_NUMBER() OVER (PARTITION BY rank_num order by row),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM rank_tbl ),"));
+//
+//		strSQL.Format(strSQL + _T("ceiling_num(seq,rank_num,ceiling_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq,rank_num,CAST( CEILING(CAST(row as float) / CAST(@per_page_num as float)) as int ),row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM partition_tbl ), "));
+//
+//		strSQL.Format(strSQL + _T("page_tbl(seq,pg,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq, DENSE_RANK() OVER(ORDER BY rank_num,ceiling_num) ,row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM ceiling_num ), "));
+//
+//		strSQL.Format(strSQL + _T("page_row_tbl(seq,NumPage,NumRow,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq,pg,ROW_NUMBER() OVER(PARTITION BY pg ORDER BY row ),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM page_tbl ) "));
+//
+//		strSQL.Format(strSQL + _T("SELECT page_row_tbl.seq, page_row_tbl.NumPage,page_row_tbl.NumRow, page_row_tbl.FgFunc %s "
+//			"INTO %s FROM page_row_tbl LEFT OUTER JOIN %s "
+//			"ON page_row_tbl.seq = %s.seq "
+//			"ORDER BY page_row_tbl.NumPage,page_row_tbl.NumRow "), GetSQLResultSelect("page_row_tbl"), strResultTable, strId_tbl2, strId_tbl2);
+//	}
+//	else	{
+//		strSQL.Format(strSQL + _T(" ;with rownum_tbl(seq,order_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS ( "
+//			"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM %s ), "), 
+//			strItemFirst, strItemAll, kamoku_ins_tbl);
+//
+//		strSQL += _T("rank_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( SELECT seq, DENSE_RANK() OVER(ORDER BY KnKana ASC ,order_num ASC),row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM rownum_tbl ), ");
+//
+//		strSQL.Format(strSQL + _T("partition_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq,rank_num,ROW_NUMBER() OVER (PARTITION BY rank_num order by row),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM rank_tbl ),"));
+//
+//		strSQL.Format(strSQL + _T("ceiling_num(seq,rank_num,ceiling_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq,rank_num,CAST( CEILING(CAST(row as float) / CAST(@per_page_num as float)) as int ),row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM partition_tbl ), "));
+//
+//		strSQL.Format(strSQL + _T("page_tbl(seq,pg,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq, DENSE_RANK() OVER(ORDER BY rank_num,ceiling_num) ,row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM ceiling_num ), "));
+//
+//		strSQL.Format(strSQL + _T("page_row_tbl(seq,NumPage,NumRow,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+//			"SELECT seq,pg,ROW_NUMBER() OVER(PARTITION BY pg ORDER BY row ),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM page_tbl ) "));
+//
+//		strSQL.Format(strSQL + _T("SELECT page_row_tbl.seq, page_row_tbl.NumPage,page_row_tbl.NumRow, page_row_tbl.FgFunc %s "
+//			"INTO %s FROM page_row_tbl LEFT OUTER JOIN %s "
+//			"ON page_row_tbl.seq = %s.seq "
+//			"ORDER BY page_row_tbl.NumPage,page_row_tbl.NumRow "), GetSQLResultSelect("page_row_tbl"), strResultTable, strId_tbl2, strId_tbl2);
+//	}
+//// midori 152137 add <--
+//
+//	// SQL実行
+//	if( ExecuteSQLWork( strSQL ) != 0 ){
+//		return DB_ERR_EXESQL;
+//	}
+// midori 190505 del <--
+// midori 156188_2 del -->
+//// midori 190505 add -->
+//	// SQL実行
+//	if( ExecuteSQLWork( strSQL ) != 0 ){
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// カラムrowを削除
+//	CString strSQL2;
+//	strSQL2.Format(_T("ALTER TABLE %s DROP COLUMN row"), strResultTable);
+//
+//	// SQL実行
+//	if( ExecuteSQLWork( strSQL2 ) != 0 ){
+//		return DB_ERR_EXESQL;
+//	}
+//// midori 190505 add <--
+// midori 156188 del <--
+// midori 156188 add -->
+// midori 157042 del -->
+//// midori 190505 del -->
+//	//if(KamokuRowEnableSgn(0) == 1) {
+//// midori 190505 del <--
+//// midori 190505 add -->
+//	// ソートダイアログ「科目行を挿入する」表示(画面に科目行挿入を可能にするの対応後）かつソートダイアログ「科目行を挿入する」にチェックなし
+//	// ソートダイアログ「科目行を挿入する」表示(画面に科目行挿入を可能にするの対応後） かつ 科目指定出力にチェックあり
+//	if(kmkrowsw == 1 || kmkrowsw == 3) {
+//// midori 190505 add <--
+// midori 157042 del <--
+// midori 157042 add -->
+	if(kmkrowsw == 1 || kmkrowsw == 2) {
+// midori 157042 add <--
+		// SQL実行
+		if( ExecuteSQLWork( strSQL ) != 0 ){
+			return DB_ERR_EXESQL;
+		}
+
+		// カラムrowを削除
+		CString strSQL2;
+		strSQL2.Format(_T("ALTER TABLE %s DROP COLUMN row"), strResultTable);
+
+		// SQL実行
+		if( ExecuteSQLWork( strSQL2 ) != 0 ){
+			return DB_ERR_EXESQL;
+		}
+	}
+	else {
+// midori 157042 del -->
+//// midori 190505 del -->
+//		//if( IsInsertKamokuRow( nFormSeq ) == FALSE ){
+//// midori 190505 del <--
+//// midori 190505 add -->
+//		if( IsInsertKamokuRow( nFormSeq ) == FALSE && kmkrowsw != 2){
+//// midori 190505 add <--
+// midori 157042 del <--
+// midori 157042 add -->
+		if( IsInsertKamokuRow( nFormSeq ) == FALSE){
+// midori 157042 add <--
+			// SQL実行
+			if( ExecuteSQLWork( strSQL ) != 0 ){
+				return DB_ERR_EXESQL;
+			}
+
+			// カラムrowを削除
+			CString strSQL2;
+			strSQL2.Format(_T("ALTER TABLE %s DROP COLUMN row"), strResultTable);
+
+			// SQL実行
+			if( ExecuteSQLWork( strSQL2 ) != 0 ){
+				return DB_ERR_EXESQL;
+			}
+
+			return DB_ERR_OK;
+		}
+	
+		// 科目行追加SQL取得
+		strSQL = strSQL + GetSQLInsertKamokuRow( kamoku_ins_tbl );
+
+		// ****************************************************************************
+		// 仮行番号(row)を振り、NumPageとNumRowを更新(科目行が追加されたので振り直し)
+		// ****************************************************************************
+		strResultTable = strResultTablSave;
+
+		if(kmksort == 0)			{
+			strSQL.Format(strSQL + _T(" ;with rownum_tbl(seq,order_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS ( "
+				"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM %s ), "), 
+				strItemFirst, strItemAll, kamoku_ins_tbl);
+
+			strSQL.Format(strSQL + _T("rank_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq, DENSE_RANK() OVER(ORDER BY order_num %s),row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM rownum_tbl ), "), strSortType);
+
+			strSQL.Format(strSQL + _T("partition_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq,rank_num,ROW_NUMBER() OVER (PARTITION BY rank_num order by row),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM rank_tbl ),"));
+
+			strSQL.Format(strSQL + _T("ceiling_num(seq,rank_num,ceiling_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq,rank_num,CAST( CEILING(CAST(row as float) / CAST(@per_page_num as float)) as int ),row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM partition_tbl ), "));
+
+			strSQL.Format(strSQL + _T("page_tbl(seq,pg,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq, DENSE_RANK() OVER(ORDER BY rank_num,ceiling_num) ,row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM ceiling_num ), "));
+
+			strSQL.Format(strSQL + _T("page_row_tbl(seq,NumPage,NumRow,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq,pg,ROW_NUMBER() OVER(PARTITION BY pg ORDER BY row ),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM page_tbl ) "));
+
+			strSQL.Format(strSQL + _T("SELECT page_row_tbl.seq, page_row_tbl.NumPage,page_row_tbl.NumRow, page_row_tbl.FgFunc %s "
+				"INTO %s FROM page_row_tbl LEFT OUTER JOIN %s "
+				"ON page_row_tbl.seq = %s.seq "
+				"ORDER BY page_row_tbl.NumPage,page_row_tbl.NumRow "), GetSQLResultSelect("page_row_tbl"), strResultTable, strId_tbl2, strId_tbl2);
+		}
+		else	{
+			strSQL.Format(strSQL + _T(" ;with rownum_tbl(seq,order_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS ( "
+				"SELECT seq, %s, ROW_NUMBER() OVER(ORDER BY %s),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM %s ), "), 
+				strItemFirst, strItemAll, kamoku_ins_tbl);
+
+			strSQL += _T("rank_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( SELECT seq, DENSE_RANK() OVER(ORDER BY KnKana ASC ,order_num ASC),row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM rownum_tbl ), ");
+
+			strSQL.Format(strSQL + _T("partition_tbl(seq,rank_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq,rank_num,ROW_NUMBER() OVER (PARTITION BY rank_num order by row),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM rank_tbl ),"));
+
+			strSQL.Format(strSQL + _T("ceiling_num(seq,rank_num,ceiling_num,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq,rank_num,CAST( CEILING(CAST(row as float) / CAST(@per_page_num as float)) as int ),row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM partition_tbl ), "));
+
+			strSQL.Format(strSQL + _T("page_tbl(seq,pg,row,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq, DENSE_RANK() OVER(ORDER BY rank_num,ceiling_num) ,row,FgFunc,KnSeq,KnOrder,KnName,KnKana FROM ceiling_num ), "));
+
+			strSQL.Format(strSQL + _T("page_row_tbl(seq,NumPage,NumRow,FgFunc,KnSeq,KnOrder,KnName,KnKana) AS( "
+				"SELECT seq,pg,ROW_NUMBER() OVER(PARTITION BY pg ORDER BY row ),FgFunc,KnSeq,KnOrder,KnName,KnKana FROM page_tbl ) "));
+
+			strSQL.Format(strSQL + _T("SELECT page_row_tbl.seq, page_row_tbl.NumPage,page_row_tbl.NumRow, page_row_tbl.FgFunc %s "
+				"INTO %s FROM page_row_tbl LEFT OUTER JOIN %s "
+				"ON page_row_tbl.seq = %s.seq "
+				"ORDER BY page_row_tbl.NumPage,page_row_tbl.NumRow "), GetSQLResultSelect("page_row_tbl"), strResultTable, strId_tbl2, strId_tbl2);
+		}
+
+		// SQL実行
+		if( ExecuteSQLWork( strSQL ) != 0 ){
+			return DB_ERR_EXESQL;
+		}
+// midori 157042 add -->
+		if (kmkrowenable == 1) {
+			// 科目行の科目名称を計名称欄にコピーする
+			strSQL.Format(_T("UPDATE %s SET KeiStr = KnName WHERE FgFunc = %d"),strResultTable,ID_FGFUNC_KAMOKU);
+			// SQL実行
+			if( ExecuteSQLWork( strSQL ) != 0 ){
+				return DB_ERR_EXESQL;
+			}
+		}
+// midori 157042 add <--
+	}
+// midori 156188 add <--
+
+	return DB_ERR_OK;
+}
+
+// midori 156947 add -->
+// -------------------------------------------------------------------------------------------------------
+// 引数で渡された小計名に科目名称を追加する
+// -------------------------------------------------------------------------------------------------------
+void CdbUc000Common::GetKamokuKeiStr(CString szSrc,CString sKamoku, CString* szDst)
+{
+	int				tp = 0;
+	int				ii = 0;
+	int				nbf = 0;
+	int				nbf2 = 0;
+	int				nLParen=0;
+	int				nRParen=0;
+	char			buf[128]={0};
+	CString			sykakkoname = _T("");
+	CString			strTmpSy;		// 小計名称
+
+	szDst->Empty();
+
+	// 小計名称が未入力の場合処理を行わない
+	if(szSrc.IsEmpty() == TRUE)	{
+		return;
+	}
+
+	*szDst = szSrc;
+	// 科目名称が未入力の場合処理を行わない
+	if(sKamoku.IsEmpty() == TRUE)	{
+		return;
+	}
+
+	// 既に科目名称が入力されている場合、科目名称の追加を行わない
+	strTmpSy = szSrc;
+	// １文字目が "(" の場合、"(" と ")" を削除する
+	if(strTmpSy.Left(2) == _T("("))	{
+		strTmpSy.Delete(0,1);
+		strTmpSy.Delete(strTmpSy.GetLength() - 1,1);
+	}
+
+	// "(" と ")" の位置を検索する
+	nLParen = strTmpSy.Find(_T("("));
+	nRParen = strTmpSy.Find(_T(")"));
+	// 存在する場合、科目名称ありとして処理を行わない
+	if(nLParen != -1 && nRParen != -1)	{
+		return;
+	}
+
+	// 小計に科目名称を追加する
+	memset(buf,0,128);
+	strcpy_s(buf,128,szSrc);
+	// 右の括弧を取得
+	tp = 1;
+	if (_mbsbtype((LPBYTE)buf, (szSrc.GetLength() - 1)) == _MBC_TRAIL) {
+		tp++;
+	}
+	sykakkoname = szSrc.Right(tp);
+
+	nbf = szSrc.GetLength();
+	nbf2 = 0;
+	for (ii = 0; ii < ID_BRACKET_MAX; ii++) {
+		// 右括弧を比較
+		if (sykakkoname.Compare(BRACKET_KIND[ii].szRight) == 0) {
+			nbf2 = sykakkoname.GetLength();
+		}
+		if (nbf2 > 0) break;
+	}
+
+	// 小計の括弧あり
+	if(nbf2 > 0) {
+		// 小計名をセット
+		strTmpSy = szSrc;
+		// 小計名称の後ろの位置を取得
+		nbf = nbf - nbf2;
+		// 小計名称後ろの括弧をカット
+		strTmpSy.Delete(nbf,nbf2);
+		// 小計名称に科目名を追加
+		*szDst = strTmpSy + _T("(") + sKamoku + _T(")") + sykakkoname;
+	}
+	return;
+}
+
+// midori 157099,157119_2 del -->
+//// ---------------------------------------------------------------------------------------------------------
+//// ---------------------------------------------------------------------------------------------------------
+//void CdbUc000Common::EditSyokeiStr(int nFormSeq)
+//{
+//// midori 157113 del -->
+//	//int				sgn=0;
+//// midori 157113 del <--
+//// midori 157127 add -->
+//	int					sort1=0;
+//// midori 157127 add <--
+//	CString			knname=_T("");
+//	CString			strKei=_T("");
+//	CString			strdef=_T("");
+//	CString			strbuf=_T("");
+//	CString			strfilter=_T("");
+//	CString			strsort=_T("");
+//	// 帳表毎のテーブルクラスを"New"する
+//	CdbPrtWork*		rsData;
+//// midori 157127 add -->
+//	ITEMSORT_INFO	uItemSort;
+//// midori 157127 add <--
+//	CdbUcInfSub		mfcRecSub( m_lo_pdb);
+//
+//// midori 157113 add -->
+//	// 様式②、⑪以外は処理を行わない
+//	if(nFormSeq != ID_FORMNO_021 && nFormSeq != ID_FORMNO_111) {
+//		return;
+//	}
+//
+//	// 科目行を出力するにチェックがある場合、処理を行わない
+//	if(IsInsertKamokuRow(nFormSeq) == TRUE) {
+//		return;
+//	}
+//// midori 157113 add <--
+//
+//// midori 157118 add -->
+//	//	期首が2019年4月以降で無い場合処理を行わない
+//	if(KamokuRowEnableSgn(0) == 0) {
+//		return;
+//	}
+//// midori 157118 add <--
+//
+//// midori 157127 del -->
+//	//mfcRecSub.Init(nFormSeq);
+//// midori 157127 del <--
+//// midori 157127 add -->
+//	// CdbUcInfSub
+//	//	初期化成功？
+//	if( mfcRecSub.RequeryFormSeq( nFormSeq ) != DB_ERR_OK ){
+//		return;
+//	}
+//	//	レコードあり？
+//	if( mfcRecSub.IsEOF() ){
+//		mfcRecSub.Fin();
+//		return;
+//	}
+//	sort1 = mfcRecSub.m_Sort1;
+//// midori 157127 add <--
+//	// 小計文言
+//	strdef.Format(_T("%s%s%s"), BRACKET_KIND[mfcRecSub.m_OpSykeiKakko].szLeft,
+//								mfcRecSub.m_OpSykeiName,
+//								BRACKET_KIND[mfcRecSub.m_OpSykeiKakko].szRight);
+//	mfcRecSub.Fin();
+//// midori 157127 add -->
+//	// uc_lst_item_sortを参照して必要情報を取得
+//	CmnUcLstItemSortGetData(nFormSeq,sort1,&uItemSort);
+//	// 第１ソート項目が科目以外の場合、処理を行わない
+//	if(sort1 > 0 && uItemSort.bytFgItem != ID_FGITEM_KAMOKU)	{
+//		mfcRecSub.Fin();
+//		return;
+//	}
+//// midori 157127 add <--
+//
+//	// 頁、行順にデータを取得
+//	rsData = new CdbPrtWork(this->m_pDatabase,nFormSeq);
+//	strfilter = _T("");
+//// midori 157113 del -->
+//	//strsort = _T("NumPage ASC, NumRow ASC, Seq DESC");
+//// midori 157113 del <--
+//// midori 157113 add -->
+//	strsort = _T("NumPage ASC, NumRow ASC");
+//// midori 157113 add <--
+//	rsData->RequerySortParameter(strfilter,strsort);
+//	// 科目データ構造体クリア
+//	while (!rsData->IsEOF()) {
+//// midori 157113 del -->
+//		//// 科目行サインを取得
+//		//if(rsData->m_FgFunc == ID_FGFUNC_KAMOKU) {
+//		//	sgn = 1;
+//		//}
+//// midori 157113 del <--
+//		// 明細行、一括金額（手動）、一括金額（自動）行の場合、科目名称を取得
+//// midori 157113 del -->
+//		//if(rsData->m_FgFunc == ID_FGFUNC_DATA_TEMP || rsData->m_FgFunc == ID_FGFUNC_IKKATUMANUAL_ZERO || rsData->m_FgFunc == ID_FGFUNC_IKKATUAUTO_ZERO ) {
+//// midori 157113 del <--
+//// midori 157113 add -->
+//		if( rsData->m_FgFunc == ID_FGFUNC_DATA_TEMP || rsData->m_FgFunc == ID_FGFUNC_IKKATUMANUAL_ZERO || rsData->m_FgFunc == ID_FGFUNC_IKKATUAUTO_ZERO ||
+//			rsData->m_FgFunc == ID_FGFUNC_DATA || rsData->m_FgFunc == ID_FGFUNC_IKKATUMANUAL || rsData->m_FgFunc == ID_FGFUNC_IKKATUAUTO) {
+//// midori 157113 add <--
+//			// 科目名称の取得
+//			knname = rsData->m_KnName;
+//		}
+//
+//		// 小計
+//		if(rsData->m_FgFunc == 10) {
+//// midori 157113 del -->
+//			//// 小計から小計の間に科目行無し
+//			//if(sgn == 0) {
+//			//	// 小計に科目名を追加して取得する
+//			//	// デフォルトの小計名称（科目名付き）を取得する
+//			//	GetKamokuKeiStr(strdef,knname,&strbuf);
+//			//	strKei = strbuf;
+//			//}
+//			//// 小計から小計の間に科目行有り
+//			//else {
+//			//	//デフォルトの小計名称をセットする
+//			//	strKei = strdef;
+//			//}
+//			//// 科目名称を更新
+//			//rsData->Edit();
+//			//rsData->m_KeiStr = strKei;
+//			//rsData->Update();
+//			//// 科目行サインをOFF
+//			//sgn = 0;
+//// midori 157113 del <--
+//// midori 157113 add -->
+//			if(strdef == rsData->m_KeiStr) {
+//				// 小計に科目名を追加して取得する
+//				// デフォルトの小計名称（科目名付き）を取得する
+//				GetKamokuKeiStr(strdef,knname,&strbuf);
+//				// 科目名称を更新
+//				rsData->Edit();
+//				rsData->m_KeiStr = strbuf;
+//				rsData->Update();
+//			}
+//// midori 157113 add <--
+//		}
+//		// 明細行、一括金額（手動）、一括金額（自動）行以外の場合、科目名称をクリア
+//// midori 157113 del -->
+//		//if(rsData->m_FgFunc != ID_FGFUNC_DATA_TEMP && rsData->m_FgFunc != ID_FGFUNC_IKKATUMANUAL_ZERO && rsData->m_FgFunc != ID_FGFUNC_IKKATUAUTO_ZERO ) {
+//// midori 157113 del <--
+//// midori 157113 add -->
+//		if( rsData->m_FgFunc != ID_FGFUNC_DATA_TEMP && rsData->m_FgFunc != ID_FGFUNC_IKKATUMANUAL_ZERO && rsData->m_FgFunc != ID_FGFUNC_IKKATUAUTO_ZERO &&
+//			rsData->m_FgFunc != ID_FGFUNC_DATA && rsData->m_FgFunc != ID_FGFUNC_IKKATUMANUAL && rsData->m_FgFunc != ID_FGFUNC_IKKATUAUTO) {
+//// midori 157113 add <--
+//			// 科目名称の取得
+//			knname = _T("");
+//		}
+//		rsData->MoveNext();
+//	}
+//}
+//// midori 156947 add <--
+// midori 157099,157119_2 del <--
+
+// midori 157118 add -->
+// midori 157099,157119_2 del -->
+//void CdbUc000Common::ChgSyoKeiStr(int nFormSeq)
+//{
+//	// 様式②、⑪以外は処理を行わない
+//	if(nFormSeq != ID_FORMNO_021 && nFormSeq != ID_FORMNO_111) {
+//		return;
+//	}
+//
+//	// 科目行を出力するにチェックがある場合、小計名称から科目名称を削除する
+//	if(IsInsertKamokuRow(nFormSeq) == TRUE) {
+//		ClearSyoKeiStr(nFormSeq);
+//	}
+//	// 科目行を出力するにチェックがない場合、小計名称に科目名称を追加する
+//	else {
+//		EditSyokeiStr(nFormSeq);
+//	}
+//
+//	return;	
+//}
+// midori 157099,157119_2 del <--
+
+// 157154 ↓未使用
+void CdbUc000Common::ClearSyoKeiStr(int nFormSeq)
+{
+	CString			knname=_T("");
+	CString			strkei=_T("");
+	CString			strkei2=_T("");
+	CString			strdef=_T("");
+	CString			strbuf=_T("");
+	CString			strbuf2 = _T("");
+	CString			strbuf3 = _T("");
+	CString			strfilter=_T("");
+	CString			strsort=_T("");
+	// 帳表毎のテーブルクラスを"New"する
+	CdbPrtWork*		rsData;
+	CdbUcInfSub		mfcRecSub( m_lo_pdb);
+
+	// 様式②、⑪以外は処理を行わない
+	if(nFormSeq != ID_FORMNO_021 && nFormSeq != ID_FORMNO_111) {
+		return;
+	}
+
+	// 科目行を出力するにチェックがついていない場合、処理を行わない
+	if(IsInsertKamokuRow(nFormSeq) == FALSE) {
+		return;
+	}
+
+	//	期首が2019年4月以降で無い場合処理を行わない
+	//if(KamokuRowEnableSgn(0) == 0) {				// 改良No.21-0086,21-0529 del
+	if(KamokuRowEnableSgn(0, nFormSeq) == 0)	{	// 改良No.21-0086,21-0529 add
+		return;
+	}
+
+// midori 157099,157119_2 add -->
+	// 様式のデータに科目行があり（[印刷設定]-[科目行を出力する]が無効）の場合処理を行わない
+	if(GetKmkRowSw() == 1)	{
+		return;
+	}
+// midori 157099,157119_2 add <--
+
+// midori 157127 del -->
+	//mfcRecSub.Init(nFormSeq);
+// midori 157127 del <--
+// midori 157127 add -->
+	// CdbUcInfSub
+	//	初期化成功？
+	if( mfcRecSub.RequeryFormSeq( nFormSeq ) != DB_ERR_OK ){
+		return;
+	}
+	//	レコードあり？
+	if( mfcRecSub.IsEOF() ){
+		mfcRecSub.Fin();
+		return;
+	}
+// midori 157127 add <--
+	// 小計文言
+	strdef.Format(_T("%s%s%s"), BRACKET_KIND[mfcRecSub.m_OpSykeiKakko].szLeft,
+								mfcRecSub.m_OpSykeiName,
+								BRACKET_KIND[mfcRecSub.m_OpSykeiKakko].szRight);
+	mfcRecSub.Fin();
+
+	// 頁、行順にデータを取得
+	rsData = new CdbPrtWork(this->m_pDatabase,nFormSeq);
+	strfilter = _T("");
+	strsort = _T("NumPage ASC, NumRow ASC");
+	rsData->RequerySortParameter(strfilter,strsort);
+	// 科目データ構造体クリア
+	while (!rsData->IsEOF()) {
+		if( rsData->m_FgFunc == ID_FGFUNC_DATA_TEMP || rsData->m_FgFunc == ID_FGFUNC_IKKATUMANUAL_ZERO || rsData->m_FgFunc == ID_FGFUNC_IKKATUAUTO_ZERO ||
+			rsData->m_FgFunc == ID_FGFUNC_DATA || rsData->m_FgFunc == ID_FGFUNC_IKKATUMANUAL || rsData->m_FgFunc == ID_FGFUNC_IKKATUAUTO) {
+			// 科目名称の取得
+			knname = rsData->m_KnName;
+		}
+
+		// 小計
+		if(rsData->m_FgFunc == 10) {
+			// デフォルトの小計名称（科目名付き）を取得する
+			GetKamokuKeiStr(strdef,knname,&strbuf);
+			// 取得したデフォルトの小計名称を分割する
+			KeiStrSprit(strbuf, &strkei, &strkei2);
+			strbuf = strkei + strkei2;
+// 157154 del -->
+			//if ((rsData->m_ShowKeiZero & BIT_D7)) {
+			//	// 改行を除いた文字列を取得
+			//	strbuf2 = DelCrLfString(rsData->m_KeiStr);
+			//}
+			//else {
+			//	// 小計名称を分割する
+			//	KeiStrSprit(rsData->m_KeiStr, &strbuf2, &strbuf3);
+			//	strbuf2 = strbuf2 + strbuf3;
+			//}
+// 157154 del <--
+// 157154 add -->
+			// 改行を除いた文字列を取得
+			strbuf2 = DelCrLfString(rsData->m_KeiStr);
+// 157154 add <--
+			if(strbuf == strbuf2) {
+				// デフォルトの小計名称（科目名称無し）をセットする
+				// 科目名称を更新
+				rsData->Edit();
+// 157154 del -->
+				//rsData->m_ShowKeiZero &= ~BIT_D7;
+// 157154 del <--
+				rsData->m_KeiStr = strdef;
+				rsData->Update();
+			}
+		}
+		// 明細行、一括金額（手動）、一括金額（自動）行以外の場合、科目名称をクリア
+		if( rsData->m_FgFunc != ID_FGFUNC_DATA_TEMP && rsData->m_FgFunc != ID_FGFUNC_IKKATUMANUAL_ZERO && rsData->m_FgFunc != ID_FGFUNC_IKKATUAUTO_ZERO &&
+			rsData->m_FgFunc != ID_FGFUNC_DATA && rsData->m_FgFunc != ID_FGFUNC_IKKATUMANUAL && rsData->m_FgFunc != ID_FGFUNC_IKKATUAUTO) {
+			// 科目名称の取得
+			knname = _T("");
+		}
+		rsData->MoveNext();
+	}
+
+}
+
+// ------------------------------------------------------------------------------------------------
+//	文字列の先頭から指定位置まで取得（２５６バイトまで対応）
+//	【引数】	szSrc		…	文字列（元）
+//				szDst		…	文字列（先）
+//				nPos		…	分割位置までのバイト数
+//	【戻値】	指定位置以降の文字列を返す
+// ------------------------------------------------------------------------------------------------
+CString CdbUc000Common::GetSpritString( CString szSrc, CString* szDst, int nPos )
+{
+	CString					szRet;					//	戻値
+	char					szBuf[256];				//	バッファ
+	const unsigned char*	pBuf = 0;				//	バッファ
+	int						nLen;					//	文字列長
+	int						nSplitPos;				//	分割位置
+	
+	//	初期化
+	ZeroMemory( szBuf, sizeof( szBuf ) );
+	szDst->Empty();
+	szRet.Empty(); 
+
+	//	文字列（元）長取得
+	nLen = szSrc.GetLength();
+	
+	//	文字列（元）長か分割位置が最大文字数を超えている？
+	if (( nLen > 256 ) ||
+		( nPos > 256 )){
+			//	抜ける
+			return( szRet );
+	}
+
+	//	文字列長が分割位置に満たない？
+	if ( nLen <= nPos ){
+		//	文字列（元）をそのまま取得
+		*szDst = szSrc;
+	}
+	else{
+		//	分割位置を取得
+		nSplitPos = nPos;
+		
+		//	分割位置までの文字列を取得
+		strcpy_s( szBuf, sizeof( szBuf ), szSrc );
+		//	文字列のポインタを取得
+		pBuf = (const unsigned char *)szBuf;
+		
+		//	分割位置のバイトがマルチバイトの先頭バイト？
+		if ( _ismbslead( pBuf, &pBuf[nSplitPos - 1]  ) != 0 ){
+			//	分割位置を１バイト前に移動
+			nSplitPos--;
+		}
+
+		//	文字列の先頭から指定位置まで取得
+		*szDst = szSrc.Left( nSplitPos );
+		//	指定位置以降の文字列を取得
+		szRet = szSrc.Mid( nSplitPos );
+	}
+
+	//	戻値を返す
+	return( szRet );
+}
+
+// ------------------------------------------------------------------------------------------------
+//	小計行の改行を行う
+//	【引数】	szSrc		…	文字列（元）
+//	【戻値】	なし
+// ------------------------------------------------------------------------------------------------
+void CdbUc000Common::KeiStrSprit(CString szSrc, CString* szDst, CString* szDst2)
+{
+	int				tp = 0;
+	int				ii = 0;
+	int				nbf = 0;
+	int				nbf2 = 0;
+	int				nbf3 = 0;
+	CString			sykakkoname = _T("");
+	CString			sykakkoname2 = _T("");
+	char			buf[128] = { 0 };
+	CString			cst = _T("");
+	CString			cst2 = _T("");
+	CString			cst3 = _T("");
+	CString			cst4 = _T("");
+
+	*szDst = _T("");
+	*szDst2 = _T("");
+
+	if(szSrc.IsEmpty() == TRUE)	{
+		return;
+	}
+
+	memset(buf, 0, 128);
+	strcpy_s(buf, 128, szSrc);
+	// 左の括弧を取得
+	tp = 1;
+	if (_mbsbtype((LPBYTE)buf, tp) == _MBC_TRAIL) {
+		tp++;
+	}
+	sykakkoname = szSrc.Left(tp);
+	// 右の括弧を取得
+	tp = 1;
+	if (_mbsbtype((LPBYTE)buf, (szSrc.GetLength() - 1)) == _MBC_TRAIL) {
+		tp++;
+	}
+	sykakkoname2 = szSrc.Right(tp);
+
+	nbf = szSrc.GetLength();
+	nbf2 = 0;
+	nbf3 = 0;
+	for (ii = 0; ii < ID_BRACKET_MAX; ii++) {
+		// 左括弧を比較
+		if (sykakkoname.Compare(BRACKET_KIND[ii].szLeft) == 0) {
+			nbf2 = sykakkoname.GetLength();
+		}
+		// 右括弧を比較
+		if (sykakkoname2.Compare(BRACKET_KIND[ii].szRight) == 0) {
+			nbf3 = sykakkoname2.GetLength();
+		}
+		if (nbf2 > 0 && nbf3 > 0) break;
+	}
+	if (nbf2 == 0) sykakkoname.Empty();
+	if (nbf3 == 0) sykakkoname2.Empty();
+
+	// 括弧を除いた文字列を取得
+	nbf = nbf - nbf2 - nbf3;
+	cst = szSrc;
+	if (nbf > 0)		cst = szSrc.Mid(nbf2, nbf);
+
+	cst4.Empty();
+	cst2 = sykakkoname + cst + sykakkoname2;
+	if (cst2.GetLength() > 24) {
+		nbf = cst.Find(_T("("));
+		cst4 = GetSpritString(cst, &cst3, nbf);
+		// 括弧を付ける
+		cst2 = sykakkoname + cst3 + sykakkoname2;
+	}
+	*szDst = cst2;
+	*szDst2 = cst4;
+}
+
+// midori 157118 add <--
+
+
+// midori UC_0003 add -->
+//********************************************************************************
+//	※預貯金等の内訳書＋第１ソート項目が「金融機関」の場合のみ
+//		【引数】	int					様式シーケンス
+//					int					1pの最大行数
+//					CString				seq,NumPage,NumRow以外のカラム(,含み)
+//					CString				最終結果を持つ一時テーブル
+//					
+//		【戻値】	CString SQL文
+//********************************************************************************
+int CdbUc000Common::CreateKaiPageTableBk(int nFormSeq, int nMaxRow, CString strColumn, CString strResultTable, int siten)
+{
+	int			sort=0;						// 金融機関の表示順		0:番号順  1:50音順
+	int			sykeiAuto=0;				// 小計を自動挿入する
+	int			idummy=0;					// ダミー
+	int			nBkOrder=0;
+	int			nBkOrder2=0;
+// midori UC_0008 add -->
+	int			svOrder=0;					// 一時保存用
+// midori UC_0008 add <--
+	int			nBkSeq = 0;
+	CString		strItemAll=_T("");			// ソート情報	ソート文
+// midori 190505 add -->
+	int			npage=0;
+	int			nrow=0;
+	int			sw=0;
+	CString		strData=_T("");
+// midori 190505 add <--
+	CString		strId_tbl1=_T("");			// 一時テーブル名	頁計・累計を削除したテーブル①
+	CString		strId_tbl2=_T("");			// 一時テーブル名	頁計・累計を削除したテーブル②
+	CString		strRonum_tbl=_T("");		// 一時テーブル名	０円等、不要なもの除いたテーブル
+	CString		strRank_tbl=_T("");			// 一時テーブル名	キー項目（BkOrder or BkKana)で並び替えたテーブル
+	CString		strPartition_tbl=_T("");	// 一時テーブル名	キー項目毎にrowを振り直したテーブル
+	CString		strCeiling_tbl=_T("");		// 一時テーブル名	キー項目毎の頁を付けたテーブル
+	CString		strPage_tbl=_T("");			// 一時テーブル名	キー項目毎に先頭から頁を振り直したテーブル
+	CString		strPage_row_tbl=_T("");		// 一時テーブル名	キー項目毎に先頭から頁毎の行を振り直したテーブル
+	CString		strBkName1=_T("");			// 金融機関名
+	CString		strBkName2=_T("");			// 支店名
+	CString		strMoto=_T("");
+	CString		strSQL=_T("");				// ＳＱＬ文作成用
+	CString		cs=_T("");					// CString work
+	CString		strBkKana1=_T("");
+	CString		strBkKana2=_T("");
+	CString		strSort=_T("");
+
+	CdbUcInfSub			mfcRecSub(m_lo_pdb);	// uc_inf_subテーブルクラス
+	CdbPrtWorkBk*		rsData;
+
+	strMoto=GetDefaultSQL();
+
+	// uc_inf_subクラスから「小計の挿入」サインを取得
+	if(mfcRecSub.RequeryFormSeq(nFormSeq) == DB_ERR_OK)	{
+		if(!(mfcRecSub.IsEOF()))	{
+			sykeiAuto = mfcRecSub.m_OpSykeiAuto;
+		}
+		mfcRecSub.Fin();
+	}
+// midori 190505 del -->
+	//// ソート条件取得（第２、第３ソート項目を取得）
+	//SetTblSortSubGetSortParamX(nFormSeq,&strItemAll);
+// midori 190505 del <--
+// midori 190505 add -->
+	//sw = KamokuRowEnableSgn(0);			// 改良No.21-0086,21-0529 del
+	sw = KamokuRowEnableSgn(0, nFormSeq);	// 改良No.21-0086,21-0529 add
+
+	if(sw == 0) {
+		// ソート条件取得（第２、第３ソート項目を取得）
+		SetTblSortSubGetSortParamX(nFormSeq,&strItemAll);
+	}
+// midori 190505 add <--
+
+	// 一時テーブル名作成
+	strId_tbl1.Format(_T("#id_tbl1_%d"),nFormSeq);
+	strId_tbl2.Format(_T("#id_tbl2_%d"),nFormSeq);
+	strRonum_tbl		= _T("#rownum_tbl");
+	strRank_tbl			= _T("#rank_tbl");
+	strPartition_tbl	= _T("#partition_tbl");
+	strCeiling_tbl		= _T("#ceiling_num");
+	strPage_tbl			= _T("#page_tbl");
+	strPage_row_tbl		= _T("#page_row_tbl");
+#ifdef _DEBUG
+	strId_tbl1			= _T("#") + strId_tbl1;
+	strId_tbl2			= _T("#") + strId_tbl2;
+	strRonum_tbl		= _T("#") + strRonum_tbl;
+	strRank_tbl			= _T("#") + strRank_tbl;
+	strPartition_tbl	= _T("#") + strPartition_tbl;
+	strCeiling_tbl		= _T("#") + strCeiling_tbl;
+	strPage_tbl			= _T("#") + strPage_tbl;
+	strPage_row_tbl		= _T("#") + strPage_row_tbl;
+#endif
+
+	// 自己結合（1行前のレコードを見る）用の一時テーブル
+	CString FilterSonotaFormSeq;
+	if( m_lo_FormSeq > 0 ){		// その他の内訳書の－１、－２等の絞込み
+		FilterSonotaFormSeq.Format("WHERE FormSeq = %d ", m_lo_FormSeq);
+	}
+
+	// 頁計・累計の削除（ページを跨る場合、頁計・累計に値が入ると空行小計の削除判定、ソート時の小計の紐付けができなくなるため）
+	CString FilterNotPageRui;
+	if( FilterSonotaFormSeq.IsEmpty() ) FilterNotPageRui.Format(_T("WHERE FgFunc NOT IN (%d, %d) "), ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+	else								FilterNotPageRui.Format(_T("AND FgFunc NOT IN (%d, %d) "), ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "
+							"SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s "
+							"FROM %s %s %s "), strId_tbl1, strId_tbl1, strId_tbl1, strMoto, FilterSonotaFormSeq, FilterNotPageRui);
+
+	strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s "
+							"SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,0 BkOrder2,* INTO %s "
+							"FROM %s %s %s "), strId_tbl2, strId_tbl2, strId_tbl2, strMoto, FilterSonotaFormSeq, FilterNotPageRui);
+
+	// 最終結果を持つ一時テーブル
+	strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s "), strResultTable, strResultTable);
+
+	// 手動・自動一括金額のFgFunc更新（FgFuncソートによって自動・手動一括金額が小計より後にきてしまうため）
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+
+// midori 152909_2 del -->
+	//// 小計計上対象の行が全て０円判定行なら、小計を削除
+	//strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+	//	"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+	//	"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+	//	"BEGIN "
+	//		"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+	//		"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+	//		"SET @start_row = @end_row "
+	//		"FETCH cur INTO @end_row "
+	//	"END CLOSE cur DEALLOCATE cur "),
+	//	strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, GetSQLZeroJudgment(), ID_FGFUNC_NULL, strId_tbl2, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl2, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+// midori 152909_2 del <--
+// midori 152909_2 add -->
+	// 小計計上対象の行が全て０円判定行なら、小計を削除
+	strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+		"BEGIN "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"SET @start_row = @end_row "
+			"FETCH cur INTO @end_row "
+		"END CLOSE cur DEALLOCATE cur "),
+		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, 
+		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL,
+		strId_tbl2, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+	// 中計計上対象の行が全て０円判定行なら、中計を削除
+	strSQL.Format(strSQL + _T("SET @start_row = 0 SET @end_row = 0"
+		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d "
+		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+		"BEGIN "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"SET @start_row = @end_row "
+			"FETCH cur INTO @end_row "
+		"END CLOSE cur DEALLOCATE cur "),
+		strId_tbl1, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, 
+		strId_tbl1, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strId_tbl1, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL,
+		strId_tbl2, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+// midori 152909_2 add <--
+
+	// 表示順を取得する
+	IsSort(nFormSeq,m_lo_pdb,&sort,&idummy);
+
+	strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+		"SELECT tbl2.seq, tbl1.bkorder FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+		"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 10 "), strId_tbl1, strId_tbl1);
+
+	// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+	strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s "
+		"OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+		"UPDATE %s set bkorder = @order where seq = @update_seq "
+		"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2);
+
+// midori 152866 add -->
+	// 中計行の一行前行をチェックし、その第一ソート項目を取得する
+	strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+		"SELECT tbl2.seq, tbl1.bkorder FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+		"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 12 "), strId_tbl2, strId_tbl2);
+
+	// 中計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+	strSQL.Format(strSQL + _T("OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+		"UPDATE %s set bkorder = @order where seq = @update_seq "
+		"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), strId_tbl2);
+// midori 152866 add <--
+
+	// SQL実行
+	if(ExecuteSQLWork(strSQL) != 0)	{
+		return DB_ERR_EXESQL;
+	}
+
+	// ##id_tbl2_1 のBkOrder=0を名称テーブルの番号最大＋１にアップデートする
+	strSQL.Format(_T("update %s set BkOrder = (select isnull(max(OrderNum)+1,1) from uc_lst_bank) from %s where fgfunc > 0 and BkOrder = 0"),strId_tbl2,strId_tbl2);
+	ExecuteSQLWork(strSQL);
+
+// midori UC_0008 add -->
+	if(sort != 0)	{
+		// 50音順の場合、BkKana1(2) がNULLなら"ﾝﾝﾝﾝﾝﾝ"に置き換えているが
+		// NULL と "" が混在している場合があるので、先に "" は NULL に置き換えておく
+		strSQL.Format(_T("update %s set BkKana1 = NULL where BkKana1 = ''"),strId_tbl2);
+		ExecuteSQLWork(strSQL);
+		strSQL.Format(_T("update %s set BkKana2 = NULL where BkKana2 = ''"),strId_tbl2);
+		ExecuteSQLWork(strSQL);
+	}
+// midori UC_0008 add <--
+
+	// id_tbl2 →【小計】にBkOrderがセットされたので、それを元にBkKana1,BkKana2をセットする
+	rsData = new CdbPrtWorkBk(m_lo_pdb,nFormSeq);
+	rsData->RequerySort(0,_T(""));
+	while(!rsData->IsEOF())	{
+		// 小計 → 直前のデータレコードのカナをセットする
+		if(rsData->m_FgFunc == 10)	{
+			if(rsData->m_BkOrder == nBkOrder)	{
+				rsData->Edit();
+				rsData->m_BkKana1 = strBkKana1;
+				rsData->m_BkKana2 = strBkKana2;
+				rsData->m_BkName1 = strBkName1;
+				rsData->m_BkName2 = strBkName2;
+				rsData->m_BkSeq = nBkSeq;
+				rsData->Update();
+			}
+		}
+		// 明細 → 番号・カナをセーブする
+		else if(rsData->m_FgFunc == 4)	{
+			nBkOrder	= rsData->m_BkOrder;
+			strBkKana1	= rsData->m_BkKana1;
+			strBkKana2	= rsData->m_BkKana2;
+			strBkName1 = rsData->m_BkName1;
+			strBkName2 = rsData->m_BkName2;
+			nBkSeq = rsData->m_BkSeq;
+		}
+		// 次のレコードへ
+		rsData->MoveNext();
+	}
+	rsData->Fin();
+	delete rsData;
+
+// midori 152866 add -->
+	// id_tbl2 →【中計】にBkOrderがセットされたので、それを元にBkKana1,BkKana2をセットする
+	rsData = new CdbPrtWorkBk(m_lo_pdb,nFormSeq);
+	rsData->RequerySort(0,_T(""));
+	while(!rsData->IsEOF())	{
+		// 中計 → 直前のデータレコードのカナをセットする
+		if(rsData->m_FgFunc == 12)	{
+			if(rsData->m_BkOrder == nBkOrder)	{
+				rsData->Edit();
+				rsData->m_BkKana1 = strBkKana1;
+				rsData->m_BkKana2 = strBkKana2;
+				rsData->m_BkName1 = strBkName1;
+				rsData->m_BkName2 = strBkName2;
+				rsData->m_BkSeq = nBkSeq;
+				rsData->Update();
+			}
+		}
+		// 明細 → 番号・カナをセーブする
+		else if(rsData->m_FgFunc == 4 || rsData->m_FgFunc == 10)	{
+			nBkOrder	= rsData->m_BkOrder;
+			strBkKana1	= rsData->m_BkKana1;
+			strBkKana2	= rsData->m_BkKana2;
+			strBkName1 = rsData->m_BkName1;
+			strBkName2 = rsData->m_BkName2;
+			nBkSeq = rsData->m_BkSeq;
+		}
+		// 次のレコードへ
+		rsData->MoveNext();
+	}
+	rsData->Fin();
+	delete rsData;
+// midori 152866 add <--
+
+	// ##id_tbl2_1 のBkOrderを再付番する
+	rsData = new CdbPrtWorkBk(m_lo_pdb,nFormSeq);
+// midori 190505 del -->
+	//if(sort == 0)	rsData->RequerySort(1,strItemAll);
+	//else			rsData->RequerySort(2,strItemAll);
+// midori 190505 del <--
+// midori 190505 add -->
+	if(sw == 0) {
+		if(sort == 0)	rsData->RequerySort(1,strItemAll);
+		else			rsData->RequerySort(2,strItemAll);
+	}
+	else {
+		if(sort == 0)	rsData->RequerySort(1,_T(""));
+		else			rsData->RequerySort(2,_T(""));
+	}
+// midori 190505 add <--
+	nBkOrder	= 0;
+	nBkOrder2	= 0;
+	nBkSeq		= 0;
+	strBkKana1	= _T("");
+	strBkKana2	= _T("");
+	strBkName1	= _T("");
+	strBkName2	= _T("");
+	while(!rsData->IsEOF())	{
+// midori UC_0008 del -->
+		//// 改頁、小計の挿入を支店毎に行うにチェック無し
+		//if(siten == 0)	{
+		//	// 名称テーブルに登録有り
+		//	if(rsData->m_BkSeq > 0)	{
+		//		// 最初の１件、または銀行名が変われば BkOrder を加算する
+		//		if(strBkKana1 != rsData->m_BkKana1)	{
+		//			nBkOrder++;
+		//		}
+		//	}
+		//	else	{
+		//		// 直前の行が名称テーブルに登録されている
+		//		if(nBkSeq > 0)	{
+		//			nBkOrder++;
+		//		}
+		//		else	{
+		//			// 銀行名が変われば BkOrder を加算する
+		//			if(strBkName1 != rsData->m_BkName1)	{
+		//				nBkOrder++;
+		//			}
+		//		}
+		//	}
+		//}
+		//// 改頁、小計の挿入を支店毎に行うにチェック有り
+		//else			{
+		//	// 名称テーブルに登録有り
+		//	if(rsData->m_BkSeq > 0)	{
+		//		// 最初の１件、または銀行名、または支店名が変われば BkOrder を加算する
+		//		if(strBkKana1 != rsData->m_BkKana1 || strBkKana2 != rsData->m_BkKana2)	{
+		//			nBkOrder++;
+		//		}
+		//	}
+		//	else	{
+		//		// 直前の行が名称テーブルに登録されている
+		//		if(nBkSeq > 0)	{
+		//			nBkOrder++;
+		//		}
+		//		else	{
+		//			// 銀行名、または支店名が変われば BkOrder を加算する
+		//			if(strBkName1 != rsData->m_BkName1 || strBkName2 != rsData->m_BkName2)	{
+		//				nBkOrder++;
+		//			}
+		//		}
+		//	}
+		//}
+// midori UC_0008 del <--
+// midori UC_0008 add -->
+		// 改頁、小計の挿入を支店毎に行うにチェック無し
+		if(siten == 0)	{
+			// 名称テーブルに登録有り
+			if(rsData->m_BkSeq > 0)	{
+				// 最初の１件、または銀行名、または支店名が変われば BkOrder を加算する
+				if(strBkName1 != rsData->m_BkName1)	{
+					nBkOrder++;
+				}
+			}
+			else	{
+				// 直前の行が名称テーブルに登録されている
+				if(nBkSeq > 0)	{
+					nBkOrder++;
+				}
+				else	{
+					// 銀行名、または支店名が変われば BkOrder を加算する
+					if(strBkName1 != rsData->m_BkName1)	{
+						nBkOrder++;
+					}
+				}
+			}
+		}
+		// 改頁、小計の挿入を支店毎に行うにチェック有り
+		else			{
+			// --------------------------------------------------------------------------
+			// 改頁、小計の挿入を支店毎に行うにチェックが無い場合は他の様式と同様
+			// 番号が変わればOrderを加算する
+			// --------------------------------------------------------------------------
+			// 名称テーブルに登録有り
+			if(rsData->m_BkSeq > 0)	{
+				// 最初の１件、または銀行名が変われば BkOrder を加算する
+				if(svOrder != rsData->m_BkOrder)	{
+					nBkOrder++;
+				}
+			}
+			else	{
+				// 直前の行が名称テーブルに登録されている
+				if(nBkSeq > 0)	{
+					nBkOrder++;
+				}
+				else	{
+					// 銀行名が変われば BkOrder を加算する
+					if(strBkName1 != rsData->m_BkName1 || strBkName2 != rsData->m_BkName2)	{
+						nBkOrder++;
+					}
+				}
+			}
+		}
+		// 現在の情報を一時保存
+		svOrder = rsData->m_BkOrder;
+// midori UC_0008 add <--
+
+		rsData->Edit();
+		nBkOrder2++;
+		rsData->m_BkOrder2 = nBkOrder2;
+		rsData->m_BkOrder = nBkOrder;
+		rsData->Update();
+		strBkKana1 = rsData->m_BkKana1;
+		strBkKana2 = rsData->m_BkKana2;
+		strBkName1 = rsData->m_BkName1;
+		strBkName2 = rsData->m_BkName2;
+		nBkSeq = rsData->m_BkSeq;
+		// 次のレコードへ
+		rsData->MoveNext();
+	}
+
+	rsData->Fin();
+	delete rsData;
+
+	// **********************************************
+	// 仮行番号(row)を振り、NumPageとNumRowを更新
+	// **********************************************
+	// (1) ##rownum_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strRonum_tbl,strRonum_tbl);
+	if(sort == 0)	strSort = _T("BkOrder2 ASC");
+	else			strSort = _T("BkOrder ASC,BkOrder2 ASC");
+	cs.Format(_T("select seq, BkOrder as order_num, ROW_NUMBER() OVER(ORDER BY %s) as row"),strSort);
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strRonum_tbl,strId_tbl2);
+	strSQL += cs;
+	cs.Format(_T(" WHERE FgShow = %d AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))"),
+		ID_FGSHOW_OFF,ID_FGFUNC_DATA,ID_FGFUNC_IKKATUAUTO_ZERO,GetSQLZeroJudgment());
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (2) ##rank_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strRank_tbl,strRank_tbl);
+	cs = _T("select seq,DENSE_RANK() OVER(ORDER BY order_num ASC) as rank_num,row");
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strRank_tbl,strRonum_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (3) ##partition_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strPartition_tbl,strPartition_tbl);
+	cs.Format(_T("select seq,rank_num,ROW_NUMBER() OVER (PARTITION BY rank_num order by row) as row"));
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strPartition_tbl,strRank_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (4) ##ceiling_num
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strCeiling_tbl,strCeiling_tbl);
+	cs.Format(_T("select seq,rank_num,CAST( CEILING(CAST(row as float) / CAST(%d as float)) as int ) as ceiling_num,row"),nMaxRow);
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strCeiling_tbl,strPartition_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (5) ##page_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strPage_tbl,strPage_tbl);
+	cs.Format(_T("select seq, DENSE_RANK() OVER(ORDER BY rank_num,ceiling_num) as pg,row"));
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strPage_tbl,strCeiling_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (6) ##page_row_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strPage_row_tbl,strPage_row_tbl);
+	cs.Format(_T("select seq,pg as NumPage,ROW_NUMBER() OVER(PARTITION BY pg ORDER BY row ) as NumRow"));
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strPage_row_tbl,strPage_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (7) 一時テーブル(1)～(6)を元に、"##temp_utiwake_tbl" を作成する
+	strSQL = _T("");
+	strSQL.Format(_T("SELECT row, %s.seq, %s.NumPage,%s.NumRow, FgFunc %s "
+		"INTO %s FROM %s,%s "
+		"WHERE %s.seq = %s.seq "
+		"ORDER BY %s.NumPage,%s.NumRow "), 
+		strPage_row_tbl,strPage_row_tbl,strPage_row_tbl,strColumn,
+		strResultTable,strPage_row_tbl,strId_tbl2,
+		strPage_row_tbl,strId_tbl2,
+		strPage_row_tbl,strPage_row_tbl);
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	// カラムrowを削除
+	CString strSQL2;
+	strSQL2.Format(_T("ALTER TABLE %s DROP COLUMN row"), strResultTable);
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL2 ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	return(DB_ERR_OK);
+}
+
+//********************************************************************************
+//	※預貯金等の内訳書＋第１ソート項目が「金融機関」の場合のみ
+//		【引数】	int					様式シーケンス
+//					int					1pの最大行数
+//					CString				seq,NumPage,NumRow以外のカラム(,含み)
+//					CString				最終結果を持つ一時テーブル
+//					
+//		【戻値】	CString SQL文
+//********************************************************************************
+int CdbUc000Common::CreateKaiPageTableAd(int nFormSeq, int nMaxRow, CString strColumn, CString strResultTable)
+{
+// midori UC_0014 add -->
+	// 一括金額AdOrder更新用構造体
+	typedef struct tag_IKKATU_MAP {
+		int			seq;
+		int			numgroup;
+		int			adseq;
+		int			adorder;
+		char		adkana[6];
+		char		dmy[22];
+	} IKKATU_MAP;
+// midori UC_0014 add <--
+
+	int			sort=0;						// 金融機関の表示順		0:番号順  1:50音順
+	int			sykeiAuto=0;				// 小計を自動挿入する
+	int			idummy=0;					// ダミー
+	int			nAdOrder=0;
+	int			nAdOrder2=0;
+	int			svOrder=0;					// 一時保存用
+	int			nAdSeq = 0;
+// midori UC_0014 add -->
+	int			ii=0;
+	int			cnt=0;
+	int			nNumPage=0;
+// midori 190505 add -->
+	int			sw=0;
+// midori 190505 add <--
+// midori 153812 del ------------------>
+//	char		bf[128]={0};				// バッファ
+//	char		bf2[128]={0};				// バッファ
+// midori 153812 del <------------------
+	char		bf3[128]={0};				// バッファ
+// midori UC_0014 add <--
+	CString		strItemAll=_T("");			// ソート情報	ソート文
+	CString		strId_tbl1=_T("");			// 一時テーブル名	頁計・累計を削除したテーブル①
+	CString		strId_tbl2=_T("");			// 一時テーブル名	頁計・累計を削除したテーブル②
+	CString		strRonum_tbl=_T("");		// 一時テーブル名	０円等、不要なもの除いたテーブル
+	CString		strRank_tbl=_T("");			// 一時テーブル名	キー項目（AdOrder or AdKana)で並び替えたテーブル
+	CString		strPartition_tbl=_T("");	// 一時テーブル名	キー項目毎にrowを振り直したテーブル
+	CString		strCeiling_tbl=_T("");		// 一時テーブル名	キー項目毎の頁を付けたテーブル
+	CString		strPage_tbl=_T("");			// 一時テーブル名	キー項目毎に先頭から頁を振り直したテーブル
+	CString		strPage_row_tbl=_T("");		// 一時テーブル名	キー項目毎に先頭から頁毎の行を振り直したテーブル
+	CString		strAdName1=_T("");			// 取引先名（上段）
+	CString		strAdName2=_T("");			// 取引先名（下段）
+	CString		strMoto=_T("");
+	CString		strSQL=_T("");				// ＳＱＬ文作成用
+	CString		cs=_T("");					// CString work
+	CString		strAdKana=_T("");
+	CString		strSort=_T("");
+// midori 190505 add -->
+	CString		strFilterKamoku = _T("");
+// midori 190505 add <--
+// midori UC_0014 add -->
+	IKKATU_MAP							ikkatmap;
+	CMap<int,int,IKKATU_MAP,IKKATU_MAP> map;
+// midori UC_0014 add <--
+
+	CdbUcInfSub			mfcRecSub(m_lo_pdb);	// uc_inf_subテーブルクラス
+	CdbPrtWorkAd*		rsData;
+
+	strMoto=GetDefaultSQL();
+
+	// uc_inf_subクラスから「小計の挿入」サインを取得
+	if(mfcRecSub.RequeryFormSeq(nFormSeq) == DB_ERR_OK)	{
+		if(!(mfcRecSub.IsEOF()))	{
+			sykeiAuto = mfcRecSub.m_OpSykeiAuto;
+		}
+		mfcRecSub.Fin();
+	}
+// midori 190505 del -->
+	//// ソート条件取得（第２、第３ソート項目を取得）
+	//SetTblSortSubGetSortParamX(nFormSeq,&strItemAll);
+// midori 190505 del <--
+// midori 190505 add -->
+	//sw = KamokuRowEnableSgn(0);			// 改良No.21-0086,21-0529 del
+	sw = KamokuRowEnableSgn(0, nFormSeq);	// 改良No.21-0086,21-0529 add
+
+	if(sw == 0) {
+		// ソート条件取得（第２、第３ソート項目を取得）
+		SetTblSortSubGetSortParamX(nFormSeq,&strItemAll);
+	}
+// midori 190505 add <--
+
+	// 一時テーブル名作成
+	strId_tbl1.Format(_T("#id_tbl1_%d"),nFormSeq);
+	strId_tbl2.Format(_T("#id_tbl2_%d"),nFormSeq);
+	strRonum_tbl		= _T("#rownum_tbl");
+	strRank_tbl			= _T("#rank_tbl");
+	strPartition_tbl	= _T("#partition_tbl");
+	strCeiling_tbl		= _T("#ceiling_num");
+	strPage_tbl			= _T("#page_tbl");
+	strPage_row_tbl		= _T("#page_row_tbl");
+#ifdef _DEBUG
+	strId_tbl1			= _T("#") + strId_tbl1;
+	strId_tbl2			= _T("#") + strId_tbl2;
+	strRonum_tbl		= _T("#") + strRonum_tbl;
+	strRank_tbl			= _T("#") + strRank_tbl;
+	strPartition_tbl	= _T("#") + strPartition_tbl;
+	strCeiling_tbl		= _T("#") + strCeiling_tbl;
+	strPage_tbl			= _T("#") + strPage_tbl;
+	strPage_row_tbl		= _T("#") + strPage_row_tbl;
+#endif
+
+	// 自己結合（1行前のレコードを見る）用の一時テーブル
+	CString FilterSonotaFormSeq;
+	if( m_lo_FormSeq > 0 ){		// その他の内訳書の－１、－２等の絞込み
+		FilterSonotaFormSeq.Format("WHERE FormSeq = %d ", m_lo_FormSeq);
+	}
+
+	// 頁計・累計の削除（ページを跨る場合、頁計・累計に値が入ると空行小計の削除判定、ソート時の小計の紐付けができなくなるため）
+	CString FilterNotPageRui;
+	if( FilterSonotaFormSeq.IsEmpty() ) FilterNotPageRui.Format(_T("WHERE FgFunc NOT IN (%d, %d) "), ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+	else								FilterNotPageRui.Format(_T("AND FgFunc NOT IN (%d, %d) "), ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+
+// midori 190505 add -->
+// 改良No.21-0086,21-0529 cor -->
+	//// ② 受取手形の内訳書、⑪ 借入金及び支払利子の内訳書の場合、科目行を削除する
+	//// （第１ソートキーが科目行でないため）
+	//if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+// ------------------------------
+	// ② 受取手形の内訳書、登録番号追加版の⑧支払手形の内訳書、⑪ 借入金及び支払利子の内訳書の場合、科目行を削除する
+	// （第１ソートキーが科目行でないため）
+	if(nFormSeq == ID_FORMNO_021 || (nFormSeq == ID_FORMNO_081 && bG_InvNo == TRUE) || nFormSeq == ID_FORMNO_111) {
+// 改良No.21-0086,21-0529 cor <--
+		if(FilterNotPageRui.IsEmpty() == TRUE)		strFilterKamoku.Format(_T("WHERE FgFunc NOT IN (%d) "),ID_FGFUNC_KAMOKU);
+		else										strFilterKamoku.Format(_T("AND FgFunc NOT IN (%d) "),ID_FGFUNC_KAMOKU);
+	}
+// midori 190505 add <--
+
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "
+							"SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s "
+// midori 190505 del -->
+							//"FROM %s %s %s "), strId_tbl1, strId_tbl1, strId_tbl1, strMoto, FilterSonotaFormSeq, FilterNotPageRui);
+// midori 190505 del <--
+// midori 190505 add -->
+							"FROM %s %s %s %s"), strId_tbl1, strId_tbl1, strId_tbl1, strMoto, FilterSonotaFormSeq, FilterNotPageRui, strFilterKamoku );
+// midori 190505 add <--
+
+	strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s "
+							"SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,0 AdOrder2,* INTO %s "
+// midori 190505 del -->
+							//"FROM %s %s %s "), strId_tbl2, strId_tbl2, strId_tbl2, strMoto, FilterSonotaFormSeq, FilterNotPageRui);
+// midori 190505 del <--
+// midori 190505 add -->
+							"FROM %s %s %s %s"), strId_tbl2, strId_tbl2, strId_tbl2, strMoto, FilterSonotaFormSeq, FilterNotPageRui, strFilterKamoku);
+// midori 190505 add <--
+
+	// 最終結果を持つ一時テーブル
+	strSQL.Format(strSQL + _T("if object_id('tempdb..%s', 'u') is not null drop table %s "), strResultTable, strResultTable);
+
+	// 手動・自動一括金額のFgFunc更新（FgFuncソートによって自動・手動一括金額が小計より後にきてしまうため）
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl1, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strId_tbl2, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+
+// midori UC_0014 add -->
+	// SQL実行
+	if(ExecuteSQLWork(strSQL) != 0)	{
+		return DB_ERR_EXESQL;
+	}
+
+	// id_tbl1、id_tbl2の一括金額行にAdOrder、AdKana等をセットする
+
+	// マップに一括金額のSeq、numgroupをセット
+	map.RemoveAll();
+	rsData = new CdbPrtWorkAd(m_lo_pdb,nFormSeq,1);
+	strSQL.Format(_T("FgShow = %d"),ID_FGSHOW_OFF);
+	rsData->RequerySort2(strSQL);
+	ii=0;
+	while(!rsData->IsEOF())	{
+
+		if(rsData->m_FgFunc == ID_FGFUNC_IKKATUMANUAL_ZERO || rsData->m_FgFunc == ID_FGFUNC_IKKATUAUTO_ZERO)	{
+			if(rsData->m_NumGroup > 0)	{
+				memset(&ikkatmap,0,sizeof(IKKATU_MAP));
+				ikkatmap.seq = rsData->m_Seq;
+				ikkatmap.numgroup = rsData->m_NumGroup;
+				map.SetAt(ii,ikkatmap);
+				ii++;
+			}
+		}
+
+		// 次のレコードへ
+		rsData->MoveNext();
+	}
+
+	// numgroupでデータベースから検索を行い、一括金額内のAdOrderをセット（一括金額内に複数の振出人が含まれている場合は0にする）
+	for(ii=0;ii<(int)map.GetCount();ii++)	{
+		map.Lookup(ii,ikkatmap);
+
+		strSQL.Format(_T("NumGroup = %d AND FgShow = %d"), ikkatmap.numgroup, ID_FGSHOW_IKKATU);
+		rsData->RequerySort2(strSQL);
+		nAdOrder = -1;
+		cnt = 0;
+		nAdSeq = 0;
+// midori 153812 del ------------------>
+//		memset(bf,0,128);
+//		memset(bf2,0,128);
+// midori 153812 del <------------------
+		while(!rsData->IsEOF())	{
+			if(nAdOrder != rsData->m_AdOrder)	{
+				// 各項目をセット
+				nAdSeq =  rsData->m_AdSeq;
+				nAdOrder = rsData->m_AdOrder;
+				memset(bf3,0,128);
+				strcpy_s(bf3,128,rsData->m_AdKana);
+				cnt++;
+				if(cnt > 1)	break;
+			}
+			// 次のレコードへ
+			rsData->MoveNext();
+		}
+		if(cnt == 1)	{
+			ikkatmap.adseq = nAdSeq;
+			ikkatmap.adorder = nAdOrder;
+			memcpy(ikkatmap.adkana,bf3,strlen(bf3));
+		}
+		// マップの更新
+		map.SetAt(ii,ikkatmap);
+	}
+
+	// マップの情報を基にid_tbl1テーブル、一括金額のAdOrderを更新
+	for(ii=0;ii<(int)map.GetCount();ii++)	{
+		map.Lookup(ii,ikkatmap);
+
+		strSQL.Format(_T("Seq = %d"), ikkatmap.seq);
+		rsData->RequerySort2(strSQL);
+		rsData->Edit();
+
+		rsData->m_AdSeq = ikkatmap.adseq;
+		rsData->m_AdOrder = ikkatmap.adorder;
+		rsData->m_AdKana.Format(_T("%s"),ikkatmap.adkana);
+
+		rsData->Update();
+	}
+	rsData->Fin();
+	delete rsData;
+
+	// マップの情報を基にid_tbl2テーブル、一括金額のAdOrderを更新
+	rsData = new CdbPrtWorkAd(m_lo_pdb,nFormSeq,2);
+	for(ii=0;ii<(int)map.GetCount();ii++)	{
+		map.Lookup(ii,ikkatmap);
+
+		strSQL.Format(_T("Seq = %d"), ikkatmap.seq);
+		rsData->RequerySort2(strSQL);
+		rsData->Edit();
+
+		rsData->m_AdSeq = ikkatmap.adseq;
+		rsData->m_AdOrder = ikkatmap.adorder;
+		rsData->m_AdKana.Format(_T("%s"),ikkatmap.adkana);
+
+		rsData->Update();
+	}
+	rsData->Fin();
+	delete rsData;
+// midori UC_0014 add <--
+
+// midori 152909_2 del -->
+	//// 小計計上対象の行が全て０円判定行なら、小計を削除
+	//strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+	//	"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+	//	"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+	//	"BEGIN "
+	//		"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+	//		"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+	//		"SET @start_row = @end_row "
+	//		"FETCH cur INTO @end_row "
+	//	"END CLOSE cur DEALLOCATE cur "),
+	//	strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, GetSQLZeroJudgment(), ID_FGFUNC_NULL, strId_tbl2, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl2, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+// midori 152909_2 del <--
+// midori 152909_2 add -->
+	// 小計計上対象の行が全て０円判定行なら、小計を削除
+// midori UC_0014 del -->
+//	strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+// midori UC_0014 del <--
+// midori UC_0014 add -->
+	strSQL.Format(_T("DECLARE @start_row int SET @start_row = 0 "
+// midori UC_0014 add <--
+		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+		"BEGIN "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"SET @start_row = @end_row "
+			"FETCH cur INTO @end_row "
+		"END CLOSE cur DEALLOCATE cur "),
+		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, 
+		strId_tbl1, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl1, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL,
+		strId_tbl2, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+	// 中計計上対象の行が全て０円判定行なら、中計を削除
+	strSQL.Format(strSQL + _T("SET @start_row = 0 SET @end_row = 0"
+		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d "
+		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+		"BEGIN "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"SET @start_row = @end_row "
+			"FETCH cur INTO @end_row "
+		"END CLOSE cur DEALLOCATE cur "),
+		strId_tbl1, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, 
+		strId_tbl1, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strId_tbl1, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL,
+		strId_tbl2, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strId_tbl2, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_NULL);
+// midori 152909_2 add <--
+	
+	// 表示順を取得する
+	IsSort(nFormSeq,m_lo_pdb,&idummy,&sort);
+
+	strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+		"SELECT tbl2.seq, tbl1.adorder FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+		"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 10 "), strId_tbl1, strId_tbl1);
+
+	// 小計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+	strSQL.Format(strSQL + _T("DECLARE @update_seq int DECLARE @order %s "
+		"OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+		"UPDATE %s set adorder = @order where seq = @update_seq "
+		"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), GetSortItemType(), strId_tbl2);
+
+// midori 152866 add -->
+	// 中計行の一行前行をチェックし、その第一ソート項目を取得する
+	strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+		"SELECT tbl2.seq, tbl1.adorder FROM ( SELECT * FROM %s ) AS tbl1, ( SELECT * FROM %s ) AS tbl2 "
+		"WHERE tbl1.row = tbl2.row - 1  AND tbl2.FgFunc = 12 "), strId_tbl2, strId_tbl2);
+
+	// 中計行の第一ソート条件に、一行前の第一ソード項目を更新（紐付け）
+	strSQL.Format(strSQL + _T("OPEN cur FETCH cur INTO @update_seq, @order WHILE @@fetch_status = 0  BEGIN "
+		"UPDATE %s set adorder = @order where seq = @update_seq "
+		"FETCH cur INTO @update_seq,@order END CLOSE cur DEALLOCATE cur "), strId_tbl2);
+// midori 152866 add <--
+
+	// SQL実行
+	if(ExecuteSQLWork(strSQL) != 0)	{
+		return DB_ERR_EXESQL;
+	}
+
+	// ##id_tbl2_1 のAdOrder=0を名称テーブルの番号最大＋１にアップデートする
+// midori UC_0014 del -->
+//	strSQL.Format(_T("update %s set AdOrder = (select isnull(max(OrderNum)+1,1) from uc_lst_address) from %s where fgfunc > 0 and AdOrder = 0"),strId_tbl2,strId_tbl2);
+// midori UC_0014 del <--
+// midori UC_0014 add -->
+	strSQL.Format(_T("update %s set AdOrder = (select isnull(max(OrderNum)+numpage,1) from uc_lst_address) from %s where fgfunc > 0 and AdOrder = 0"),strId_tbl2,strId_tbl2);
+// midori UC_0014 add <--
+	ExecuteSQLWork(strSQL);
+
+	// id_tbl2 →【小計】にAdOrderがセットされたので、それを元にAdKana等をセットする
+// midori UC_0014 del -->
+//	rsData = new CdbPrtWorkAd(m_lo_pdb,nFormSeq);
+// midori UC_0014 del <--
+// midori UC_0014 add -->
+	rsData = new CdbPrtWorkAd(m_lo_pdb,nFormSeq,2);
+// midori UC_0014 add <--
+	rsData->RequerySort(0,_T(""));
+	while(!rsData->IsEOF())	{
+			// 小計 → 直前のデータレコードのカナをセットする
+			if(rsData->m_FgFunc == 10)	{
+				if(rsData->m_AdOrder == nAdOrder)	{
+					rsData->Edit();
+					rsData->m_AdKana = strAdKana;
+					rsData->m_AdName1 = strAdName1;
+					rsData->m_AdName2 = strAdName2;
+					rsData->m_AdSeq = nAdSeq;
+					rsData->Update();
+				}
+			}
+// midori UC_0014 del -->
+//			// 明細 → 番号・カナをセーブする
+//			else if(rsData->m_FgFunc == 4)	{
+// midori UC_0014 del <--
+// midori UC_0014 add -->
+		// 明細、一括金額 → 番号・カナをセーブする
+		else if(rsData->m_FgFunc == ID_FGFUNC_DATA_TEMP || rsData->m_FgFunc == ID_FGFUNC_IKKATUMANUAL_ZERO ||
+				rsData->m_FgFunc == ID_FGFUNC_IKKATUAUTO_ZERO)	{
+// midori UC_0014 add <--
+				nAdOrder	= rsData->m_AdOrder;
+				strAdKana	= rsData->m_AdKana;
+				strAdName1 = rsData->m_AdName1;
+				strAdName2 = rsData->m_AdName2;
+				nAdSeq = rsData->m_AdSeq;
+			}
+		// 次のレコードへ
+		rsData->MoveNext();
+	}
+	rsData->Fin();
+	delete rsData;
+
+// midori 152866 add -->
+	// id_tbl2 →【中計】にAdOrderがセットされたので、それを元にAdKana等をセットする
+// midori UC_0014 del -->
+//	rsData = new CdbPrtWorkAd(m_lo_pdb,nFormSeq);
+// midori UC_0014 del <--
+// midori UC_0014 add -->
+	rsData = new CdbPrtWorkAd(m_lo_pdb,nFormSeq,2);
+// midori UC_0014 add <--
+	rsData->RequerySort(0,_T(""));
+	while(!rsData->IsEOF())	{
+			// 小計 → 直前のデータレコードのカナをセットする
+			if(rsData->m_FgFunc == 12)	{
+				if(rsData->m_AdOrder == nAdOrder)	{
+					rsData->Edit();
+					rsData->m_AdKana = strAdKana;
+					rsData->m_AdName1 = strAdName1;
+					rsData->m_AdName2 = strAdName2;
+					rsData->m_AdSeq = nAdSeq;
+					rsData->Update();
+				}
+			}
+// midori UC_0014 del -->
+//			// 明細 → 番号・カナをセーブする
+//			else if(rsData->m_FgFunc == 4 || rsData->m_FgFunc == 10)	{
+// midori UC_0014 del <--
+// midori UC_0014 add -->
+		// 明細、一括金額 → 番号・カナをセーブする
+		else if(rsData->m_FgFunc == ID_FGFUNC_DATA_TEMP || rsData->m_FgFunc == ID_FGFUNC_SYOKEI ||
+				rsData->m_FgFunc == ID_FGFUNC_IKKATUMANUAL_ZERO || rsData->m_FgFunc == ID_FGFUNC_IKKATUAUTO_ZERO)	{
+// midori UC_0014 add <--
+				nAdOrder	= rsData->m_AdOrder;
+				strAdKana	= rsData->m_AdKana;
+				strAdName1 = rsData->m_AdName1;
+				strAdName2 = rsData->m_AdName2;
+				nAdSeq = rsData->m_AdSeq;
+			}
+		// 次のレコードへ
+		rsData->MoveNext();
+	}
+	rsData->Fin();
+	delete rsData;
+// midori 152866 add <--
+
+	// ##id_tbl2_1 のAdOrderを再付番する
+// midori UC_0014 del -->
+//	rsData = new CdbPrtWorkAd(m_lo_pdb,nFormSeq);
+// midori UC_0014 del <--
+// midori UC_0014 add -->
+	rsData = new CdbPrtWorkAd(m_lo_pdb,nFormSeq,2);
+// midori UC_0014 add <--
+// midori 190505 del -->
+	//if(sort == 0)	rsData->RequerySort(1,strItemAll);
+	//else			rsData->RequerySort(2,strItemAll);
+// midori 190505 del <--
+// midori 190505 add -->
+	if(sw == 0) {
+		if(sort == 0)	rsData->RequerySort(1,strItemAll);
+		else			rsData->RequerySort(2,strItemAll);
+	}
+	else {
+		if(sort == 0)	rsData->RequerySort(1,_T(""));
+		else			rsData->RequerySort(2,_T(""));
+	}
+// midori 190505 add <--
+	nAdOrder	= 0;
+	nAdOrder2	= 0;
+	nAdSeq		= 0;
+	strAdKana	= _T("");
+	strAdName1	= _T("");
+	strAdName2	= _T("");
+// midori UC_0014 add -->
+	nNumPage = 0;
+// midori UC_0014 add <--
+	while(!rsData->IsEOF())	{
+		// 名称テーブルに登録有り
+		if(rsData->m_AdSeq > 0)	{
+			// 最初の１件、または取引先番号が変われば AdOrder を加算する
+			if(svOrder != rsData->m_AdOrder)	{
+				nAdOrder++;
+			}
+		}
+		else	{
+			// 直前の行が名称テーブルに登録されている
+			if(nAdSeq > 0)	{
+				nAdOrder++;
+			}
+			else	{
+				// 取引先名が変われば AdOrder を加算する
+// midori UC_0014 del -->
+//				if(strAdName1 != rsData->m_AdName1 || strAdName2 != rsData->m_AdName2)	{
+// midori UC_0014 del <--
+// midori UC_0014 add -->
+				if( strAdName1 != rsData->m_AdName1 || strAdName2 != rsData->m_AdName2 || 
+					nNumPage != rsData->m_NumPage)	{
+// midori UC_0014 add <--
+					nAdOrder++;
+				}
+			}
+		}
+
+		// 現在の情報を一時保存
+		svOrder = rsData->m_AdOrder;
+		strAdKana = rsData->m_AdKana;
+		strAdName1 = rsData->m_AdName1;
+		strAdName2 = rsData->m_AdName2;
+		nAdSeq = rsData->m_AdSeq;
+// midori UC_0014 add -->
+		nNumPage = rsData->m_NumPage;
+// midori UC_0014 add <--
+
+		nAdOrder2++;
+		rsData->Edit();
+		rsData->m_AdOrder2 = nAdOrder2;
+		rsData->m_AdOrder = nAdOrder;
+		rsData->Update();
+		// 次のレコードへ
+		rsData->MoveNext();
+	}
+
+	rsData->Fin();
+	delete rsData;
+
+	// **********************************************
+	// 仮行番号(row)を振り、NumPageとNumRowを更新
+	// **********************************************
+	// (1) ##rownum_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strRonum_tbl,strRonum_tbl);
+	if(sort == 0)	strSort = _T("AdOrder2 ASC");
+	else			strSort = _T("AdOrder ASC,AdOrder2 ASC");
+	cs.Format(_T("select seq, AdOrder as order_num, ROW_NUMBER() OVER(ORDER BY %s) as row"),strSort);
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strRonum_tbl,strId_tbl2);
+	strSQL += cs;
+	cs.Format(_T(" WHERE FgShow = %d AND (FgFunc BETWEEN %d AND %d AND NOT%s OR (FgFunc = 10) OR (FgFunc = 12))"),
+		ID_FGSHOW_OFF,ID_FGFUNC_DATA,ID_FGFUNC_IKKATUAUTO_ZERO,GetSQLZeroJudgment());
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (2) ##rank_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strRank_tbl,strRank_tbl);
+	cs = _T("select seq,DENSE_RANK() OVER(ORDER BY order_num ASC) as rank_num,row");
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strRank_tbl,strRonum_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (3) ##partition_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strPartition_tbl,strPartition_tbl);
+	cs.Format(_T("select seq,rank_num,ROW_NUMBER() OVER (PARTITION BY rank_num order by row) as row"));
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strPartition_tbl,strRank_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (4) ##ceiling_num
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strCeiling_tbl,strCeiling_tbl);
+	cs.Format(_T("select seq,rank_num,CAST( CEILING(CAST(row as float) / CAST(%d as float)) as int ) as ceiling_num,row"),nMaxRow);
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strCeiling_tbl,strPartition_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (5) ##page_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strPage_tbl,strPage_tbl);
+	cs.Format(_T("select seq, DENSE_RANK() OVER(ORDER BY rank_num,ceiling_num) as pg,row"));
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strPage_tbl,strCeiling_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (6) ##page_row_tbl
+	strSQL = _T("");
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),strPage_row_tbl,strPage_row_tbl);
+	cs.Format(_T("select seq,pg as NumPage,ROW_NUMBER() OVER(PARTITION BY pg ORDER BY row ) as NumRow"));
+	strSQL += cs;
+	cs.Format(_T(" into %s from %s"),strPage_row_tbl,strPage_tbl);
+	strSQL += cs;
+	if(ExecuteSQLWork(strSQL) != 0)	return(DB_ERR_EXESQL);
+
+	// (7) 一時テーブル(1)～(6)を元に、"##temp_utiwake_tbl" を作成する
+	strSQL = _T("");
+	strSQL.Format(_T("SELECT row, %s.seq, %s.NumPage,%s.NumRow, FgFunc %s "
+		"INTO %s FROM %s,%s "
+		"WHERE %s.seq = %s.seq "
+		"ORDER BY %s.NumPage,%s.NumRow "), 
+		strPage_row_tbl,strPage_row_tbl,strPage_row_tbl,strColumn,
+		strResultTable,strPage_row_tbl,strId_tbl2,
+		strPage_row_tbl,strId_tbl2,
+		strPage_row_tbl,strPage_row_tbl);
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	// カラムrowを削除
+	CString strSQL2;
+	strSQL2.Format(_T("ALTER TABLE %s DROP COLUMN row"), strResultTable);
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL2 ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	return(DB_ERR_OK);
+}
+// midori UC_0003 add <--
+
+//********************************************************************************
+//	ソート：ソート条件取得
+//		IN		CdlgSort*		ソートダイアログ情報
+//				CString*		フィルタ条件
+//				CString*		ソート条件
+//		RET		int				実行結果（FUNCTION_OK, FUNCTION_NG）
+//********************************************************************************
+// midori 152137 del -->
+//// midori 151400 del -->
+////void CdbUc000Common::SetTblSortSubGetSortParam(int nFormSeq, CString* strItemFirst, CString* strItemAll, CString* strSortType)
+//// midori 151400 del <--
+//// midori 151400 add -->
+//void CdbUc000Common::SetTblSortSubGetSortParam(int nFormSeq, CString* strItemFirst, CString* strItemAll, CString* strSortType, BYTE* fgItemSort1)
+//// midori 151400 add <--
+// midori 152137 del <--
+// midori 152137 add -->
+void CdbUc000Common::SetTblSortSubGetSortParam(int nFormSeq, CString* strItemFirst, CString* strItemAll, CString* strSortType, BYTE* fgItemSort1,int* nSort)
+// midori 152137 add <--
+{
+	int					nTemp;
+// midori 152137 add -->
+	int					kmksort = 0;		// 参照ダイアログ::表示順（科目）		0:番号順	1:50音順
+	int					banksort = 0;		// 参照ダイアログ::表示順（金融機関）	0:番号順	1:50音順
+	int					addresssort = 0;	// 参照ダイアログ::表示順（取引先）		0:番号順	1:50音順
+	int					sw = 0;				// 0:番号順	1:50音順
+	int					sw2 = 0;			// 1:科目	2:銀行	3:取引先
+// midori 152137 add <--
+// midori 190505 add -->
+	int					max = 0;
+// midori 190505 add <--
+	CString				strSort;
+// midori 152137 add -->
+	CString				strBuf=_T("");
+// midori 152137 add <--
+	ITEMSORT_INFO		uItemSort;
+	BYTE				FgItemSort1;
+	BOOL				blnFlag = FALSE;
+	CdbUcInfSub			mfcInfSub( m_lo_pdb );
+
+	// inf_subテーブルを様式シーケンスでリクエリ
+	mfcInfSub.RequeryFormSeq( nFormSeq );
+
+// midori 190505 add -->
+	if(mfcInfSub.m_Sort1 == 0)	{
+		// 一度も編集～ソートを開いていない場合は、第１ソート項目の項目番号が書かれていない
+		// 一度も編集～ソートを開かずに、印刷直前の確認ダイアログで「第１ソート項目で改頁」が選択された場合に起こる
+		if(nFormSeq == 2)	mfcInfSub.m_Sort1=8;
+		else				mfcInfSub.m_Sort1=1;
+	}
+// midori 190505 add <--
+
+// midori 151398 151399 add -->
+	int				ks=0;
+	int				ii=0;
+
+	// 科目指定を行っているかどうか確認する
+	// 1 = 科目指定を行う
+	ks = 0;
+	if(mfcInfSub.m_GeneralVar[1] & BIT_D3)		ks = 1;
+
+	// 科目指定を行う場合は、第1ソートを「科目」もしくは「種類」として処理する
+	if(ks == 1)	{
+		switch(nFormSeq)	{
+			case	ID_FORMNO_011:		mfcInfSub.m_Sort1 = 2;	break;	// ①.預貯金等の内訳書「種類」
+			case	ID_FORMNO_021:		mfcInfSub.m_Sort1 = 8;	break;	// ②.受取手形の内訳書「科目」
+// 改良No.21-0086,21-0529 add -->
+			case	ID_FORMNO_081:										// ⑧.支払手形の内訳書「科目」
+				if(bG_InvNo == TRUE)	mfcInfSub.m_Sort1 = 9;
+				break;
+// 改良No.21-0086,21-0529 add <--
+			default:					mfcInfSub.m_Sort1 = 1;	break;	// 上記以外
+		}
+		mfcInfSub.m_Sort2 = 0;
+// midori M-17081801 del -->
+		//mfcInfSub.m_Sort2 = 3;
+// midori M-17081801 del <--
+// midori M-17081801 add -->
+		mfcInfSub.m_Sort3 = 0;
+// midori M-17081801 add <--
+	}
+// midori 151398 151399 add <--
+
+	// 第１ソート項目の項目種類 ･･･ 他でも使っているけどまたここで取得
+	GetUcLstItemSortGetData(nFormSeq, mfcInfSub.m_Sort1, &uItemSort);
+
+// midori 152137 add -->
+	// 参照ダイアログ::表示順の取得
+	// 科目
+	kmksort = IsKamokuSort(nFormSeq,m_lo_pdb);
+	// 金融機関・取引先
+	IsSort(nFormSeq,m_lo_pdb,&banksort,&addresssort);
+// midori 152137 add <--
+
+// midori 152137 add -->
+	*nSort = 0;
+// midori 152137 add <--
+	// 第ｎソート項目からソート順を取得
+	strSort = "";
+// midori 190505 del -->
+	//for (int i = 0; i < 3; i++) {
+// midori 190505 del <--
+// midori 190505 add -->
+	//if(KamokuRowEnableSgn(0) == 1)	max = 1;			// 改良No.21-0086,21-0529 del
+	if(KamokuRowEnableSgn(0, nFormSeq) == 1)	max = 1;	// 改良No.21-0086,21-0529 add
+	else										max = 3;
+	for (int i = 0; i < max; i++) {
+// midori 190505 add <--
+		// ソート指定項目を取得
+		switch (i) {
+		case	0:
+			nTemp = mfcInfSub.m_Sort1;
+// midori 152137 add -->
+			*nSort = mfcInfSub.m_Sort1;
+// midori 152137 add <--
+
+			// 第１ソート項目のFgItem(項目種)を格納
+			FgItemSort1 = uItemSort.bytFgItem;
+			break;
+		case	1:
+			// ダイアログで同じソート順が選択されるとSQLでエラーとなる
+			nTemp = 0;
+			if (mfcInfSub.m_Sort1 != mfcInfSub.m_Sort2) {
+				nTemp = mfcInfSub.m_Sort2;
+			}
+			break;
+		case	2:
+			// ダイアログで同じソート順が選択されるとSQLでエラーとなる
+			nTemp = 0;
+			if ((mfcInfSub.m_Sort1 != mfcInfSub.m_Sort3) && (mfcInfSub.m_Sort2 != mfcInfSub.m_Sort3)) {
+				nTemp = mfcInfSub.m_Sort3;
+			}
+			break;
+		}
+		
+// midori 180537 del -->
+//		// ソート指定ありの場合uc_lst_item_sortのソート条件を取得
+//		if (nTemp > 0) {
+// midori 180537 del <--
+// midori 180537 add -->
+		// 「なし」が選択されている場合、処理から抜ける
+		if(nTemp == 0)	break;
+// midori 180537 add <--
+		GetUcLstItemSortGetData(nFormSeq, nTemp, &uItemSort);
+// midori 152137 del -->
+		//if (uItemSort.strOrderStr != "") {
+		//	// ソート条件を設定
+		//	if (strSort == "") {
+		//		strSort = uItemSort.strOrderStr;
+
+		//		// 第一ソート項目の項目名、並び順取得
+		//		if( i == 0 ){
+		//			*strItemFirst = uItemSort.strFieldSykei;
+
+		//			if( uItemSort.strOrderStr.Find("ASC") != -1 ){
+		//				*strSortType = "ASC";
+		//			}
+		//			else{
+		//				*strSortType = "DESC";
+		//			}
+		//		}
+		//	}
+		//	else {
+		//		strSort = strSort + ", " + uItemSort.strOrderStr;
+		//	}
+		//}
+		//else {
+		//	break;
+		//}
+// midori 152137 del <--
+// midori 152137 add -->
+		sw = 0;
+		sw2 = 0;
+		switch(GetSortItem(nFormSeq,nTemp))	{
+		case 1:	// 科目（カナ入力有）
+			// 0:番号順 1:50音順
+			if(kmksort == 1)			sw = 1;
+			sw2 = 1;
+			break;
+		case 2:	// 銀行（カナ入力有）
+			// 0:番号順 1:50音順
+			if(banksort == 1)			sw = 1;
+			sw2 = 2;
+			break;
+		case 3:	// 取引先（カナ入力有）
+			// 0:番号順 1:50音順
+			if(addresssort == 1)		sw = 1;
+			sw2 = 3;
+			break;
+		default:
+			break;
+		}
+
+		if(sw == 0)		strBuf = uItemSort.strOrderStr;
+		else			strBuf = uItemSort.strOrderStr2;
+
+		if (strBuf != "") {
+			// ソート条件を設定
+			if (strSort == "") {
+				strSort = strBuf;
+
+				// 第一ソート項目の項目名、並び順取得
+				if( i == 0 ){
+					// 銀行
+// midori UC_0003 del -->
+					//if(sw2 == 2)	{
+					//	if(nFormSeq == ID_FORMNO_011)	{
+					//		*strItemFirst = _T("BkOrder");
+					//	}
+					//	else							{
+					//		*strItemFirst = _T("AdOrder");
+					//	}
+					//}
+					//// 取引先
+					//else if(sw2 == 3)	{
+					//	*strItemFirst = _T("AdOrder");
+					//}
+					//else	{
+					//	*strItemFirst = uItemSort.strFieldSykei;
+					//}
+// midori UC_0003 del <--
+// midori UC_0003 add -->
+					*strItemFirst = uItemSort.strFieldSykei;
+// midori UC_0003 add <--
+					
+
+					if( strBuf.Find("ASC") != -1 ){
+						*strSortType = "ASC";
+					}
+					else{
+						*strSortType = "DESC";
+					}
+				}
+			}
+			else {
+				strSort = strSort + ", " + strBuf;
+			}
+		}
+		else {
+			break;
+		}
+// midori 152137 add <--
+// midori 180537 del -->
+//		}
+// midori 180537 del <--
+
+		// 第一ソート項目が科目だった場合、次のソート条件にFgFuncを指定
+		if ( ( i == 0 ) && ( FgItemSort1 == ID_FGITEM_KAMOKU ) ){
+			// 第１ソート項目が科目の場合
+			if (strSort == "") {
+				strSort = _T("FgFunc ASC");
+			}
+			else {
+				strSort = strSort + _T(", FgFunc ASC");
+			}
+			// フラグをON(以下の処理ではもう"FgFunc ASC"は付加しない
+			blnFlag = TRUE;
+		}
+	}
+	
+	// 表示データのみでソート実行（FgShow=0）
+	//	　科目指定：手動一括集計金額(21)を通常データ(0)の科目が一致するがでも最後に表示（"FgFunc"が後で必要）
+	//	　科目なし：通常データ(0)→手動一括集計金額(21)として手動データは最後に表示（"FgFunc"が先に必要）
+//	strFilter.Format("FgShow = %d", ID_FGSHOW_OFF);
+	if (FgItemSort1 == ID_FGITEM_KAMOKU) {
+		// 既に"FgFunc ASC"を付加済み?
+		if ( blnFlag != TRUE ){
+			// 第１ソート項目が科目の場合
+			if (strSort == "") {
+				strSort = _T("FgFunc ASC");
+			}
+			else {
+				strSort = strSort + _T(", FgFunc ASC");
+			}
+		}
+	}
+	else{
+		// 第１ソート項目が科目以外の場合
+		if (strSort == "") {
+			strSort = _T("FgFunc ASC");
+		}
+		else {
+			strSort = _T("FgFunc ASC, ") + strSort;
+		}
+	}
+
+	//// ソートしたデータが、入力順に並ぶよう対応
+	//// ※指定しない場合、並び順が保障されないため
+	//if (strSort == "") {
+	//	strSort = _T("NumPage ASC, NumRow ASC");
+	//}
+	//else {
+	//	strSort = strSort + _T(", NumPage ASC, NumRow ASC");
+	//}
+// midori 180537 add -->
+	// ソートしたデータが、入力順に並ぶよう対応
+	// ※指定しない場合、並び順が保障されないため
+	if (strSort == "") {
+		strSort = _T("NumPage ASC, NumRow ASC");
+	}
+	else {
+		strSort = strSort + _T(", NumPage ASC, NumRow ASC");
+	}
+// midori 180537 add <--
+
+// midori 151400 add -->
+	// 第１ソート項目の項目種類
+	*fgItemSort1 = FgItemSort1;
+// midori 151400 add <--
+	// ソート条件
+	*strItemAll = strSort;
+}
+
+// midori UC_0003 add -->
+//********************************************************************************
+//	ソート：第２～第３ソート条件取得
+//		IN		int				様式番号
+//				CString*		ソート条件
+//		RET		int				実行結果（FUNCTION_OK, FUNCTION_NG）
+//********************************************************************************
+void CdbUc000Common::SetTblSortSubGetSortParamX(int nFormSeq, CString* strItemAll)
+{
+	int					nTemp;
+	int					kmksort = 0;		// 参照ダイアログ::表示順（科目）		0:番号順	1:50音順
+	int					banksort = 0;		// 参照ダイアログ::表示順（金融機関）	0:番号順	1:50音順
+	int					addresssort = 0;	// 参照ダイアログ::表示順（取引先）		0:番号順	1:50音順
+	int					sw = 0;				// 0:番号順	1:50音順
+	CString				strSort;
+	CString				strBuf=_T("");
+	ITEMSORT_INFO		uItemSort;
+	CdbUcInfSub			mfcInfSub( m_lo_pdb );
+
+	// inf_subテーブルを様式シーケンスでリクエリ
+	mfcInfSub.RequeryFormSeq( nFormSeq );
+
+	// 参照ダイアログ::表示順の取得
+	// 科目
+	kmksort = IsKamokuSort(nFormSeq,m_lo_pdb);
+	// 参照ダイアログ::表示順の取得
+	// 金融機関・取引先
+	IsSort(nFormSeq,m_lo_pdb,&banksort,&addresssort);
+
+	// 第２～３ソート項目からソート順を取得
+	strSort = "";
+	for (int i = 1; i < 3; i++) {
+		// ソート指定項目を取得
+		switch (i) {
+		case	1:
+			// ダイアログで同じソート順が選択されるとSQLでエラーとなる
+			nTemp = 0;
+			if (mfcInfSub.m_Sort1 != mfcInfSub.m_Sort2) {
+				nTemp = mfcInfSub.m_Sort2;
+			}
+			break;
+		case	2:
+			// ダイアログで同じソート順が選択されるとSQLでエラーとなる
+			nTemp = 0;
+			if ((mfcInfSub.m_Sort1 != mfcInfSub.m_Sort3) && (mfcInfSub.m_Sort2 != mfcInfSub.m_Sort3)) {
+				nTemp = mfcInfSub.m_Sort3;
+			}
+			break;
+		}
+		
+// midori 180537 del -->
+//		// ソート指定ありの場合uc_lst_item_sortのソート条件を取得
+//		if (nTemp > 0) {
+// midori 180537 del <--
+// midori 180537 add -->
+		// 「なし」が選択されている場合、処理から抜ける
+		if(nTemp == 0)	break;
+// midori 180537 add <--
+		GetUcLstItemSortGetData(nFormSeq, nTemp, &uItemSort);
+		sw = 0;
+		switch(GetSortItem(nFormSeq,nTemp))	{
+		case 1:	// 科目（カナ入力有）
+			// 0:番号順 1:50音順
+			if(kmksort == 1)			sw = 1;
+			break;
+		case 2:	// 銀行（カナ入力有）
+			// 0:番号順 1:50音順
+			if(banksort == 1)			sw = 1;
+			break;
+		case 3:	// 取引先（カナ入力有）
+			// 0:番号順 1:50音順
+			if(addresssort == 1)		sw = 1;
+			break;
+		default:
+			break;
+		}
+
+		if(sw == 0)		strBuf = uItemSort.strOrderStr;
+		else			strBuf = uItemSort.strOrderStr2;
+
+		if (strBuf != "") {
+			// ソート条件を設定
+			if (strSort == "") {
+				strSort = strBuf;
+			}
+			else {
+				strSort = strSort + ", " + strBuf;
+			}
+		}
+		else {
+			break;
+		}
+// midori 180537 del -->
+//		}
+// midori 180537 del <--
+	}
+
+	// ソート条件
+	*strItemAll = strSort;
+}
+// midori UC_0003 add <--
+
+//********************************************************************************
+//	uc_lst_item_sort：データ取得
+//		IN		int				項目番号
+//				ITEMSORT_INFO*	取得情報の格納領域
+//		RET		BOOL			TRUE:正常終了，FALSE:エラー
+//********************************************************************************
+BOOL CdbUc000Common::GetUcLstItemSortGetData(int nFormSeq, int intItemSeq, ITEMSORT_INFO* uItemSort)
+{
+	CdbUcLstItemSort	rsLstIS( m_lo_pdb );
+	BOOL				bRet = FALSE;
+
+	// データ初期化
+	uItemSort->bytFgSykei		= 0;			// 小計の対象である/ない
+	uItemSort->bytFgItem		= 0;			// 項目の種類を示す番号
+	uItemSort->strOrderStr		= "";			// 並び替え用SQL文字列
+	uItemSort->strFieldSykei	= "";			// 小計のグループ判定に使用するフィールド名
+	uItemSort->strFieldSykei2	= "";			// 小計のグループ判定に使用するフィールド名
+// midori 152137 add -->
+	uItemSort->strOrderStr2		= _T("");		// 50音並び替え用SQL文字列
+// midori 152137 add <--
+// 20-0450 add -->
+	uItemSort->intItemSeq		= 0;
+// 20-0450 add <--
+
+	// パラメータチェック
+	if ((nFormSeq <= 0) || (intItemSeq <= 0)) {
+		rsLstIS.Fin();
+		return FALSE;
+	}
+
+	// クエリー実行
+	if (rsLstIS.RequeryFormItem(nFormSeq, intItemSeq) == DB_ERR_OK) {
+		if (!rsLstIS.IsEOF()) {
+			// 必要情報をセット
+			uItemSort->bytFgSykei		= rsLstIS.m_FgSykei;		// 小計の対象である/ない
+			uItemSort->bytFgItem		= rsLstIS.m_FgItem;			// 項目の種類を示す番号
+			uItemSort->strOrderStr		= rsLstIS.m_OrderStr;		// 並び替え用SQL文字列
+			uItemSort->strFieldSykei	= rsLstIS.m_FieldSykei;		// 小計のグループ判定に使用するフィールド名
+			uItemSort->strFieldSykei2	= rsLstIS.m_FieldSykei2;	// 小計のグループ判定に使用するフィールド名
+// midori 152137 add -->
+			uItemSort->strOrderStr2		= rsLstIS.m_OrderStr2;		// 50音並び替え用SQL文字列
+// midori 152137 add <--
+// 20-0450 add -->
+			uItemSort->intItemSeq		= rsLstIS.m_ItemSeq;
+// 20-0450 add <--
+
+			bRet = TRUE;
+		}
+	}
+	rsLstIS.Fin();
+
+	return bRet;
+}
+
+//********************************************************************************
+//	一括金額（手動、自動含む）のFgFuncを3,4に変更
+//		IN		CString			テーブル名
+//				int				変更前のFgFunc
+//				int				変更後のFgFunc
+//		RET		CString			SQL文
+//********************************************************************************
+CString CdbUc000Common::GetSQLUpdateFgFuncFromIkkatu(CString TableName, int FgFuncBefor, int FgFuncAfter)
+{
+	CString retSQL;
+
+	retSQL.Format(_T("UPDATE %s SET FgFunc = %d WHERE FgFunc = %d "), TableName, FgFuncAfter, FgFuncBefor);
+
+	return retSQL;
+}
+
+//********************************************************************************
+//	最大行数を取得する（０円版）
+//		IN		int				様式シーケンス
+//		RET		int				最大行数
+//********************************************************************************
+int CdbUc000Common::GetMaxRowFromTempTbl(int nFormSeq)
+{
+	int nMaxRow = 0;
+	CString strMaxRow;
+	CString strSQL;
+	CRecordset rs( m_lo_pdb );
+
+// midori 160610 cor -->
+	//strSQL.Format( _T("SELECT MAX(NumRow) AS 'maxrow' FROM #temp_utiwake_tbl_%d"),  nFormSeq);
+// ---------------------
+#ifdef _DEBUG
+	strSQL.Format( _T("SELECT MAX(NumRow) AS 'maxrow' FROM ##temp_utiwake_tbl_%d"),  nFormSeq);
+#else
+	strSQL.Format( _T("SELECT MAX(NumRow) AS 'maxrow' FROM #temp_utiwake_tbl_%d"),  nFormSeq);
+#endif
+// midori 160610 cor <--
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		CString	SqlStrSeq;
+		SqlStrSeq.Format(" WHERE FormSeq = %d ", m_lo_FormSeq);
+		strSQL += SqlStrSeq;
+	}
+
+	// オープン
+	rs.Open( CRecordset::forwardOnly, strSQL );
+
+	// 取得
+	rs.GetFieldValue( _T("maxrow"), strMaxRow );
+	sscanf_s( strMaxRow, "%d", &nMaxRow);
+	rs.Close();
+
+	return nMaxRow;
+}
+
+//********************************************************************************
+//	ソートキーのタイプがintと異なる場合、そのタイプを返す。
+//		IN		なし
+//		RET		通常はint
+//********************************************************************************
+CString CdbUc000Common::GetSortItemType()
+{
+	return "int";
+}
+
+/**********************************************************************
+	GetSQLHokan()
+		保管データテーブルのオーダー順に各様式データの保管データを取得する
+		SQL文を取得する
+
+	引数
+			int					様式シーケンス
+	戻値
+			CString				DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@@_1@
+***********************************************************************/
+CString CdbUc000Common::GetSQLHokan(int nFormSeq)
+{
+	CString	strSQL;
+	strSQL.Format("SELECT * FROM [dbo].%s, [dbo].[uc_lst_hokan] WHERE [dbo].[uc_lst_hokan].FormSeq = %d AND [dbo].%s.Seq = [dbo].[uc_lst_hokan].Seq ORDER BY OrderNum",
+		m_lo_TableName, nFormSeq, m_lo_TableName);
+
+	return strSQL;
+}
+
+// No.158072 add -->
+/**********************************************************************
+	GetSQLHokanSort()
+		保管データテーブルのオーダー順に各様式データの保管データを取得する
+		SQL文を取得する（※ソート処理に対応）
+
+	引数
+			int					様式シーケンス
+			CString				OrderBy句
+	戻値
+			CString				作成されたSQL文
+***********************************************************************/
+CString CdbUc000Common::GetSQLHokanSort( int nFormSeq, CString sSort )
+{
+	CString	strSQL;
+	strSQL.Format("SELECT * FROM [dbo].%s, [dbo].[uc_lst_hokan] WHERE [dbo].[uc_lst_hokan].FormSeq = %d AND [dbo].%s.Seq = [dbo].[uc_lst_hokan].Seq ORDER BY %s",
+		m_lo_TableName, nFormSeq, m_lo_TableName, sSort);
+
+	return strSQL;
+}
+
+/**********************************************************************
+	GetSQLHokanSort021()
+		保管データテーブルのオーダー順に各様式データの保管データを取得する
+		SQL文を取得する（※ソート処理に対応）
+		※様式② 受取手形の内訳書専用
+	引数
+			int					様式シーケンス
+			CString				OrderBy句
+			char				ソートサイン
+	戻値
+			CString				作成されたSQL文
+***********************************************************************/
+CString CdbUc000Common::GetSQLHokanSort021(int nFormSeq, CString sSort, char pSsw)
+{
+	CString		cs1="", cs2="", cs3="", cs4="";
+	CString		strSQL;
+
+// No.158111 del -->
+	//cs1.Format("SELECT * FROM [dbo].%s, [dbo].[uc_lst_hokan], [dbo].[uc_lst_Bank] ", m_lo_TableName);
+	//cs2.Format("WHERE [dbo].[uc_lst_hokan].FormSeq = %d AND [dbo].%s.Seq = [dbo].[uc_lst_hokan].Seq ", nFormSeq, m_lo_TableName);
+	//if((pSsw & 0xf0) == 0x10 || (pSsw & 0xf0) == 0x20)	{
+	//	cs3.Format("AND [dbo].%s.BkOrder = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	//}
+	//else	{
+	//	cs3.Format("AND [dbo].%s.Bk2Order = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	//}
+// No.158111 del <--
+// No.158111 add -->
+	cs1.Format("SELECT * FROM [dbo].%s ", m_lo_TableName);
+	if((pSsw & 0xf0) == 0x10 || (pSsw & 0xf0) == 0x20)	{
+		cs2.Format("LEFT JOIN [dbo].[uc_lst_Bank] on [dbo].%s.BkOrder = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	}
+	else	{
+		cs2.Format("LEFT JOIN [dbo].[uc_lst_Bank] on [dbo].%s.Bk2Order = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	}
+	cs2 += _T(", [dbo].[uc_lst_hokan] ");
+	cs3.Format("WHERE [dbo].[uc_lst_hokan].FormSeq = %d AND [dbo].%s.Seq = [dbo].[uc_lst_hokan].Seq ", nFormSeq, m_lo_TableName);
+// No.158111 add <--
+	cs4.Format("ORDER BY ");
+	if((pSsw & 0xf0) == 0x10)	{
+		cs4 += ("[dbo].[uc_lst_Bank].BkKana1");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+		cs4 += sSort;
+	}
+	else if((pSsw & 0xf0) == 0x20) {
+		cs4 += ("[dbo].[uc_lst_Bank].BkKana2");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+		cs4 += sSort;
+	}
+	else if((pSsw & 0xf0) == 0x30) {
+		cs4 += ("[dbo].[uc_lst_Bank].BkKana1");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+		cs4 += (", [dbo].[uc_lst_Bank].BkKana2");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+		cs4 += sSort;
+	}
+
+	strSQL.Empty();
+	strSQL = cs1 + cs2 + cs3 + cs4;
+
+	return strSQL;
+}
+
+/**********************************************************************
+	GetSQLHokanSort061()
+		保管データテーブルのオーダー順に各様式データの保管データを取得する
+		SQL文を取得する（※ソート処理に対応）
+		※様式⑥ 有価証券の内訳書（種類、銘柄のみ）専用
+
+	引数
+			int					様式シーケンス
+			CString				OrderBy句
+			char				ソートサイン
+	戻値
+			CString				作成されたSQL文
+***********************************************************************/
+CString CdbUc000Common::GetSQLHokanSort061(int nFormSeq, CString sSort, char pSsw)
+{
+	CString		cs1="", cs2="", cs3="", cs4="";
+	CString		strSQL;
+
+	if((pSsw & 0xf0) == 0x10)	{
+		cs1.Format("SELECT *, LEFT(Syurui, CHARINDEX(char(13)+char(10), Syurui)-1) as clm1 ");
+	}
+	else	{
+		cs1.Format("SELECT *, RIGHT(Syurui, len(Syurui)-CHARINDEX(char(13)+char(10), Syurui)) as clm1 ");
+	}
+
+	cs2.Format("FROM [dbo].%s, [dbo].[uc_lst_hokan] ", m_lo_TableName);
+
+	cs3.Format("WHERE [dbo].[uc_lst_hokan].FormSeq = %d AND [dbo].%s.Seq = [dbo].[uc_lst_hokan].Seq ", nFormSeq, m_lo_TableName);
+
+	if((pSsw & 0x0f) == 0x00)	cs4.Format("ORDER BY clm1 %s", sSort);
+// 修正No.158302 del -->
+//	else						cs4.Format("ORDER BY clm1 %s", sSort);
+// 修正No.158302 del <--
+// 修正No.158302 add -->
+	else						cs4.Format("ORDER BY clm1 DESC %s", sSort);
+// 修正No.158302 add <--
+
+	strSQL = cs1 + cs2 + cs3 + cs4;
+
+	return strSQL;
+}
+
+
+/**********************************************************************
+	GetSQLHokanSort081()
+		保管データテーブルのオーダー順に各様式データの保管データを取得する
+		SQL文を取得する（※ソート処理に対応）
+		※様式⑧ 支払手形の内訳書専用
+	引数
+			int					様式シーケンス
+			CString				OrderBy句
+			char				ソートサイン
+	戻値
+			CString				作成されたSQL文
+***********************************************************************/
+CString CdbUc000Common::GetSQLHokanSort081(int nFormSeq, CString sSort, char pSsw)
+{
+	CString		cs1="", cs2="", cs3="", cs4="";
+	CString		strSQL;
+
+// No.158111 del -->
+	//cs1.Format("SELECT * FROM [dbo].%s, [dbo].[uc_lst_hokan], [dbo].[uc_lst_Bank] ", m_lo_TableName);
+	//cs2.Format("WHERE [dbo].[uc_lst_hokan].FormSeq = %d AND [dbo].%s.Seq = [dbo].[uc_lst_hokan].Seq ", nFormSeq, m_lo_TableName);
+	//cs3.Format("AND [dbo].%s.BkOrder = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+// No.158111 del <--
+// No.158111 add -->
+	cs1.Format("SELECT * FROM [dbo].%s ", m_lo_TableName);
+	cs2.Format("LEFT JOIN [dbo].[uc_lst_Bank] on [dbo].%s.BkOrder = [dbo].[uc_lst_Bank].OrderNum ", m_lo_TableName);
+	cs2 += _T(", [dbo].[uc_lst_hokan]");
+	cs3.Format("WHERE [dbo].[uc_lst_hokan].FormSeq = %d AND [dbo].%s.Seq = [dbo].[uc_lst_hokan].Seq ", nFormSeq, m_lo_TableName);
+// No.158111 add <--
+	cs4.Format("ORDER BY ");
+	if((pSsw & 0xf0) == 0x10)	{
+		cs4 += ("[dbo].[uc_lst_Bank].BkKana1");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+		cs4 += sSort;
+	}
+	else if((pSsw & 0xf0) == 0x20) {
+		cs4 += ("[dbo].[uc_lst_Bank].BkKana2");
+		if((pSsw & 0x0f) == 0x01)	cs4 += _T(" DESC");
+		cs4 += sSort;
+	}
+
+	strSQL.Empty();
+	strSQL = cs1 + cs2 + cs3 + cs4;
+
+	return strSQL;
+}
+// No.158072 add <--
+
+/**********************************************************************
+	AddHokanTable()
+		保管移動対象行を保管テーブルに追加する
+
+	引数
+			int					様式シーケンス
+			CString				保管するレコードの条件
+	戻値
+			CString				DB_ERR_OK (0)     ：成功
+								DB_ERR_OK (0) 以外：失敗
+//@@_1@
+***********************************************************************/
+int CdbUc000Common::AddHokanTable(int nFormSeq, CString strCond)
+{
+	int			nOrderNum = 0;
+	CString		strSQL, strOrderNum;
+	CRecordset	rs(m_lo_pdb);
+
+	// 現在の様式で保管されているレコードのオーダーの最大値を取得する
+	strSQL.Format(_T("SELECT max(OrderNum) AS MaxNum FROM [uc_lst_hokan] WHERE FormSeq = %d"), nFormSeq);
+	rs.Open( CRecordset::forwardOnly, strSQL);
+	rs.GetFieldValue(_T("MaxNum"), strOrderNum);
+	sscanf_s( strOrderNum, _T("%d"), &nOrderNum);
+	rs.Close();
+
+	if( nOrderNum < 0 ){
+		return DB_ERR;
+	}
+
+	// FgShowが保管のレコードを保管テーブルに追加
+	strSQL.Empty();
+	strSQL.Format( _T("DECLARE @base int SET @base = %d INSERT INTO [dbo].[uc_lst_hokan](FormSeq, [dbo].%s.seq, OrderNum) SELECT %d, [dbo].%s.seq, @base + ROW_NUMBER() OVER(ORDER BY NumPage, NumRow ASC) FROM [dbo].%s %s ORDER BY NumPage, NumRow"),
+		nOrderNum, m_lo_TableName, nFormSeq, m_lo_TableName, m_lo_TableName, strCond );
+
+	return ExecuteSQLWork( strSQL );
+}
+
+//********************************************************************************
+//	保管状態(NumPage == NumRow == 0)のレコードに、指定頁、行を付番する
+//
+//		【引数】	int			開始頁番号
+//					int			開始行番号 - 1
+//					int			頁を跨ぐ行数
+//		【戻値】	BOOL 
+//********************************************************************************
+//int CdbUc000Common::SetPageRowNumToReturnData(int nPage, int nRow, int nBaseRow)
+//{
+//	CString strSQL;
+//
+//	strSQL.Format( _T("DECLARE @seq int DECLARE @page int DECLARE @rownum int DECLARE @base int "
+//		"UPDATE @page SET %d "
+//		"DECLARE cur CURSOR FOR SELECT %s.Seq , ROW_NUMBER ()OVER(ORDER BY OrderNum) FROM %s, [uc_lst_hokan] WHERE %s.Seq = [uc_lst_hokan].Seq ORDER BY OrderNum "
+//		"OPEN cur FETCH cur INTO @seq, @rownum WHILE @@FETCH_STATUS = 0 BEGIN "
+//		"UPDATE @base SET @rownum + %d "
+//		"UPDATE %s SET NumRow = @base, NumPage = @page WHERE seq = @seq "
+//		"IF @base >= %d + 1 BEGIN "
+//		"FETCH cur INTO @seq,@rownum END "
+//		"CLOSE cur DEALLOCATE cur"), 
+//		nPage, m_lo_TableName, m_lo_TableName, m_lo_TableName, nRow, m_lo_TableName, nBaseRow, nRow );
+//
+//	return ExecuteSQLWork( strSQL );
+//}
+
+// midori 190505 del -->
+////********************************************************************************
+////	②受取手形の内訳書と⑪借入金の内訳書でのみ使用する。
+////　前行と科目が異なる場合、科目のみを表示する行を挿入する。
+////
+////		【引数】	CString		対象となるテーブル名
+////					
+////		【戻値】	BOOL 
+////********************************************************************************
+//int CdbUc000Common::InsertKamokuRow(CString BaseTbl)
+//{
+//	CString strSQL;
+//
+//	strSQL = GetSQLInsertKamokuRow( BaseTbl );
+//
+//	try{
+//		ExecuteSQLWork( strSQL );
+//	}
+//	catch(CDBException* e){
+//		// 解放
+//		e->Delete();
+//
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	return DB_ERR_OK;
+//}
+// midori 190505 del <--
+// midori 156188 add -->
+//********************************************************************************
+//	②受取手形の内訳書と⑪借入金の内訳書でのみ使用する。
+//　前行と科目が異なる場合、科目のみを表示する行を挿入する。
+//
+//		【引数】	CString		対象となるテーブル名
+//					
+//		【戻値】	BOOL 
+//********************************************************************************
+int CdbUc000Common::InsertKamokuRow(CString BaseTbl)
+{
+	CString strSQL;
+
+	strSQL = GetSQLInsertKamokuRow( BaseTbl );
+
+	try{
+		ExecuteSQLWork( strSQL );
+	}
+	catch(CDBException* e){
+		// 解放
+		e->Delete();
+
+		return DB_ERR_EXESQL;
+	}
+
+	return DB_ERR_OK;
+}
+// midori 156188_2 add <--
+
+/**********************************************************************
+	GetSQLInsertColumns()
+		科目行を挿入するInsert文を作成する
+
+	引数
+			CString					更新対象のテーブル名
+	戻値
+			CString					INSERT文
+***********************************************************************/
+// virtial
+CString CdbUc000Common::GetSQLInsertColumns(CString BaseTbl)
+{
+	// 基本的に、このクラスの、このメソッドが呼び出されることは無い。
+	return "";
+}
+
+/**********************************************************************
+	GetMaxPageFromTempTable()
+		一時テーブルの最大ページ数を取得する
+
+	引数
+			CString					テーブル名
+	戻値
+			int						集計値
+***********************************************************************/
+int CdbUc000Common::GetMaxPageFromTempTable(CString strTable)
+{
+	CRecordset rs(m_lo_pdb);
+	int nMaxPage;
+	CString strSQL, strMaxPage;
+
+	// 最終ページ取得
+	strSQL.Format( _T("SELECT MAX(NumPage) AS 'value' FROM %s"), strTable);
+
+	// オープン
+	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) ) {
+		
+		rs.Close();
+		return DB_ERR_OPEN;
+	}
+	
+	// 取得
+	rs.GetFieldValue( _T("value"), strMaxPage );
+	sscanf_s( strMaxPage, "%d", &nMaxPage);
+
+	if( strMaxPage.IsEmpty() != FALSE ){
+		nMaxPage = 0;
+	}
+
+	rs.Close();
+
+	return nMaxPage;
+}
+
+/**********************************************************************
+	GetMaxRowFromTempTable()
+		一時テーブルの最大行数を取得する
+
+	引数
+			CString					テーブル名
+			int						取得するページ
+	戻値
+			int						集計値
+***********************************************************************/
+int CdbUc000Common::GetMaxRowFromTempTable(CString strTable, int nPage)
+{
+	CRecordset	rs(m_lo_pdb);
+	int			nCurRow;
+	CString		strSQL, strCurRow;
+	// 最終行取得
+// midori 152148 cor -->
+	//strSQL.Format(_T("SELECT MAX(NumRow) AS 'value' FROM %s WHERE NumPage = %d"), strTable, nPage);
+// ---------------------
+	strSQL.Format(_T("SELECT ISNULL(MAX(NumRow),0) AS 'value' FROM %s WHERE NumPage = %d"), strTable, nPage);
+// midori 152148 cor <--
+
+	// オープン
+	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) ) {
+		return DB_ERR_OPEN;
+	}
+
+	// 取得
+	rs.GetFieldValue( _T("value"), strCurRow );
+	sscanf_s( strCurRow, "%d", &nCurRow);
+	rs.Close();
+
+	return nCurRow;
+}
+
+// midori 190505 del -->
+///**********************************************************************
+//	DeleteKeiNullZeroRow()
+//		ソートダイアログの「改頁を行う」チェックＯＦＦ時の、計行、空白行、０円行の削除
+//
+//		削除する行は・小計行の次の行を除く空白行
+//		　　　　　　・頁計、累計行
+//			  　　　・０円行（ただし小計、中計は除く）
+//
+//	引数
+//			CString					テーブル名
+//	戻値
+//			int						成功 : DB_ERR_OK
+//									失敗 : DB_ERR_EXESQL
+//***********************************************************************/
+//// midori 160610 cor -->
+////int CdbUc000Common::DeleteKeiNullZeroRow(CString strTable)
+//// ---------------------
+//int CdbUc000Common::DeleteKeiNullZeroRow(CString strTable, CString strTable2, int pSw2)
+//// midori 160610 cor <--
+// midori 190505 del <--
+// midori 190505 add -->
+// ----------------------------------------------------------------------------------------------------------------------------------
+//	DeleteKeiNullZeroRow()
+//		ソートダイアログの「改頁を行う」チェックＯＦＦ時の、計行、空白行、０円行の削除
+//
+//		削除する行は・小計行の次の行を除く空白行
+//		　　　　　　・頁計、累計行
+//			  　　　・０円行（ただし小計、中計は除く）
+//
+//	引数
+//			CString					テーブル名
+//			CString					テーブル名
+//			int						0固定
+//			int						様式番号
+//	戻値
+//			int						成功 : DB_ERR_OK
+//									失敗 : DB_ERR_EXESQL
+// ----------------------------------------------------------------------------------------------------------------------------------
+// midori 157098 del -->
+//int CdbUc000Common::DeleteKeiNullZeroRow(CString strTable, CString strTable2, int pSw2, int nFormSeq)
+// midori 157098 del <--
+// midori 157098 add -->
+int CdbUc000Common::DeleteKeiNullZeroRow(CString strTable, CString strTable2, int pSw, int pSw2, int nFormSeq)
+// midori 157098 add <--
+// midori 190505 add <--
+{
+	CString strSQL;
+// midori 160610 cor -->
+	CString		strMoto=strTable2;
+// midori 160610 cor <--
+// midori 157098 add -->
+	CString strFilterKamoku = _T("");
+	int kmkrowenable = 0;
+
+	//kmkrowenable = KamokuRowEnableSgn(0);			// 改良No.21-0086,21-0529 del
+	kmkrowenable = KamokuRowEnableSgn(0, nFormSeq);	// 改良No.21-0086,21-0529 add
+// midori 157098 add <--
+
+	// その他の内訳書の－１、－２等の絞込み
+	CString SonotaFormSeq;
+	if( m_lo_FormSeq > 0 ){		
+		SonotaFormSeq.Format("AND FormSeq = %d ", m_lo_FormSeq);
+	}
+
+	// 頁計・累計の除外（ページをまたぐ場合、頁計・累計に値が入ると空行小計の削除判定、ソート時の小計の紐付けができなくなるため）
+	CString FilterNotPageRui;
+	FilterNotPageRui.Format(_T("AND FgFunc NOT IN (%d, %d) "), ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+
+// midori 157099,157119_2 del -->
+//// midori 157098 add -->
+//	// ソートダイアログ「科目行を挿入する」表示(画面に科目行挿入を可能にするの対応後）されている場合、科目行を削除する
+//	if(kmkrowenable == 1) {
+//		// 科目指定でない
+//		if(pSw == 0) {
+//			if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+//				if( IsInsertKamokuRow( nFormSeq ) == FALSE){
+//					strFilterKamoku.Format(_T("AND FgFunc NOT IN (%d) "),ID_FGFUNC_KAMOKU);
+//				}
+//			}
+//		}
+//	}
+//// midori 157098 add <--
+// midori 157099,157119_2 del <--
+
+	// ソート頁、行順に一意なシーケンス(row)の作成
+// midori 157098 del -->
+//// midori 160610 cor -->
+//	//strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE FgShow = 0 %s %s"),
+//	//	strTable, strTable, strTable, GetDefaultSQL(), SonotaFormSeq, FilterNotPageRui);
+//// ---------------------
+//	if(pSw2 == 0)	{
+//		strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE FgShow=%d %s %s"),
+//			strTable,strTable,strTable,strMoto,ID_FGSHOW_OFF,SonotaFormSeq,FilterNotPageRui);
+//	}
+//	else	{
+//		// 後からソートを行う場合は、非表示の一括金額を含む
+//		strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE (FgShow=%d OR FgShow=%d) %s %s"),
+//			strTable,strTable,strTable,strMoto,ID_FGSHOW_OFF,ID_FGSHOW_IKKATU,SonotaFormSeq,FilterNotPageRui);
+//	}
+//// midori 160610 cor <--
+// midori 157098 del <--
+// midori 157098 add -->
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE FgShow=%d %s %s %s"),
+		strTable,strTable,strTable,strMoto,ID_FGSHOW_OFF,SonotaFormSeq,FilterNotPageRui,strFilterKamoku);
+// midori 157098 add <--
+
+	// 手動・自動一括金額のFgFunc更新（FgFuncソートによって自動・手動一括金額が小計より後にきてしまうため）
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTable, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTable, ID_FGFUNC_IKKATUAUTO,		ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTable, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+
+// midori 190505 del -->
+//// midori 152909_2 del -->
+////	// Val <> 0でNULLは引っかからないので、「金額０円データを出力しない」の時には Val is nullの条件も付加する
+////	CString strSQLNull;
+////	//if( !(m_OutZeroNull & BIT_D1) )		strSQLNull = GetSQLValIsNull();
+////
+////	// 小計計上対象の行が全て０円判定行なら、小計を削除
+////	strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+////		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+////		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+////		"BEGIN "
+////			"%s "	// 小計行の次の行について
+////			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND NOT %s %s ) AND row BETWEEN(@start_row + 1) AND @end_row "
+////			"SET @start_row = @end_row "
+////			"FETCH cur INTO @end_row "
+////		"END CLOSE cur DEALLOCATE cur "),
+////		strTable, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLDeleteNullLineUnderSyokei(strTable), strTable, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strTable, GetSQLZeroJudgment(), strSQLNull);
+//// midori 152909_2 del <--
+//// midori 152909_2 add -->
+//	// 小計計上対象の行が全て０円判定行なら、小計を削除
+//	strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+//		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+//		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+//		"BEGIN "
+//			"%s "	// 小計行の次の行について
+//			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s ) AND row BETWEEN(@start_row + 1) AND @end_row "
+//			"SET @start_row = @end_row "
+//			"FETCH cur INTO @end_row "
+//		"END CLOSE cur DEALLOCATE cur "),
+//		strTable, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLDeleteNullLineUnderSyokei(strTable,0), strTable, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strTable, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment());
+//	// 中計計上対象の行が全て０円判定行なら、中計を削除
+//	strSQL.Format(strSQL + _T("SET @start_row = 0 SET @end_row = 0 "
+//		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d "
+//		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+//		"BEGIN "
+//			"%s "	// 小計行の次の行について
+//			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s ) AND row BETWEEN(@start_row + 1) AND @end_row "
+//			"SET @start_row = @end_row "
+//			"FETCH cur INTO @end_row "
+//		"END CLOSE cur DEALLOCATE cur "),
+//		strTable, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLDeleteNullLineUnderSyokei(strTable,1), strTable, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strTable, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment());
+//// midori 152909_2 add <--
+// midori 190505 del <--
+// midori 190505 add -->
+	// 小計計上対象の行が全て０円判定行なら、小計を削除
+	strSQL.Format(strSQL + _T("DECLARE @start_row int SET @start_row = 0 "
+		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d DECLARE @end_row int "
+		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+		"BEGIN "
+			"%s "	// 小計行の次の行について
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"SET @start_row = @end_row "
+			"FETCH cur INTO @end_row "
+		"END CLOSE cur DEALLOCATE cur "),
+		strTable, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLDeleteNullLineUnderSyokei(strTable,0), strTable, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, strTable, ID_FGSHOW_OFF, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_KAMOKU);
+	// 中計計上対象の行が全て０円判定行なら、中計を削除
+	strSQL.Format(strSQL + _T("SET @start_row = 0 SET @end_row = 0 "
+		"DECLARE cur CURSOR for SELECT row FROM %s WHERE FgFunc = %d OR FgFunc = %d "
+		"OPEN cur FETCH cur INTO @end_row WHILE @@fetch_status = 0 "
+		"BEGIN "
+			"%s "	// 小計行の次の行について
+			"DELETE FROM %s WHERE (FgFunc = %d OR FgFunc = %d) AND NOT EXISTS(SELECT * FROM %s WHERE row BETWEEN (@start_row + 1) AND (@end_row -1) AND FgShow = %d AND FgFunc <> %d AND FgFunc <> %d AND NOT %s AND (FgFunc <> %d) ) AND row BETWEEN(@start_row + 1) AND @end_row "
+			"SET @start_row = @end_row "
+			"FETCH cur INTO @end_row "
+		"END CLOSE cur DEALLOCATE cur "),
+		strTable, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, GetSQLDeleteNullLineUnderSyokei(strTable,1), strTable, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strTable, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment(), ID_FGFUNC_KAMOKU);
+// midori 190505 add <--
+
+	// 小計のみの一時テーブル
+// midori 152811 del -->
+//	strSQL.Format( strSQL + _T(" ;with fg_func_tbl(row) as( "
+//		"SELECT row FROM %s "
+//		"WHERE FgFunc = 10 "
+//		"), "), strTable);
+// midori 152811 del <--
+// midori 152811 add -->
+	strSQL.Format( strSQL + _T(" ;with fg_func_tbl(row) as( "
+		"SELECT row FROM %s "
+		"WHERE FgFunc = 10 or FgFunc = 12 "
+		"), "), strTable);
+// midori 152811 add <--
+
+	// 小計の次の行の一時テーブル
+	strSQL.Format( strSQL + _T("no_cut(row) as( "
+		"SELECT %s.row FROM %s,fg_func_tbl "
+		"WHERE fg_func_tbl.row + 1 = %s.row "
+		") "), strTable, strTable, strTable);
+
+	// 小計の次の行の空白行のみを残し、それ以外の空白行を削除
+// midori 160610 cor -->
+	//strSQL.Format( strSQL + _T("DELETE FROM %s WHERE FgShow = 0 AND FgFunc = 0 AND NOT EXISTS( SELECT * FROM no_cut WHERE %s.row = row ) "),
+	//	strTable, strTable);
+	////strSQL.Format( strSQL + _T("DELETE FROM %s WHERE FgShow = 0 AND FgFunc = 0 AND NOT EXISTS( SELECT * FROM no_cut WHERE %s.row = row ) AND %s "),
+	////	strTable, strTable, GetSQLZeroJudgment());
+
+	//// ０円対象カラムが０円またはNULLを削除（ただし、紐づく行が存在する小計、中計、空白行の０円またはNULLは削除しない）
+	//// ex) 当座預金0 小計0 →削除　当座預金100 当座預金-100 小計0 →削除しない
+	//strSQL.Format( strSQL + _T("DELETE FROM %s "
+	//	"WHERE FgShow = 0 AND (FgFunc <> %d AND FgFunc <> %d AND FgFunc <> %d AND FgFunc <> 0 and %s)"),
+	//	strTable, ID_FGFUNC_SYOKEI, ID_FGFUNC_CHUKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment());
+// ---------------------
+	if(pSw2 == 0)	{
+		strSQL.Format( strSQL + _T("DELETE FROM %s WHERE FgShow = 0 AND FgFunc = 0 AND NOT EXISTS( SELECT * FROM no_cut WHERE %s.row = row ) "),
+			strTable, strTable);
+		// ０円対象カラムが０円またはNULLを削除（ただし、紐づく行が存在する小計、中計、空白行の０円またはNULLは削除しない）
+		// ex) 当座預金0 小計0 →削除　当座預金100 当座預金-100 小計0 →削除しない
+		strSQL.Format( strSQL + _T("DELETE FROM %s "
+			"WHERE FgShow = %d AND (FgFunc <> %d AND FgFunc <> %d AND FgFunc <> %d AND FgFunc <> 0 and %s)"),
+			strTable, ID_FGSHOW_OFF, ID_FGFUNC_SYOKEI, ID_FGFUNC_CHUKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment());
+	}
+	else	{
+		strSQL.Format( strSQL + _T("DELETE FROM %s WHERE FgShow = 0 AND FgFunc = 0 AND NOT EXISTS( SELECT * FROM no_cut WHERE %s.row = row ) "),
+			strTable, strTable);
+		// ０円対象カラムが０円またはNULLを削除（ただし、紐づく行が存在する小計、中計、空白行の０円またはNULLは削除しない）
+		// ex) 当座預金0 小計0 →削除　当座預金100 当座預金-100 小計0 →削除しない
+		strSQL.Format( strSQL + _T("DELETE FROM %s "
+			"WHERE (FgShow=%d OR FgShow=%d) AND (FgFunc <> %d AND FgFunc <> %d AND FgFunc <> %d AND FgFunc <> 0 and %s)"),
+			strTable, ID_FGSHOW_OFF, ID_FGSHOW_IKKATU, ID_FGFUNC_SYOKEI, ID_FGFUNC_CHUKEI, ID_FGFUNC_SYOKEINULL, GetSQLZeroJudgment());
+	}
+// midori 160610 cor <--
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+// midori 190505 add -->
+// 改良No.21-0086,21-0529 cor -->
+	//if(nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111) {
+// ------------------------------
+	if(nFormSeq == ID_FORMNO_021 || (bG_InvNo == TRUE && nFormSeq == ID_FORMNO_081) || nFormSeq == ID_FORMNO_111) {
+// 改良No.21-0086,21-0529 cor <--
+		DeleteKamokuRow(nFormSeq,0,strTable);
+	}
+// midori 190505 add <--
+
+	return DB_ERR_OK;
+}
+
+// midori 161111 add -->
+/**********************************************************************
+	InsertKeiNullLine()
+		ソートダイアログの「小計行の次に空行を挿入する」がＯＮの場合
+		頁の最終行が小計でかつ、次の行が空白行以外の場合
+		空白行を挿入する
+	引数
+			int						様式番号
+			int						該当様式の最大行数
+// midori 152138 add -->
+			int						小計の次行に空行を挿入した場合は[1]を返す
+// midori 152138 add <--
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+// midori 152138 del -->
+//int CdbUc000Common::InsertKeiNullLine( int pFormSeq, int pLclDataRowMax )
+// midori 152138 del <--
+// midori 152138 add -->
+int CdbUc000Common::InsertKeiNullLine( int pFormSeq, int pLclDataRowMax, int* pRet )
+// midori 152138 add <--
+{
+	int				numpage=0,numpage2=0;
+	int				numrow=0;
+	int				fgfunc=0,fgfunc2=0;
+// midori 156968_3 add -->
+	int				sw2=0;
+// midori 156968_3 add <--
+	int				ii=0;
+// midori 156968 add -->
+	int				ret=0;
+	CdbUcInfMain	mfcRecMain( m_lo_pdb );	//	「uc_inf_main」テーブル用クラス
+// midori 156968 add <--
+	CdbPrtWork2*	rsData;
+
+// midori 152138 add -->
+	*pRet = 0;
+// midori 152138 add <--
+// midori 156968 add -->
+	if(mfcRecMain.Init() == DB_ERR_OK)	{
+		if(!(mfcRecMain.IsEOF()))	{
+			mfcRecMain.MoveFirst();
+			// 簡素化後の様式かどうか
+			if((mfcRecMain.m_GeneralVar[2] & BIT_D1))	{
+				ret = 1;
+			}
+		}
+	}
+	mfcRecMain.Fin();
+// midori 156968 add <--
+
+	rsData = new CdbPrtWork2(m_lo_pdb,pFormSeq);
+	rsData->RequeryFgShowSortPageRow(ID_FGSHOW_OFF);
+	while(!rsData->IsEOF())	{
+		// 現在
+		numpage = rsData->m_NumPage;
+		numrow = rsData->m_NumRow;
+		fgfunc = rsData->m_FgFunc;
+		// 次行
+		// 次の行を読み込む
+		rsData->MoveNext();
+		if(rsData->IsEOF())	{
+			// 次の行が無ければ終了
+			break;
+		}
+		numpage2 = rsData->m_NumPage;
+		fgfunc2 = rsData->m_FgFunc;
+		// 前の行に戻す
+		rsData->MovePrev();
+// midori 156968_3 del -->
+//// midori 152909_1 del -->
+//		//// 現在の行が小計で頁の最終行かつ次の行が空白行以外の場合
+//		//// 空白行を挿入する
+//		//if(fgfunc == ID_FGFUNC_SYOKEI && fgfunc2 != ID_FGFUNC_NULL && numrow == pLclDataRowMax)	{
+//// midori 152909_1 del <--
+//// midori 152909_1 add -->
+//		// 現在の行が小計で頁の最終行かつ次の行が空白行・中計以外の場合
+//		// 空白行を挿入する
+//		if( fgfunc == ID_FGFUNC_SYOKEI && numrow == pLclDataRowMax && 
+//			fgfunc2 != ID_FGFUNC_NULL && 
+//			fgfunc2 != ID_FGFUNC_CHUKEI && 
+//			fgfunc2 != ID_FGFUNC_CHUKEINULL )	{
+//// midori 152909_1 add <--
+//			// 空白行の追加
+//			rsData->AddNew();
+//			rsData->m_Seq = 0;				// 02.シーケンス番号(自動付番)
+//			rsData->m_NumPage = numpage;	// 03.ページ番号
+//			rsData->m_NumRow = numrow+1;	// 04.行番号
+//			rsData->m_FgFunc = 0;			// 05.特殊行フラグ
+//			rsData->m_FgShow = 0;			// 06.表示フラグ
+//			rsData->Update();
+//// midori 152138 add -->
+//			*pRet = 1;
+//// midori 152138 add <--
+//		}
+// midori 156968_3 del <--
+// midori 156968_3 add -->
+		sw2 = 0;
+		// 現在の行が小計で頁の最終行かつ次の行が空白行・中計以外の場合
+		if (fgfunc == ID_FGFUNC_SYOKEI && numrow == pLclDataRowMax &&
+			fgfunc2 != ID_FGFUNC_NULL &&
+			fgfunc2 != ID_FGFUNC_CHUKEI &&
+			fgfunc2 != ID_FGFUNC_CHUKEINULL) {
+			sw2 = 1;
+		}
+		// 簡素化後
+		if(ret == 1) {
+			// 現在の行が中計で次の行が空白行以外の場合
+			if (fgfunc == ID_FGFUNC_CHUKEI && numrow == pLclDataRowMax && fgfunc2 != ID_FGFUNC_NULL) {
+				sw2 = 1;
+			}
+		}
+
+		// 空白行を挿入する
+		if( sw2 == 1) {
+			// 空白行の追加
+			rsData->AddNew();
+			rsData->m_Seq = 0;				// 02.シーケンス番号(自動付番)
+			rsData->m_NumPage = numpage;	// 03.ページ番号
+			rsData->m_NumRow = numrow+1;	// 04.行番号
+			rsData->m_FgFunc = 0;			// 05.特殊行フラグ
+			rsData->m_FgShow = 0;			// 06.表示フラグ
+			rsData->Update();
+			*pRet = 1;
+		}
+// midori 156968_3 add <--
+		rsData->MoveNext();
+	}
+	delete rsData;
+
+	return DB_ERR_OK;
+}
+// midori 161111 add <--
+
+// midori 152138 add -->
+/**********************************************************************
+	DeleteFirstNullLine()
+		InsertKeiNullLineで空行の次行に空白を挿入した結果
+		頁の先頭にきた空白行を削除する
+	引数
+			int						様式番号
+			int						該当様式の最大行数
+			int						頁の先頭にきた空白行を削除した場合は[1]を返す
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+int CdbUc000Common::DeleteFirstNullLine( int pFormSeq, int pLclDataRowMax, int* pRet )
+{
+	int				numpage=0;
+	int				numrow=0;
+	int				delsw=0;
+// midori 156968 add -->
+	int				ret=0;
+	int				sw=0;
+// 157153 del -->
+	//int				svfgfunc = 0;
+// 157153 del <--
+// 157153 add -->
+	int				sw2=0;
+// 157153 add <--
+// midori 156968 add <--
+	CdbPrtWork2*	rsData;
+	CString			strId=_T("");
+	CString			strTemp=_T("");
+	CString			strSQL=_T("");
+	CString			strSQL2=_T("");
+// midori 156968 add -->
+	CdbUcInfMain	mfcRecMain( m_lo_pdb );	//	「uc_inf_main」テーブル用クラス
+// midori 156968 add <--
+
+// midori 156968 add -->
+	if(mfcRecMain.Init() == DB_ERR_OK)	{
+		if(!(mfcRecMain.IsEOF()))	{
+			mfcRecMain.MoveFirst();
+			// 簡素化後の様式かどうか
+			if((mfcRecMain.m_GeneralVar[2] & BIT_D1))	{
+				ret = 1;
+			}
+		}
+	}
+	mfcRecMain.Fin();
+// midori 156968 add <--
+
+	// 関数[CalcPageRowNumToTempTable]でテーブル[##row_id_tbl_XXX]から[##temp_utiwake_tbl_XXX]が
+	// 作成されています。
+	// 当関数で最初にテーブル[##temp_utiwake_tbl_XXX]を[##row_id_tbl_XXX]にコピーして
+	// [##row_id_tbl_XXX]に対して空白行削除の処理を行う。空白行を削除した場合は再度
+	// 関数[CalcPageRowNumToTempTable]を呼び出す
+
+	// ##temp_utiwake_tbl_XXX → ##row_id_tbl_XXX コピー処理
+#ifdef _DEBUG
+	strId.Format(_T("##row_id_tbl_%d"),pFormSeq);
+	strTemp.Format(_T("##temp_utiwake_tbl_%d"),pFormSeq);
+#else
+	strId.Format(_T("#row_id_tbl_%d"),pFormSeq);
+	strTemp.Format(_T("#temp_utiwake_tbl_%d"),pFormSeq);
+#endif
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s "),
+		strId, strId, strId,strTemp);
+	if(m_lo_FormSeq > 0)	{
+		// その他科目の内訳書の絞り込み
+		strSQL2.Format("WHERE FormSeq=%d",m_lo_FormSeq);
+		strSQL += strSQL2;
+	}
+
+	// SQL実行
+	if(ExecuteSQLWork(strSQL) != DB_ERR_OK)	{
+		return DB_ERR_EXESQL;
+	}
+
+	*pRet = 0;
+	rsData = new CdbPrtWork2(m_lo_pdb,pFormSeq);
+	rsData->RequeryPageRow(_T(""));
+	numpage = 1;
+	numrow = 1;
+	while(!rsData->IsEOF())	{
+		// 頁の先頭で空白行の場合、削除する
+		delsw=0;
+// 157153 del -->
+//// midori 156968_4 del -->
+//		//if(rsData->m_FgFunc == ID_FGFUNC_NULL && numrow == 1)	{
+//// midori 156968_4 del <--
+//// midori 156968_4 add -->
+//		sw = 0;
+//		if(ret == 0) {
+//			if(rsData->m_FgFunc == ID_FGFUNC_NULL && numrow == 1)	sw = 1;
+//		}
+//		else {
+//			if(rsData->m_FgFunc == ID_FGFUNC_NULL && numrow == 1 && (svfgfunc == ID_FGFUNC_SYOKEI || svfgfunc == ID_FGFUNC_CHUKEI)) {
+//				sw = 1;
+//			}
+//		}
+//		svfgfunc = rsData->m_FgFunc;
+//		if(sw == 1)	{
+//// midori 156968_4 add <--
+//			// 空白行の削除
+//			*pRet = 1;
+//			rsData->Delete();
+//			delsw=1;
+//		}
+// 157153 del <--
+// 157153 add -->
+		sw = 0;
+		if(ret == 0) {
+			if(rsData->m_FgFunc == ID_FGFUNC_NULL && numrow == 1)	sw = 1;
+		}
+		else {
+			if((rsData->m_FgFunc == ID_FGFUNC_NULL || rsData->m_FgFunc == ID_FGFUNC_SYOKEINULL) && numrow == 1) {
+				sw = 1;
+			}
+		}
+		if(sw == 1)	{
+			// 空白行の削除
+			*pRet = 1;
+			rsData->Delete();
+			delsw=1;
+		}
+// 157153 add <--
+		rsData->MoveNext();
+		if(delsw == 0)	{
+			numrow++;
+			if(numrow > pLclDataRowMax)	{
+				numpage++;
+				numrow = 1;
+			}
+		}
+	}
+	delete rsData;
+
+	return DB_ERR_OK;
+}
+// midori 152138 add <--
+
+// midori 156952,156964 add -->
+/**********************************************************************
+	DeleteFirstNullLine_Dp()
+		InsertKeiNullLineで空行の次行に空白を挿入した結果
+		頁の先頭にきた空白行を削除する
+		※画面の改頁を保って出力を選択している様式ver
+		　→空白行以外の行がでてきた時点で該当ページの削除は行わない
+	引数
+			int						様式番号
+			int						該当様式の最大行数
+			int						頁の先頭にきた空白行を削除した場合は[1]を返す
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+int CdbUc000Common::DeleteFirstNullLine_Dp( int pFormSeq, int pLclDataRowMax, int* pRet )
+{
+	int				delsw=0;
+	int				old_page=0;
+	int				c_sw=0;
+	CdbPrtWork2*	rsData;
+	CString			strId=_T("");
+	CString			strTemp=_T("");
+	CString			strSQL=_T("");
+	CString			strSQL2=_T("");
+
+	// 関数[CalcPageRowNumToTempTable]でテーブル[##row_id_tbl_XXX]から[##temp_utiwake_tbl_XXX]が
+	// 作成されています。
+	// 当関数で最初にテーブル[##temp_utiwake_tbl_XXX]を[##row_id_tbl_XXX]にコピーして
+	// [##row_id_tbl_XXX]に対して空白行削除の処理を行う。空白行を削除した場合は再度
+	// 関数[CalcPageRowNumToTempTable]を呼び出す
+
+	// ##temp_utiwake_tbl_XXX → ##row_id_tbl_XXX コピー処理
+#ifdef _DEBUG
+	strId.Format(_T("##row_id_tbl_%d"),pFormSeq);
+	strTemp.Format(_T("##temp_utiwake_tbl_%d"),pFormSeq);
+#else
+	strId.Format(_T("#row_id_tbl_%d"),pFormSeq);
+	strTemp.Format(_T("#temp_utiwake_tbl_%d"),pFormSeq);
+#endif
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s "),
+		strId, strId, strId,strTemp);
+	if(m_lo_FormSeq > 0)	{
+		// その他科目の内訳書の絞り込み
+		strSQL2.Format("WHERE FormSeq=%d",m_lo_FormSeq);
+		strSQL += strSQL2;
+	}
+
+	// SQL実行
+	if(ExecuteSQLWork(strSQL) != DB_ERR_OK)	{
+		return DB_ERR_EXESQL;
+	}
+
+	*pRet = 0;
+	rsData = new CdbPrtWork2(m_lo_pdb,pFormSeq);
+	rsData->RequeryPageRow(_T(""));
+	old_page = 0;
+	//numpage = 1;
+	//numrow = 1;
+	c_sw = 0;
+	while(!rsData->IsEOF())	{
+		// 頁の先頭で空白行の場合、削除する
+		// ２行目以降も続けて空白行の場合、削除する
+		// 空白行以外の行がでてきた時点で該当ページの検索は終了する
+		if(old_page == 0)	{
+			old_page = rsData->m_NumPage;
+		}
+		if(old_page != rsData->m_NumPage)	{
+			// 頁が変われば、空白行が先頭から連続しているフラグをクリアする
+			c_sw = 0;
+		}
+		delsw = 0;
+		if(rsData->m_FgFunc == ID_FGFUNC_NULL)	{
+			// 空白行の場合
+			if(rsData->m_NumRow == 1)	{
+				// ①先頭行なら削除する
+				delsw = 1;
+				c_sw = 1;
+			}
+			else if(c_sw != 0)	{
+				// ②先頭行から連続している空白行であれば削除する
+				delsw = 1;
+			}
+		}
+		else	{
+			c_sw = 0;
+		}
+		if(delsw != 0)	{
+			*pRet = 1;
+			rsData->Delete();
+		}
+		rsData->MoveNext();
+	}
+	delete rsData;
+
+	return DB_ERR_OK;
+}
+// midori 156952,156964 add <--
+
+/**********************************************************************
+	CalcPageRowNumToTempTable()
+		ページ番号、行番号を振り直す。
+
+	引数
+			CString					最終結果をもつ一時テーブル
+			CString					元となるテーブル
+			int						そのページの最大行数（計行を除く）
+			CString					カラム配列
+// midori 152138 add -->
+			CString					編集元のテーブル名
+			int						様式Seq
+			int						1:小計行の次行に空行を挿入した
+// midori 152138 add <--
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+// virtual
+// midori 152138 del -->
+//// midori 161111 cor -->
+////// midori 160610 cor -->
+//////int CdbUc000Common::CalcPageRowNumToTempTable(CString TargetTable, CString BaseTable, int MaxRow, CString strColumn)
+////// ---------------------
+////int CdbUc000Common::CalcPageRowNumToTempTable(CString TargetTable, CString BaseTable, int MaxRow, CString strColumn, CString strMoto)
+//////// midori 160610 cor <--
+//// ---------------------
+//int CdbUc000Common::CalcPageRowNumToTempTable(CString TargetTable, CString BaseTable, int MaxRow, CString strColumn, CString strMoto, int pFormSeq)
+//// midori 161111 cor <--
+// midori 152138 del <--
+// midori 152138 add -->
+int CdbUc000Common::CalcPageRowNumToTempTable(CString TargetTable, CString BaseTable, int MaxRow, CString strColumn, CString strMoto, int pFormSeq, int pNullAdd)
+// midori 152138 add <--
+{
+	CString			strSQL;
+// midori 152138 del -->
+//// midori 161111 add -->
+//	CdbPrtWork2*	rsData;
+//	int				isNullLine=0;
+//
+//	// 最終行の小計の次行に、空白行を挿入したかを調べる
+//	rsData = new CdbPrtWork2(m_lo_pdb,pFormSeq);
+//	strSQL.Format(_T("row IS NULL AND Seq=0 AND FgFunc=%d"),ID_FGFUNC_NULL);
+//	rsData->RequeryPageRow(strSQL);
+//	if(!rsData->IsEOF())	{
+//		isNullLine = 1;
+//	}
+//	delete	rsData;
+//// midori 161111 add <--
+// midori 152138 del <--
+
+	// 一時テーブルが存在する場合、それを削除
+	strSQL.Format(_T("declare @per_page_num int set @per_page_num = %d "
+		"if object_id('tempdb..%s', 'u') is not null drop table %s ; with "), MaxRow, TargetTable, TargetTable );
+
+	// ソート頁、行順、（科目行の為に行種降順）に一意な仮行番号(row)の作成
+	strSQL.Format( strSQL + _T("rownum_tbl(seq,NumRow) as ( SELECT seq, ROW_NUMBER() OVER ( ORDER BY NumPage,NumRow,FgFunc ASC ) "
+		"FROM %s ), ")
+		, BaseTable);
+
+	// ページ導出
+	strSQL += _T("rowpagenum_tbl(seq,NumRow,NumPage) "
+		"as( "
+		"SELECT seq, NumRow , CAST(( CEILING( CAST( NumRow AS FLOAT ) / CAST( @per_page_num AS FLOAT ) ) ) AS smallint ) "
+		"FROM rownum_tbl "
+		"), ");
+
+	// ページをパーティションにし、行導出
+	strSQL += _T("new_rowpagenum_tbl(seq,NumRow,NumPage) "
+		"as( "
+		"SELECT seq, ROW_NUMBER()OVER(PARTITION BY NumPage ORDER BY NumRow), NumPage "
+		"FROM rowpagenum_tbl "
+		") ");
+
+	// 従来のテーブルとseqで結合し、新しい行番号、新しいページ番号を再付番
+// midori 161111 cor -->
+//// midori 160610 cor -->
+////	strSQL.Format( strSQL + _T("SELECT new_rowpagenum_tbl.seq, new_rowpagenum_tbl.NumPage, new_rowpagenum_tbl.NumRow, FgFunc %s "
+////		"INTO %s FROM new_rowpagenum_tbl, %s WHERE new_rowpagenum_tbl.seq = %s.seq "),
+////					strColumn, TargetTable, GetDefaultSQL(), GetDefaultSQL() );
+//// ---------------------
+//	strSQL.Format( strSQL + _T("SELECT new_rowpagenum_tbl.seq, new_rowpagenum_tbl.NumPage, new_rowpagenum_tbl.NumRow, FgFunc %s "
+//		"INTO %s FROM new_rowpagenum_tbl, %s WHERE new_rowpagenum_tbl.seq = %s.seq "),
+//					strColumn, TargetTable, strMoto, strMoto );
+//// midori 160610 cor <--
+// ---------------------
+// midori 152138 del -->
+	//if(isNullLine != 0)	{
+// midori 152138 del <--
+// midori 152138 add -->
+	if(pNullAdd != 0)	{
+// midori 152138 add <--
+		// 最終行の小計の次行に、空白行を挿入した場合は
+		// 科目行挿入を行った場合と同様に、外部結合(LEFT JOIN)を行う
+		strSQL.Format( strSQL + _T("SELECT new_rowpagenum_tbl.seq, new_rowpagenum_tbl.NumPage, new_rowpagenum_tbl.NumRow, FgFunc %s "
+			"INTO %s FROM new_rowpagenum_tbl LEFT OUTER JOIN %s ON new_rowpagenum_tbl.seq = %s.seq "),
+						strColumn, TargetTable, strMoto, strMoto );
+	}
+	else	{
+		strSQL.Format( strSQL + _T("SELECT new_rowpagenum_tbl.seq, new_rowpagenum_tbl.NumPage, new_rowpagenum_tbl.NumRow, FgFunc %s "
+			"INTO %s FROM new_rowpagenum_tbl, %s WHERE new_rowpagenum_tbl.seq = %s.seq "),
+						strColumn, TargetTable, strMoto, strMoto );
+	}
+// midori 161111 cor <--
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+// midori 161111 add -->
+// midori 152138 del -->
+	//if(isNullLine != 0)	{
+// midori 152138 del <--
+// midori 152138 add -->
+	if(pNullAdd != 0)	{
+// midori 152138 add <--
+		// 最終行の小計の次行に、空白行を挿入した場合は
+		// 挿入した空白行の特殊行フラグ(FgFunc)が元テーブル(uc_999_xxxx)から取得できずに
+		// NULLになっているので、ここで０に置き換える
+		strSQL.Format(_T("UPDATE %s SET FgFunc=%d WHERE FgFunc IS NULL"),TargetTable,ID_FGFUNC_NULL);
+		// SQL実行
+		if( ExecuteSQLWork( strSQL ) != 0 ){
+			return DB_ERR_EXESQL;
+		}
+	}
+// midori 161111 add <--
+
+	return DB_ERR_OK;
+}
+
+// midori 190505 add -->
+/**********************************************************************
+	CalcPageRowNumToTempTable_Dp()
+		ページ番号、行番号を振り直す。
+		(画面の改頁を保って出力を選択している様式ver)
+	引数
+			CString					最終結果をもつ一時テーブル
+			CString					元となるテーブル
+			int						そのページの最大行数（計行を除く）
+			CString					カラム配列
+			CString					編集元のテーブル名
+			CMap<int,int,int,int>	削除した０円(空欄)を何頁で調整するかのマップ
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+int CdbUc000Common::CalcPageRowNumToTempTable_Dp( CString TargetTable, CString BaseTable, int MaxRow, CString strColumn, CString strMoto, CMap<int,int,int,int>* pMap )
+{
+	int			cnt=0,max=0;
+	int				ii=0;
+	int				page=0,line=0;
+	int				old_page=0,new_page=0;
+	int				old_page2=0,new_page2=0;
+	BOOL			first=TRUE;
+	CString			strSQL=_T("");
+	CString			tmpnm=_T("");
+	CString			strData[3];
+	typedef struct _PAGENUM_TBL_	{
+		int		Seq;
+		int		NumPage;
+		int		NumRow;
+	}PAGENUM_TBL;
+	CMap<int,int,PAGENUM_TBL,PAGENUM_TBL>	pn_map;
+	PAGENUM_TBL								pn_rec;
+	CRecordset		rs(m_lo_pdb);
+
+	// new_rowpagenum_tbl の役割を果たすテンポラリテーブルの作成
+#ifdef _DEBUG
+	tmpnm = _T("##new_rowpagenum_tbl");
+#else
+	tmpnm = _T("#new_rowpagenum_tbl");
+#endif
+	pn_map.RemoveAll();
+	strSQL.Format(_T("select Seq,NumPage,NumRow from %s order by NumPage,NumRow"),BaseTable);
+	if(!OpenEx(&rs,strSQL,BaseTable))	{
+		return(DB_ERR_OPEN);
+	}
+	line = 1;
+	page = 1;
+	cnt = 0;
+	while(!rs.IsEOF())	{
+		for(ii=0; ii<3; ii++)	{
+			// 0:Seq
+			// 1:NumPage
+			// 2:NumRow
+			rs.GetFieldValue((short)ii,strData[ii]);
+		}
+		new_page = _tstoi(strData[1]);
+		// 初回は同じ頁にしておく
+		if(old_page == 0)	{
+			old_page = new_page;
+		}
+		// 前の頁と、現在の頁は画面上で同じ頁であるかを調べるためにマップから取得
+		pMap->Lookup(old_page,old_page2);
+		pMap->Lookup(new_page,new_page2);
+		// 頁数が該当様式の最大を超える または、前の頁と現在の頁が画面上で異なる頁
+		// であれば、頁数をアップする
+		if(line > MaxRow || old_page2 != new_page2)	{
+			page = page + 1;
+			line = 1;
+		}
+		// マップに書き込む
+		pn_rec.Seq = _tstoi(strData[0]);
+		pn_rec.NumPage = page;
+		pn_rec.NumRow = line;
+		pn_map.SetAt(cnt,pn_rec);
+		// カウントアップ
+		line = line + 1;
+		cnt = cnt + 1;
+		old_page = new_page;
+		// 次のレコードを読む
+		rs.MoveNext();
+	}
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s "),tmpnm,tmpnm);
+	strSQL += _T(" create table ");
+	strSQL += tmpnm;
+	strSQL += _T("(seq int,");
+	strSQL += _T("NumRow int,");
+	strSQL += _T("NumPage int) ");
+	if(ExecuteSQLWork(strSQL) != 0)	{
+		return DB_ERR_EXESQL;
+	}
+	// マップを読み込んでテンポラリテーブルに書き込む
+	max = pn_map.GetCount();
+	for(cnt=0; cnt<max; cnt++)	{
+		pn_map.Lookup(cnt,pn_rec);
+		strSQL.Format(_T("insert into %s(seq,NumRow,NumPage) values(%d,%d,%d)"),tmpnm,pn_rec.Seq,pn_rec.NumRow,pn_rec.NumPage);
+		if(ExecuteSQLWork(strSQL) != 0)	{
+			return DB_ERR_EXESQL;
+		}
+	}
+
+	// 一時テーブル(##temp_utiwake_tbl_?)が存在する場合、それを削除
+	strSQL.Format(_T("if object_id('tempdb..%s','u') is not null drop table %s "),TargetTable,TargetTable);
+
+	// 従来のテーブルとseqで結合し、新しい行番号、新しいページ番号を再付番
+	strSQL.Format( strSQL + _T("SELECT %s.seq, %s.NumPage, %s.NumRow, FgFunc %s "
+		"INTO %s FROM %s, %s WHERE %s.seq = %s.seq "),
+					tmpnm,tmpnm,tmpnm,strColumn,
+					TargetTable,tmpnm,strMoto,tmpnm,strMoto);
+
+	// SQL実行
+	if(ExecuteSQLWork(strSQL) != 0)	{
+		return DB_ERR_EXESQL;
+	}
+
+	return DB_ERR_OK;
+}
+// midori 190505 add <--
+
+/**********************************************************************
+	InsertNullRowExceptLastPage()
+		最終ページ以外のページに空白行を挿入する
+
+	引数
+			CString					テーブル名
+			int						そのページの最大行数（計行を除く）
+			CString					カラム配列
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+int CdbUc000Common::InsertNullRowExceptLastPage( CString strTable, int nMaxRow, CMyStringArray& strColumnArray )
+{
+	int nMaxPage, nCurRow;
+	CString strSQL;
+	
+	// 最終ページ取得
+	nMaxPage = GetMaxPageFromTempTable( strTable );
+
+	// 全ページが空行なら、0ページとして処理を抜ける
+	if( nMaxPage == DB_ERR_OPEN ){
+		return BD_ERR_ALL_NULL;
+	}
+
+	for(int i=0; i<nMaxPage - 1; i++){
+		strSQL.Empty();
+		// 最終行取得
+		nCurRow = GetMaxRowFromTempTable( strTable, i+1 );
+
+		// 空白埋め
+		if( nMaxRow > nCurRow ){	// 空きがある
+			for(int j=nCurRow; j<nMaxRow; j++){
+				// 空白行挿入
+				strSQL.Format(strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,0,%s)"),
+					strTable, i+1, j+1, GetSQLKeiInsert(nMaxPage, &strColumnArray));
+			}
+		}
+		// seqは必要ないのでNULL許可に変更
+		strSQL.Format( _T("ALTER TABLE %s ALTER COLUMN seq int NULL ") + strSQL, strTable );
+
+		// SQL実行
+		if( ExecuteSQLWork( strSQL ) != 0 ){
+			return DB_ERR_EXESQL;
+		}
+	}
+
+	return DB_ERR_OK;
+}
+
+/**********************************************************************
+	CreateSequence()
+		ソート頁、行順に一意なシーケンス(row)の作成。
+		この関数は「改頁を行う」チェックＯＮのときにrow付きのテーブルを
+		作成するために使用する。
+	引数
+			CString					作成するテーブル名
+			CString					元となるテーブル名
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+int CdbUc000Common::CreateSequence(CString strTable, CString BaseTable)
+{
+	CString strSQL;
+
+	// その他の内訳書の－１、－２等の絞込み
+	CString SonotaFormSeq;
+	if( m_lo_FormSeq > 0 ){
+		SonotaFormSeq.Format("AND FormSeq = %d ", m_lo_FormSeq);
+	}
+
+	// ソート頁、行順に一意なシーケンス(row)の作成
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE FgShow = 0 %s"),
+		strTable, strTable, strTable, BaseTable, SonotaFormSeq);
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	return DB_ERR_OK;
+}
+
+/**********************************************************************
+	InsertKamokuAddedTableToResultTable()
+		科目行が追加された一時テーブルを最終的に読み出すテーブルにコピーする
+	引数
+			CString					挿入先テーブル名
+			CString					元となるテーブル名
+			CString					カラム列
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+int CdbUc000Common::InsertKamokuAddedTableToResultTable(CString strTable, CString BaseTable, CString strColumn)
+{
+	CString strSQL;
+
+	strSQL.Format( _T("SELECT %s.Seq, %s.NumPage, %s.NumRow, %s.FgFunc %s "
+		"INTO %s FROM %s LEFT OUTER JOIN %s ON %s.Seq = %s.Seq"),
+		BaseTable, BaseTable, BaseTable, BaseTable, strColumn, strTable, BaseTable, strTable, BaseTable, strTable, strTable);
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	return DB_ERR_OK;
+}
+
+/**********************************************************************
+	GetSQLInsertKamokuRow()
+	②受取手形の内訳書と⑪借入金の内訳書でのみ使用する。
+	前行と科目が異なる場合、科目のみを表示する行を挿入するSQL文を取得する
+	※2013/11/5追加
+	科目行が追加される為、計行を除く最終行が空行の場合に限り
+	０円出力しないOFFでも空行を削除する
+	引数
+			CString					対象となるテーブル名
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+// midori 152137 del -->
+//CString CdbUc000Common::GetSQLInsertKamokuRow(CString BaseTbl)
+//{
+//	CString strSQL;
+//	strSQL.Format( _T("DECLARE cur CURSOR FOR SELECT tbl1.NumPage, tbl1.NumRow, tbl1.FgFunc, tbl1.KnSeq, tbl1.KnOrder, tbl1.KnName "
+//		"FROM ( SELECT * FROM %s ) AS tbl1 LEFT OUTER JOIN ( SELECT * FROM %s ) AS tbl2 ON tbl1.row = tbl2.row - 1 ORDER BY Numpage, NumRow "), BaseTbl, BaseTbl);
+//
+//	strSQL += _T("DECLARE @page int DECLARE @row int DECLARE @fgfunc int DECLARE @old_knorder int ");
+//	strSQL += _T("DECLARE @knseq int DECLARE @knorder int DECLARE @knname varchar(30) ");
+//
+//	strSQL += _T("SET @old_knorder = -1 OPEN cur FETCH cur INTO @page, @row, @fgfunc, @knseq, @knorder, @knname WHILE @@fetch_status = 0 ");
+//
+//	strSQL.Format(strSQL + _T("BEGIN IF (@knorder <> @old_knorder) AND ((@fgfunc = %d) OR (@fgfunc = %d) OR (@fgfunc = %d)) BEGIN "), 
+//		ID_FGFUNC_DATA_TEMP, ID_FGFUNC_IKKATUMANUAL_ZERO, ID_FGFUNC_IKKATUAUTO_ZERO);
+//
+//	strSQL += GetSQLInsertColumns( BaseTbl );
+//
+//	strSQL += _T("DECLARE @last_fgfunc int DECLARE @max_num int DECLARE @delete int DECLARE @max_page int SET @last_fgfunc = 0 SET @max_num = 0 SET @delete = 0 ");
+//	strSQL.Format(strSQL + "SELECT @max_page = MAX(NumPage) FROM %s ", BaseTbl);
+//	strSQL.Format(strSQL + _T("SELECT @max_num = max(NumRow) FROM %s WHERE NumPage = @page "), BaseTbl);
+//	strSQL += _T("while( @delete = 0 ) BEGIN ");
+//	strSQL.Format(strSQL + _T("SELECT @last_fgfunc = FgFunc FROM %s WHERE NumPage = @page AND NumRow = @max_num "), BaseTbl);
+//	strSQL.Format(strSQL + _T("IF( @last_fgfunc = 0 ) BEGIN DELETE %s WHERE NumPage = @page AND NumRow = @max_num SET @delete = 1 SET @max_num = @max_num - 1 END "), BaseTbl);
+//	strSQL += _T("SET @page = @page + 1 ");
+//	strSQL += _T("IF( @max_page < @page ) break END ");
+//
+//	strSQL += _T("SET @old_knorder = @knorder END FETCH cur INTO @page, @row, @fgfunc, @knseq, @knorder, @knname ");
+//
+//	strSQL += _T("END CLOSE cur DEALLOCATE cur");
+//
+//	return strSQL;
+//}
+// midori 152137 del <--
+// midori 152137 add -->
+CString CdbUc000Common::GetSQLInsertKamokuRow(CString BaseTbl)
+{
+	CString strSQL;
+
+	strSQL.Format( _T("DECLARE cur CURSOR FOR SELECT tbl1.NumPage, tbl1.NumRow, tbl1.FgFunc, tbl1.KnSeq, tbl1.KnOrder, tbl1.KnName, tbl1.KnKana "
+		"FROM ( SELECT * FROM %s ) AS tbl1 LEFT OUTER JOIN ( SELECT * FROM %s ) AS tbl2 ON tbl1.row = tbl2.row - 1 ORDER BY Numpage, NumRow "), BaseTbl, BaseTbl);
+
+	strSQL += _T("DECLARE @page int DECLARE @row int DECLARE @fgfunc int DECLARE @old_knorder int ");
+	strSQL += _T("DECLARE @knseq int DECLARE @knorder int DECLARE @knname varchar(30) DECLARE @knkana varchar(6) ");
+
+	strSQL += _T("SET @old_knorder = -1 OPEN cur FETCH cur INTO @page, @row, @fgfunc, @knseq, @knorder, @knname, @knkana WHILE @@fetch_status = 0 ");
+
+	// kmksort	0:番号順 1:50音順
+	strSQL.Format(strSQL + _T("BEGIN IF (@knorder <> @old_knorder) AND ((@fgfunc = %d) OR (@fgfunc = %d) OR (@fgfunc = %d)) BEGIN "), 
+		ID_FGFUNC_DATA_TEMP, ID_FGFUNC_IKKATUMANUAL_ZERO, ID_FGFUNC_IKKATUAUTO_ZERO);
+
+	strSQL += GetSQLInsertColumns( BaseTbl );
+
+// midori 157107 del -->
+	//strSQL += _T("DECLARE @last_fgfunc int DECLARE @max_num int DECLARE @delete int DECLARE @max_page int SET @last_fgfunc = 0 SET @max_num = 0 SET @delete = 0 ");
+	//strSQL.Format(strSQL + "SELECT @max_page = MAX(NumPage) FROM %s ", BaseTbl);
+	//strSQL.Format(strSQL + _T("SELECT @max_num = max(NumRow) FROM %s WHERE NumPage = @page "), BaseTbl);
+	//strSQL += _T("while( @delete = 0 ) BEGIN ");
+	//strSQL.Format(strSQL + _T("SELECT @last_fgfunc = FgFunc FROM %s WHERE NumPage = @page AND NumRow = @max_num "), BaseTbl);
+	//strSQL.Format(strSQL + _T("IF( @last_fgfunc = 0 ) BEGIN DELETE %s WHERE NumPage = @page AND NumRow = @max_num SET @delete = 1 SET @max_num = @max_num - 1 END "), BaseTbl);
+	//strSQL += _T("SET @page = @page + 1 ");
+	//strSQL += _T("IF( @max_page < @page ) break END ");
+// midori 157107 del <--
+
+	strSQL += _T("SET @old_knorder = @knorder END FETCH cur INTO @page, @row, @fgfunc, @knseq, @knorder, @knname, @knkana ");
+
+	strSQL += _T("END CLOSE cur DEALLOCATE cur");
+
+	return strSQL;
+}
+// midori 152137 add <--
+
+/**********************************************************************
+	GetSQLInsertColumns()
+		科目行を挿入するInsert文を作成する
+
+	引数
+			CString					更新対象のテーブル名
+	戻値
+			CString					INSERT文
+***********************************************************************/
+// virtual
+CString CdbUc000Common::GetSQLResultSelect(CString strTable)
+{
+	return "";
+}
+
+/**********************************************************************
+	InsertNullRowToLastPage()
+		最終ページを空白行で埋める
+
+	引数
+			CString					更新対象のテーブル名
+			int						計の種類（なし、頁計、累計、頁計と累計）
+			int						計あり様式か、計なし様式か
+			int						最大ページ数
+			int						計行を除いた最大行数
+			int						カレント行
+			CMyStringArray			カラム列
+	戻値
+			int						成功 : DB_ERR_OK
+									失敗 : DB_ERR_EXESQL
+***********************************************************************/
+int CdbUc000Common::InsertNullRowToLastPage(CString strTempUtiwakeTbl, int nKeiType, int nKeiRow, int& nMaxPage, int& nLclDataRowMax, int nCurRow, CMyStringArray& strColumnArray)
+{
+	CString strSQL;
+
+	// 計設定が「頁計と累計」の場合、最終ページの最大行数を変更する
+	if( nKeiType == ID_OUTKEI_RUIKEI ){
+		if( nKeiRow == 0 ){
+			nLclDataRowMax = nLclDataRowMax - 1;
+		}
+	}
+	else if( nKeiType == ID_OUTKEI_BOTH ){
+		if( nMaxPage != 1 ){
+			nLclDataRowMax = nLclDataRowMax - 1;
+		}
+	}
+
+	// 最終ページに頁計と累計を挿入する空きがある？
+	if( nLclDataRowMax !=  nCurRow ){	// 空行挿入必要なし
+
+		if( nLclDataRowMax > nCurRow ){	// 空きがある
+			for(int i=nCurRow; i<nLclDataRowMax; i++){
+				// 空白行挿入
+				strSQL.Format(strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,0,%s)"),
+					strTempUtiwakeTbl, nMaxPage, i+1, GetSQLKeiInsert(nMaxPage, &strColumnArray));
+			}
+		}
+		else {	// 空きがない→次のページを空行で埋める
+			// 最終ページに頁計と累計が入る空きがないので、MaxPageを追加
+			nMaxPage = nMaxPage + 1;
+
+			for(int i=0; i<nLclDataRowMax; i++){
+				// 空白挿入
+				strSQL.Format(strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,0,%s)"),
+					strTempUtiwakeTbl, nMaxPage, i+1, GetSQLKeiInsert(nMaxPage, &strColumnArray));
+			}
+		}
+	}
+	// seqは必要ないのでNULL許可に変更
+	strSQL.Format( _T("ALTER TABLE %s ALTER COLUMN seq int NULL ") + strSQL, strTempUtiwakeTbl );
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	return DB_ERR_OK;
+}
+
+// midori 157098 del -->
+///**********************************************************************
+//	InsertKeiRow()
+//		最終ページを空白行で埋める
+//
+//	引数
+//			CString				更新対象のテーブル名
+//			int					様式シーケンス
+//			int					ソートダイアログ「改頁する」のチェック状態
+//			int					計の種類（なし、頁計、累計、頁計と累計）
+//			int					計あり様式か、計なし様式か
+//			int					最大ページ数
+//			int					合計行を含めた最大行数
+//			int					計の名称のビット配列
+//			CMyStringArray		カラム列
+//	戻値
+//			int					成功 : DB_ERR_OK
+//								失敗 : DB_ERR_EXESQL
+//***********************************************************************/
+//int CdbUc000Common::InsertKeiRow(CString strTempUtiwakeTbl, int nFormSeq, int nKaiPage, int nKeiType, int nKeiRow, int nMaxPage, int nDataRowMax, int nNameKeiBitArray, CMyStringArray& strColumnArray)
+// midori 157098 del <--
+// midori 157098 add -->
+/**********************************************************************
+	InsertKeiRow()
+		最終ページを空白行で埋める
+
+	引数
+			CString				更新対象のテーブル名
+			int					様式シーケンス
+			int					ソートダイアログ「改頁する」のチェック状態
+			int					計の種類（なし、頁計、累計、頁計と累計）
+			int					計あり様式か、計なし様式か
+			int					最大ページ数
+			int					合計行を含めた最大行数
+			int					計の名称のビット配列
+			int					1:CreateKamokuDelTableからの呼び出し
+			CMyStringArray		カラム列
+	戻値
+			int					成功 : DB_ERR_OK
+								失敗 : DB_ERR_EXESQL
+***********************************************************************/
+// midori 157099,157119_2 del -->
+//int CdbUc000Common::InsertKeiRow(CString strTempUtiwakeTbl, int nFormSeq, int nKaiPage, int nKeiType, int nKeiRow, int nMaxPage, int nDataRowMax, int nNameKeiBitArray, CMyStringArray& strColumnArray, int pSw)
+// midori 157099,157119_2 del <--
+// midori 157099,157119_2 add -->
+int CdbUc000Common::InsertKeiRow(CString strTempUtiwakeTbl, int nFormSeq, int nKaiPage, int nKeiType, int nKeiRow, int nMaxPage, int nDataRowMax, int nNameKeiBitArray, CMyStringArray& strColumnArray)
+// midori 157099,157119_2 add <--
+// midori 157098 add <--
+{
+	int nKeiColumn		= GetColumnNum();				// 計のフィールド数
+// midori 152909_3 add -->
+	int			pg=0,fc=0,ii=0;
+	int			sw=0;			// 1:データ有り
+	__int64		skei[16];
+	__int64		gkei[16];
+// midori 152909_3 add <--
+// midori UC_0023 add -->
+	BOOL		skeizero[16];
+	BOOL		gkeizero[16];
+// midori UC_0023 add <--
+	CString strSQL;
+	CString strValName;
+	CString strBuff;
+	CMyStringArray strArrayTotal;
+	CMyArray strArrayTotalAll;
+
+// midori 152909_3 del -->
+	//strSQL.Format( _T("SELECT NumPage, SUM(%s) AS 'Total1', %s GROUPING(NumPage) AS 'Grouping' "), GetZeroMoneyMoveField(), GetSQLSumColumn() );
+
+	//// 
+	//if( IsInsertKamokuRow( nFormSeq ) != FALSE ){
+	//	strSQL.Format( strSQL + _T("FROM %s WHERE FgFunc = 0 or FgFunc = %d or FgFunc = %d or FgFunc = %d GROUP BY NumPage WITH ROLLUP"), 
+	//		strTempUtiwakeTbl, ID_FGFUNC_DATA_TEMP, ID_FGFUNC_IKKATUMANUAL_ZERO, ID_FGFUNC_IKKATUAUTO_ZERO);
+	//}
+	//else{
+	//	if( nKaiPage == 0 ){
+	//		strSQL.Format( strSQL + _T("FROM %s WHERE FgFunc = 0 or FgFunc = %d or FgFunc = %d or FgFunc = %d GROUP BY NumPage WITH ROLLUP"), 
+	//			strTempUtiwakeTbl, ID_FGFUNC_DATA, ID_FGFUNC_IKKATUMANUAL, ID_FGFUNC_IKKATUAUTO);
+	//	}
+	//	else{
+	//		strSQL.Format( strSQL + _T("FROM %s WHERE FgFunc = 0 or FgFunc = %d or FgFunc = %d or FgFunc = %d GROUP BY NumPage WITH ROLLUP"), 
+	//			strTempUtiwakeTbl, ID_FGFUNC_DATA_TEMP, ID_FGFUNC_IKKATUMANUAL_ZERO, ID_FGFUNC_IKKATUAUTO_ZERO);
+	//	}
+	//}
+
+	//// オープン
+	//CRecordset	rs(m_lo_pdb);
+	//if ( !rs.Open( CRecordset::forwardOnly, strSQL ) ) {
+	//	return DB_ERR_OPEN;
+	//}
+
+	//// 全ての行の計をArrayに登録
+	//while( !rs.IsEOF() ){
+	//	// Arrayに登録されている計を全て削除
+	//	strArrayTotal.RemoveAll();
+	//	
+	//	for( int i=0; i<nKeiColumn; i++){
+	//		strValName.Format( _T("Total%d"), i+1 );
+	//		// ページ数分、頁計取得
+	//		rs.GetFieldValue( strValName, strBuff );
+
+	//		// Arrayに追加
+	//		strArrayTotal.Add( strBuff );
+
+	//		// Grouping取得（0:頁計／1:累計)
+	//		//rs.GetFieldValue( "Grouping", strBuff );
+	//	}
+	//	// CStringArrayを上位のCArrayに登録
+	//	strArrayTotalAll.Add( strArrayTotal );
+
+	//	// 次のレコードへ
+	//	rs.MoveNext();
+	//}
+
+	//// クローズ
+	//rs.Close();
+// midori 152909_3 del <--
+// midori 152909_3 add -->
+	// ----------------------------------------------------------------------------------------------------------------------------------------
+	// 小計、中計のみの頁が存在する場合、頁数分の "strArrayTotalAll" が作成されていなかった
+	// WHERE句に小計、中計も含めるが、行フラグ(FgFunc)をグループの対象にして、小計、中計の場合は計に加算しないようにする
+	// ----------------------------------------------------------------------------------------------------------------------------------------
+// midori 180901 del -->
+	//strSQL.Format(_T("SELECT NumPage, NumRow, FgFunc, SUM(%s) AS 'Total1', %s GROUPING(NumPage) AS 'Grouping' "),GetZeroMoneyMoveField(),GetSQLSumColumn());
+// midori 180901 del <--
+// midori 180901 add -->
+	strSQL.Format(_T("SELECT NumPage, NumRow, FgFunc, SUM(%s) AS 'Total1', %s 0 "),GetZeroMoneyMoveField(),GetSQLSumColumn());
+// midori 180901 add <--
+
+// midori 190505 del -->
+	//if(IsInsertKamokuRow(nFormSeq) != FALSE)	{
+	//	// 科目行を挿入する
+	//	strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+	//							  FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+	//							  GROUP BY NumPage, NumRow, FgFunc"),
+	//		strTempUtiwakeTbl,ID_FGFUNC_DATA_TEMP,ID_FGFUNC_IKKATUMANUAL_ZERO,ID_FGFUNC_IKKATUAUTO_ZERO,
+	//			ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+	//}
+	//else	{
+	//	// 科目行を挿入しない
+	//	if(nKaiPage == 0)	{
+	//		// 改頁しない
+	//		strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+	//								  FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+	//								  GROUP BY NumPage, NumRow, FgFunc"),
+	//			strTempUtiwakeTbl,ID_FGFUNC_DATA,ID_FGFUNC_IKKATUMANUAL,ID_FGFUNC_IKKATUAUTO,
+	//			ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+	//	}
+	//	else	{
+	//		// 改頁する
+	//		strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+	//								  FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+	//								  GROUP BY NumPage, NumRow, FgFunc"),
+	//			strTempUtiwakeTbl,ID_FGFUNC_DATA_TEMP,ID_FGFUNC_IKKATUMANUAL_ZERO,ID_FGFUNC_IKKATUAUTO_ZERO,
+	//			ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+	//	}
+	//}
+// midori 190505 del <--
+
+// midori 156188_2 del -->
+//// midori 190505 add -->
+//// midori 190505 del -->
+//// midori 156188_2 del -->
+////// midori 156229 del -->
+////	//// 科目行を挿入しない
+////	//if(nKaiPage == 0)	{
+////// midori 156229 del <--
+////// midori 156229 add -->
+////	// 「改頁を行う」チェックOFF or (科目指定出力OFF and 「改頁を行う」チェックON and ソート及び改頁サインが「はい」以外)
+////	if( nKaiPage == 0 || (pSw == 0 && nKaiPage == 1 && SortMsgFlg != IDYES)){	
+////// midori 156229 add <--
+//// midori 190505 del <--
+//// midori 190505 add -->
+//	// 「改頁を行う」チェックOFF or (科目指定出力OFF and 「改頁を行う」チェックON and ソート及び改頁サインが「ON」以外)
+//	if( nKaiPage == 0 || (pSw == 0 && nKaiPage == 1 && SortMsgFlg != 1))	{
+//// midori 190505 add <--
+//		// 改頁しない
+//		strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+//								  FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+//								  GROUP BY NumPage, NumRow, FgFunc"),
+//			strTempUtiwakeTbl,ID_FGFUNC_DATA,ID_FGFUNC_IKKATUMANUAL,ID_FGFUNC_IKKATUAUTO,
+//			ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+//	}
+//	else	{
+//		// 改頁する
+//		strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+//								  FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+//								  GROUP BY NumPage, NumRow, FgFunc"),
+//			strTempUtiwakeTbl,ID_FGFUNC_DATA_TEMP,ID_FGFUNC_IKKATUMANUAL_ZERO,ID_FGFUNC_IKKATUAUTO_ZERO,
+//			ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+//	}
+//// midori 190505 add <--
+// midori 156188_2 del <--
+// midori 156188_2 add -->
+	if(IsInsertKamokuRow(nFormSeq) != FALSE)	{
+		// 科目行を挿入する
+		strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+								  FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+								  GROUP BY NumPage, NumRow, FgFunc"),
+			strTempUtiwakeTbl,ID_FGFUNC_DATA_TEMP,ID_FGFUNC_IKKATUMANUAL_ZERO,ID_FGFUNC_IKKATUAUTO_ZERO,
+				ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+	}
+// midori 157099,157119_2 del -->
+//// midori 157098 add -->
+//	// CreateKamokuDelTableから呼び出された場合は、FgFuncの置き換えを行っていないため、元のFgFuncの番号で更新
+//	else if(pSw == 1) {
+//		strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+//									FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+//									GROUP BY NumPage, NumRow, FgFunc"),
+//			strTempUtiwakeTbl,ID_FGFUNC_DATA,ID_FGFUNC_IKKATUMANUAL,ID_FGFUNC_IKKATUAUTO,
+//			ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+//	}
+//// midori 157098 add <--
+// midori 157099,157119_2 del <--
+	else	{
+		// 「改頁を行う」チェックOFF
+		if(nKaiPage == 0)	{
+			// 改頁しない
+			strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+									  FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+									  GROUP BY NumPage, NumRow, FgFunc"),
+				strTempUtiwakeTbl,ID_FGFUNC_DATA,ID_FGFUNC_IKKATUMANUAL,ID_FGFUNC_IKKATUAUTO,
+				ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+		}
+		else	{
+			// 改頁する
+			strSQL.Format(strSQL + _T("FROM %s WHERE FgFunc=0 or FgFunc=%d or FgFunc=%d or FgFunc=%d or \
+									  FgFunc=%d or FgFunc=%d or FgFunc=%d or FgFunc=%d \
+									  GROUP BY NumPage, NumRow, FgFunc"),
+				strTempUtiwakeTbl,ID_FGFUNC_DATA_TEMP,ID_FGFUNC_IKKATUMANUAL_ZERO,ID_FGFUNC_IKKATUAUTO_ZERO,
+				ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+		}
+	}
+// midori 156188_2 add <--
+	strSQL = strSQL + _T(" ORDER BY NumPage,NumRow");
+
+	// オープン
+	CRecordset	rs(m_lo_pdb);
+	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) ) {
+		return DB_ERR_OPEN;
+	}
+
+	for(ii=0; ii<16; ii++)	{
+		skei[ii] = 0;
+		gkei[ii] = 0;
+// midori UC_0023 add -->
+		skeizero[ii] = FALSE;
+		gkeizero[ii] = FALSE;
+// midori UC_0023 add <--
+	}
+	// 全ての行の計をArrayに登録
+	while(!rs.IsEOF())	{
+		rs.GetFieldValue(_T("NumPage"),strBuff);
+		if(pg == 0)	{
+			pg = _tstoi(strBuff);
+		}
+		// 頁が変わればCArrayに登録
+		if(pg != _tstoi(strBuff))	{
+			pg = _tstoi(strBuff);
+			// Arrayに登録されている計を全て削除
+			strArrayTotal.RemoveAll();
+			for(ii=0; ii<nKeiColumn; ii++)	{
+				// Arrayに追加
+// midori UC_0023 del -->
+//				strBuff.Format(_T("%I64d"),skei[ii]);
+// midori UC_0023 del <--
+// midori UC_0023 add -->
+				if(skeizero[ii] == TRUE)	strBuff.Format(_T("%I64d"),skei[ii]);
+				else						strBuff.Empty();
+// midori UC_0023 add <--
+				strArrayTotal.Add(strBuff);
+			}
+			// CStringArrayを上位のCArrayに登録
+			strArrayTotalAll.Add(strArrayTotal);
+			for(ii=0; ii<16; ii++)	{
+				gkei[ii] = gkei[ii] + skei[ii];
+				skei[ii] = 0;
+// midori UC_0023 add -->
+				if(skeizero[ii] == TRUE)	gkeizero[ii] = TRUE;
+				skeizero[ii] = FALSE;
+// midori UC_0023 add <--
+			}
+		}
+		rs.GetFieldValue(_T("FgFunc"),strBuff);
+		fc = _tstoi(strBuff);
+		// 計行以外ならトータルバッファに加算する
+		if( fc != ID_FGFUNC_SYOKEI && fc != ID_FGFUNC_SYOKEINULL &&
+			fc != ID_FGFUNC_CHUKEI && fc != ID_FGFUNC_CHUKEINULL )	{
+			for(ii=0; ii<nKeiColumn; ii++)	{
+				strValName.Format(_T("Total%d"),ii+1);
+				rs.GetFieldValue(strValName,strBuff);
+// midori 153792 del -->
+//				skei[ii] = skei[ii] + _tstoi(strBuff);
+// midori 153792 del <--
+// midori 153792 add -->
+				skei[ii] = skei[ii] + _tstoi64(strBuff);
+// midori 153792 add <--
+// midori UC_0023 add -->
+				if(strBuff.IsEmpty() != TRUE)	skeizero[ii] = TRUE;
+// midori UC_0023 add <--
+			}
+		}
+		// 次のレコードへ
+		rs.MoveNext();
+		sw = 1;
+	}
+	// クローズ
+	rs.Close();
+	if(sw == 1)	{
+		for(ii=0; ii<16; ii++)	{
+			gkei[ii] = gkei[ii] + skei[ii];
+// midori UC_0023 add -->
+			if(skeizero[ii] == TRUE)	gkeizero[ii] = TRUE;
+// midori UC_0023 add <--
+		}
+
+		//
+		// 最終頁を書き込む
+		//
+		// 頁計を書き込む
+		strArrayTotal.RemoveAll();
+		for(ii=0; ii<nKeiColumn; ii++)	{
+			// Arrayに追加
+// midori UC_0023 del -->
+//			strBuff.Format(_T("%I64d"),skei[ii]);
+// midori UC_0023 del <--
+// midori UC_0023 add -->
+			if(skeizero[ii] == TRUE)	strBuff.Format(_T("%I64d"),skei[ii]);
+			else						strBuff.Empty();
+// midori UC_0023 add <--
+			strArrayTotal.Add(strBuff);
+		}
+		strArrayTotalAll.Add(strArrayTotal);
+
+		// 累計を書き込む
+		strArrayTotal.RemoveAll();
+		for(ii=0; ii<nKeiColumn; ii++)	{
+// midori UC_0023 del -->
+//			strBuff.Format(_T("%I64d"),gkei[ii]);
+// midori UC_0023 del <--
+// midori UC_0023 add -->
+			if(gkeizero[ii] == TRUE)	strBuff.Format(_T("%I64d"),gkei[ii]);
+			else						strBuff.Empty();
+// midori UC_0023 add <--
+			strArrayTotal.Add(strBuff);
+		}
+		strArrayTotalAll.Add(strArrayTotal);
+	}
+// midori 152909_3 add <--
+
+	// 計名称取得
+	CString strNameKei;
+
+	// 計の名称セット
+	if( nNameKeiBitArray != -1 ){	
+// midori M-16083101 cor -->
+		//if( nNameKeiBitArray & GetFormSeqBit( nFormSeq ) ){
+// -------------------------
+		if(nNameKeiBitArray)	{
+// midori M-16083101 cor <--
+			strNameKei = NAME_GOUKEI;
+		}
+		else{
+			strNameKei = NAME_KEI;
+		}
+	}
+	else{	// 値がセットされていなければ表示されないのでNULLでよい
+		strNameKei.Empty();
+	}
+
+	// 計挿入
+	if( nKeiType != ID_OUTKEI_OFF || nKeiRow != 0 ){	// 計オフかつ計なしの場合は挿入の必要なし
+		strSQL.Empty();
+
+		switch( nKeiType ){
+			case ID_OUTKEI_OFF:				// オフ
+				// 計あり
+				if( nKeiRow == 1 ){
+					for(int i=0; i<nMaxPage; i++){
+						strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+							strTempUtiwakeTbl, i+1, nDataRowMax, ID_FGFUNC_PAGEKEI, GetSQLKeiInsert( i+1, &strColumnArray, strNameKei, ID_FGFUNC_PAGEKEI ));
+					}
+				}
+				break;
+
+			case ID_OUTKEI_PAGEKEI:			// 頁計
+				for(int i=0; i<nMaxPage; i++){	
+					strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+							strTempUtiwakeTbl, i+1, nDataRowMax, ID_FGFUNC_PAGEKEI, GetSQLKeiInsert( i+1, &strColumnArray, NAME_PAGEKEI, ID_FGFUNC_PAGEKEI, &strArrayTotalAll ));
+				}
+				break;
+
+			case ID_OUTKEI_RUIKEI:			// 累計
+				if( nKeiRow == 1 ){
+					for(int i=0; i<nMaxPage; i++){
+						if( i != nMaxPage - 1 ){	// 最終ページ以外は計名称のみ
+							strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+								strTempUtiwakeTbl, i+1, nDataRowMax, ID_FGFUNC_PAGEKEI, GetSQLKeiInsert( i+1, &strColumnArray, strNameKei, ID_FGFUNC_PAGEKEI ));
+						}
+						else{						// 最終ページは累計を挿入
+							strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+								strTempUtiwakeTbl, i+1, nDataRowMax, ID_FGFUNC_RUIKEI, GetSQLKeiInsert( i+1, &strColumnArray, strNameKei, ID_FGFUNC_RUIKEI, &strArrayTotalAll ));
+						}
+					}
+				}
+				else{
+					strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+								strTempUtiwakeTbl, nMaxPage, nDataRowMax, ID_FGFUNC_RUIKEI, GetSQLKeiInsert( nMaxPage, &strColumnArray, strNameKei, ID_FGFUNC_RUIKEI, &strArrayTotalAll ));
+				}
+				break;
+
+			case ID_OUTKEI_BOTH:			// 頁計と累計
+//				if( nKeiRow == 1 ){
+				for(int i=0; i<nMaxPage; i++){
+					if( i != nMaxPage - 1 ){	// 最終ページ以外は頁計と同様
+						strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+							strTempUtiwakeTbl, i+1, nDataRowMax, ID_FGFUNC_PAGEKEI, GetSQLKeiInsert( i+1, &strColumnArray, NAME_PAGEKEI, ID_FGFUNC_PAGEKEI, &strArrayTotalAll ));
+					}
+					else{						// 最終ページは最終行に累計、最終行-1行に頁計を挿入　ただし、最大ページが1ページの場合は頁計のみ
+						if( nMaxPage != 1 ){
+							strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+								strTempUtiwakeTbl, i+1, nDataRowMax-1, ID_FGFUNC_PAGEKEI, GetSQLKeiInsert( i+1, &strColumnArray, NAME_PAGEKEI, ID_FGFUNC_PAGEKEI, &strArrayTotalAll ));
+
+							strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+								strTempUtiwakeTbl, i+1, nDataRowMax, ID_FGFUNC_RUIKEI, GetSQLKeiInsert( i+1, &strColumnArray, strNameKei, ID_FGFUNC_RUIKEI, &strArrayTotalAll ));
+						}
+						else{
+							strSQL.Format( strSQL + _T("INSERT INTO %s VALUES(NULL,%d,%d,%d,%s)"),
+								strTempUtiwakeTbl, i+1, nDataRowMax, ID_FGFUNC_PAGEKEI, GetSQLKeiInsert( i+1, &strColumnArray, strNameKei, ID_FGFUNC_PAGEKEI, &strArrayTotalAll ));
+						}
+					}
+				}
+//				}
+				break;
+		}
+
+		// SQL実行
+		if( ExecuteSQLWork( strSQL ) != 0 ){
+			return DB_ERR_EXESQL;
+		}
+	}
+
+	return DB_ERR_OK;
+}
+
+// midori 190505 del -->
+///**********************************************************************
+//	CreateKamokuAddTable()
+//		科目行を追加したページ数を取得する
+//		②、⑪の内訳書のみを対象とする。
+//
+//		空白行、計行の削除→科目行の追加→ページ・行番号の割り振り→
+//		→空白行挿入→計行挿入
+//
+//	引数
+//			int					現在の様式のSeq
+//	戻値
+//			int					正の数：ページ番号
+//								負の数：失敗
+//								0     ：ページなし
+////@
+//***********************************************************************/
+//// midori 160610 cor -->
+////int CdbUc000Common::CreateKamokuAddTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray )
+//// ---------------------
+//int CdbUc000Common::CreateKamokuAddTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray, int pSw, int pSw2 )
+//// midori 160610 cor <--
+//{
+//	CString strSQL;
+//	CString strTempUtiwakeTbl;
+//	CString strTempRowIdTbl;
+//	int nKeiRow			= GetRowKei( nFormSeq );		// 計あり様式か、計なし様式か
+//	int nKeiType		= GetOutKei( nFormSeq );		// 計設定の種類
+//	int	nLclDataRowMax	= nDataRowMax;					// 1ページの最大行数（合計行含む）
+//	int nKaiPage		= 0;							// ソートダイアログの「改頁を行う」の状態
+//// midori 161111 add -->
+//	int nOutNullLine	= 0;							// ソートダイアログの「小計行の次に空行を挿入する」の状態
+//// midori 161111 add <--
+//// midori 152138 add -->
+//	int	nRet=0;											// 返送値（1:小計の次行に空行を挿入した）
+//// midori 152138 add <--
+//	CString strColumn;
+//// midori 160610 add -->
+//	CString	strMoto=_T("");
+//	CString	strSQL2=_T("");
+//// midori 160610 add <--
+//
+//	CMyStringArray strColumnArray;
+//
+//	CdbUcInfSub	mfcRec( m_lo_pdb );	//	uc_inf_subテーブルクラス
+//
+//	// ソートダイアログの改頁チェック取得
+//	try{		
+//		//	初期化成功？
+//		if ( mfcRec.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){			
+//			//	レコードあり？
+//			if ( !( mfcRec.IsEOF() ) ){
+//				//	レコードを先頭に移動
+//				mfcRec.MoveFirst();
+//				// 「改頁を行う」チェックボックスの状態
+//				nKaiPage = mfcRec.m_OpKaiPage;
+//// midori 161111 add -->
+//				nOutNullLine = mfcRec.m_OpOutNullLine;
+//// midori 161111 add <--
+//			}
+//		}
+//		//	レコード閉じる
+//		mfcRec.Fin();
+//	}
+//	catch(...){
+//		//	レコード開いてる？
+//		if ( mfcRec.IsOpen() ){
+//			//	レコード閉じる
+//			mfcRec.Fin();
+//		}
+//	}
+//
+//	// 最終結果を持つ一時テーブル名作成
+//// midori 160610 cor -->
+//	//strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+//// ---------------------
+//#ifdef _DEBUG
+//	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+//#else
+//	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+//#endif
+//// midori 160610 cor <--
+//
+//	// データ行の設定
+//	if( nKeiRow == 0 ){	// 計なし様式
+//		switch(nKeiType){
+//			case ID_OUTKEI_PAGEKEI:
+//			case ID_OUTKEI_BOTH:
+//				nLclDataRowMax = nDataRowMax - 1;
+//				break;
+//		}
+//	}
+//	else{
+//		nLclDataRowMax = nDataRowMax - 1;
+//	}
+//
+//	int clmIndex = 4;	// seq,NumPage,NumRow,FgFunc以外
+//
+//	// カラム名取得
+//	if( GetColumnName( strColumnArray, clmIndex ) != 0 ){
+//		return DB_ERR_OPEN;
+//	}
+//
+//	// SELECT句のカラム名作成
+//	for(int i=0; i<(int)strColumnArray.GetCount(); i++){
+//		strColumn = strColumn + _T(", ") + strColumnArray.GetAt(i);
+//	}
+//
+//// midori 160610 cor -->
+//	//// 一時テーブル名作成
+//	//strTempRowIdTbl.Format( _T("#row_id_tbl_%d"), nFormSeq );
+//
+//	//// 最終結果を持つ一時テーブル名作成
+//	//strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+//// ---------------------
+//#ifdef _DEBUG
+//	// 一時テーブル名作成
+//	strTempRowIdTbl.Format( _T("##row_id_tbl_%d"), nFormSeq );
+//	// 最終結果を持つ一時テーブル名作成
+//	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+//#else
+//	// 一時テーブル名作成
+//	strTempRowIdTbl.Format( _T("#row_id_tbl_%d"), nFormSeq );
+//	// 最終結果を持つ一時テーブル名作成
+//	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+//#endif
+//// midori 160610 cor <--
+//
+//	// ソート頁、行順に一意なシーケンス(row)の作成
+//// midori 160610 cor -->
+//	//strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE FgShow = 0 "),
+//	//	strTempRowIdTbl, strTempRowIdTbl, strTempRowIdTbl, GetDefaultSQL());
+//// ---------------------
+//	if(pSw == 0)	strMoto=GetDefaultSQL();
+//	else			strMoto=strTempUtiwakeTbl + _T("_s");
+//	if(pSw2 == 0)	{
+//		strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE FgShow = %d "),
+//			strTempRowIdTbl, strTempRowIdTbl, strTempRowIdTbl, strMoto, ID_FGSHOW_OFF);
+//	}
+//	else	{
+//		strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE (FgShow=%d OR FgShow=%d) "),
+//			strTempRowIdTbl, strTempRowIdTbl, strTempRowIdTbl, strMoto, ID_FGSHOW_OFF, ID_FGSHOW_IKKATU);
+//	}
+//// midori 160610 cor <--
+//
+//	// 頁計、累計を削除
+//	strSQL.Format( strSQL + _T("DELETE FROM %s WHERE FgShow = 0 AND FgFunc = 14 or FgFunc = 15 "),
+//		strTempRowIdTbl, GetSQLZeroJudgment());
+//
+//// midori 160610 add -->
+//	// 後からソートを行う場合は、ここで不要なデータを削除する
+//	// （不要なデータの科目見出しが作成されてしまうため）
+//	if(pSw2 != 0)	{
+//		// 空行
+//		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_NULL);
+//		strSQL = strSQL + strSQL2;
+//		// 小計行
+//		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_SYOKEI);
+//		strSQL = strSQL + strSQL2;
+//		// 小計行（空行）
+//		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_SYOKEINULL);
+//		strSQL = strSQL + strSQL2;
+//		// 中計行
+//		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_CHUKEI);
+//		strSQL = strSQL + strSQL2;
+//		// 中計行（空行）
+//		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_CHUKEINULL);
+//		strSQL = strSQL + strSQL2;
+//		//// 累計行
+//		//strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_RUIKEI);
+//		//strSQL = strSQL + strSQL2;
+//		//// 頁計行
+//		//strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_PAGEKEI);
+//		//strSQL = strSQL + strSQL2;
+//		// 一括集計金額行（自動）
+//		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_IKKATUAUTO);
+//		strSQL = strSQL + strSQL2;
+//	}
+//// midori 160610 add <--
+//
+//	// 手動・自動一括金額のFgFunc更新（FgFuncソートによって自動・手動一括金額が小計より後にきてしまうため）
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+//
+//	// SQL実行
+//	if( ExecuteSQLWork( strSQL ) != DB_ERR_OK ){
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// 科目行追加
+//	if( InsertKamokuRow( strTempRowIdTbl ) != DB_ERR_OK ){
+//		return DB_ERR_EXESQL;
+//	}
+//
+//// midori 152138 del -->
+////// midori 161111 add -->
+////	if(nOutNullLine != 0)	{
+////		// ソートダイアログの「小計行の次に空行を挿入する」がＯＮの場合
+////		// 頁の最終行が小計でかつ、次の行が空白行以外の場合
+////		// 空白行を挿入する
+////		if(InsertKeiNullLine(nFormSeq,nLclDataRowMax) != DB_ERR_OK)	{
+////			return DB_ERR_EXESQL;
+////		}
+////	}
+////// midori 161111 add <--
+////
+////	// データ行のみのテーブルにページ番号、行番号を振り直す
+////// midori 161111 cor -->
+//////// midori 160610 cor -->
+////////	if( CalcPageRowNumToTempTable( strTempUtiwakeTbl, strTempRowIdTbl, nLclDataRowMax, strColumn) != DB_ERR_OK ){
+//////// ---------------------
+//////	if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strMoto) != DB_ERR_OK)	{
+//////// midori 160610 cor <--
+////// ---------------------
+////	if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strMoto,nFormSeq) != DB_ERR_OK)	{
+////// midori 161111 cor <--
+////		return DB_ERR_EXESQL;
+////	}
+//// midori 152138 del <--
+//// midori 152138 add -->
+//	nRet=0;
+//	if(nOutNullLine != 0)	{
+//		// ソートダイアログの「小計行の次に空行を挿入する」がＯＮの場合
+//		// 頁の最終行が小計でかつ、次の行が空白行以外の場合
+//		// 空白行を挿入する
+//		if(InsertKeiNullLine(nFormSeq,nLclDataRowMax,&nRet) != DB_ERR_OK)	{
+//			return DB_ERR_EXESQL;
+//		}
+//	}
+//	// データ行のみのテーブルにページ番号、行番号を振り直す
+//	if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strMoto,nFormSeq,nRet) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//	if(nOutNullLine != 0)	{
+//		// InsertKeiNullLineで空行の次行に空白を挿入した結果
+//		// 頁の先頭にきた空白行を削除する
+//		if(DeleteFirstNullLine(nFormSeq,nLclDataRowMax,&nRet) != DB_ERR_OK)	{
+//			return DB_ERR_EXESQL;
+//		}
+//		if(nRet != 0)	{
+//			// 頁の先頭にきた空白行を削除した場合は、データ行のみのテーブルにページ番号、行番号を振り直す
+//			if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strMoto,nFormSeq,0) != DB_ERR_OK)	{
+//				return DB_ERR_EXESQL;
+//			}
+//		}
+//	}
+//// midori 152138 add <--
+//
+//	//*****************************************************************
+//	// NULL以外の最終ページ、最終行取得
+//	//*****************************************************************
+//	CRecordset rs(m_lo_pdb);
+//	int nDataMaxPage, nDataCurRow;
+//	CString strDataMaxPage, strDataCurRow;
+//// midori 160610 cor -->
+//	//strSQL.Format(_T("SELECT MAX(NumPage) AS 'value' FROM %s WHERE FgShow = 0 AND FgFunc <> %d"), 
+//	//	strTempUtiwakeTbl, ID_FGFUNC_NULL);
+//// ---------------------
+//	if(pSw2 == 0)	{
+//		strSQL.Format(_T("SELECT MAX(NumPage) AS 'value' FROM %s WHERE FgShow = %d AND FgFunc <> %d"), 
+//			strTempUtiwakeTbl, ID_FGSHOW_OFF, ID_FGFUNC_NULL);
+//	}
+//	else	{
+//		strSQL.Format(_T("SELECT MAX(NumPage) AS 'value' FROM %s WHERE (FgShow=%d OR FgShow=%d) AND FgFunc <> %d"), 
+//			strTempUtiwakeTbl, ID_FGSHOW_OFF, ID_FGSHOW_IKKATU, ID_FGFUNC_NULL);
+//	}
+//// midori 160610 cor <--
+//	// オープン
+//	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) ) {
+//		
+//		rs.Close();
+//		return DB_ERR_OPEN;
+//	}
+//	
+//	// 取得
+//	rs.GetFieldValue( _T("value"), strDataMaxPage );
+//	sscanf_s( strDataMaxPage, "%d", &nDataMaxPage);
+//
+//	if( strDataMaxPage.IsEmpty() != FALSE ){
+//		nDataMaxPage = 0;
+//	}
+//
+//	rs.Close();
+//
+//// midori 160610 cor -->
+//	//strSQL.Format(_T("SELECT MAX(NumRow) AS 'value' FROM %s WHERE FgShow = 0 AND FgFunc <> %d AND NumPage = %d"), 
+//	//	strTempUtiwakeTbl, ID_FGFUNC_NULL, nDataMaxPage);
+//// ---------------------
+//	if(pSw2 == 0)	{
+//		strSQL.Format(_T("SELECT MAX(NumRow) AS 'value' FROM %s WHERE FgShow = %d AND FgFunc <> %d AND NumPage = %d"), 
+//			strTempUtiwakeTbl, ID_FGSHOW_OFF, ID_FGFUNC_NULL, nDataMaxPage);
+//	}
+//	else	{
+//		strSQL.Format(_T("SELECT MAX(NumRow) AS 'value' FROM %s WHERE (FgShow=%d OR FgShow=%d) AND FgFunc <> %d AND NumPage = %d"), 
+//			strTempUtiwakeTbl, ID_FGSHOW_OFF, ID_FGFUNC_NULL, ID_FGSHOW_IKKATU, nDataMaxPage);
+//	}
+//// midori 160610 cor <--
+//	// オープン
+//	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) ) {
+//		
+//		rs.Close();
+//		return DB_ERR_OPEN;
+//	}
+//	
+//	// 取得
+//	rs.GetFieldValue( _T("value"), strDataCurRow );
+//	sscanf_s( strDataCurRow, "%d", &nDataCurRow);
+//
+//	if( strDataCurRow.IsEmpty() != FALSE ){
+//		nDataCurRow = 0;
+//	}
+//
+//	rs.Close();
+//
+//	//*****************************************************************
+//	// 最終ページが空白の場合は削除する
+//	//*****************************************************************
+//	int nMaxPage, nCurRow;
+//	strSQL.Format(_T("DELETE FROM %s WHERE NumPage >= %d AND NumRow > %d "), strTempUtiwakeTbl, nDataMaxPage, nDataCurRow );
+//	strSQL.Format(strSQL + _T("DELETE FROM %s WHERE NumPage > %d "), strTempUtiwakeTbl, nDataMaxPage );
+//
+//	// SQL実行
+//	if( ExecuteSQLWork( strSQL ) != 0 ){
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// 最終ページ取得
+//	nMaxPage = GetMaxPageFromTempTable( strTempUtiwakeTbl );
+//
+//	// 全ページが空行なら、0ページとして処理を抜ける
+//	if( nMaxPage == DB_ERR_OPEN ){
+//		return BD_ERR_ALL_NULL;
+//	}
+//
+//	// 最終ページの最終行取得
+//	nCurRow = GetMaxRowFromTempTable( strTempUtiwakeTbl, nMaxPage );
+//
+//	// 最終ページを空白行で埋める
+//	if( InsertNullRowToLastPage(strTempUtiwakeTbl, nKeiType, nKeiRow, nMaxPage, nLclDataRowMax, nCurRow, strColumnArray) != DB_ERR_OK ){
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// 計行を挿入
+//	if( InsertKeiRow(strTempUtiwakeTbl, nFormSeq, nKaiPage, nKeiType, nKeiRow, nMaxPage, nDataRowMax, nNameKeiBitArray, strColumnArray) != DB_ERR_OK ){
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	return DB_ERR_OK;
+//}
+//
+///**********************************************************************
+//	IsInsertKamokuRow()
+//		科目行を挿入するかのチェック。
+//		②受取手形の内訳書、⑪借入金の内訳書以外では印刷設定の「科目行を
+//		出力する」で判定し、それ以外の様式ではFALSE
+//
+//	引数
+//			int					様式シーケンス
+//	戻値
+//			int					TRUE:科目行を出力する
+//								FALSE:科目行を出力しない
+//
+//***********************************************************************/
+//BOOL CdbUc000Common::IsInsertKamokuRow(int nFormSeq)
+//{
+//	BOOL nRet = FALSE;
+//	CdbUcInfSub mfcRecSub( m_lo_pdb);
+//
+//	if( nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111 ){
+//		if( mfcRecSub.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){
+//			if( !(mfcRecSub.IsEOF()) ){
+//				if( mfcRecSub.m_GeneralConstVal[15] & BIT_D1 ){
+//					CCtrlSubGeneralVar cs( mfcRecSub );
+//					if( cs.bOutKamokuRow ){
+//						nRet = TRUE;
+//					}
+//				}
+//			}
+//			mfcRecSub.Fin();
+//		}
+//	}
+//	return nRet;
+//}
+// midori 190505 del <--
+// midori 156188_2 add -->
+/**********************************************************************
+	CreateKamokuAddTable()
+		科目行を追加したページ数を取得する
+		②、⑧、⑪の内訳書のみを対象とする。
+
+		空白行、計行の削除→科目行の追加→ページ・行番号の割り振り→
+		→空白行挿入→計行挿入
+
+	引数
+			int					現在の様式のSeq
+	戻値
+			int					正の数：ページ番号
+								負の数：失敗
+								0     ：ページなし
+//@
+***********************************************************************/
+int CdbUc000Common::CreateKamokuAddTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray, int pSw, int pSw2 )
+{
+	CString strSQL;
+	CString strTempUtiwakeTbl;
+	CString strTempRowIdTbl;
+	int nKeiRow			= GetRowKei( nFormSeq );		// 計あり様式か、計なし様式か
+	int nKeiType		= GetOutKei( nFormSeq );		// 計設定の種類
+	int	nLclDataRowMax	= nDataRowMax;					// 1ページの最大行数（合計行含む）
+	int nKaiPage		= 0;							// ソートダイアログの「改頁を行う」の状態
+	int nOutNullLine	= 0;							// ソートダイアログの「小計行の次に空行を挿入する」の状態
+	int	nRet=0;											// 返送値（1:小計の次行に空行を挿入した）
+	CString strColumn;
+	CString	strMoto=_T("");
+	CString	strSQL2=_T("");
+
+	CMyStringArray strColumnArray;
+
+	CdbUcInfSub	mfcRec( m_lo_pdb );	//	uc_inf_subテーブルクラス
+
+	// ソートダイアログの改頁チェック取得
+	try{		
+		//	初期化成功？
+		if ( mfcRec.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){			
+			//	レコードあり？
+			if ( !( mfcRec.IsEOF() ) ){
+				//	レコードを先頭に移動
+				mfcRec.MoveFirst();
+				// 「改頁を行う」チェックボックスの状態
+				nKaiPage = mfcRec.m_OpKaiPage;
+				nOutNullLine = mfcRec.m_OpOutNullLine;
+			}
+		}
+		//	レコード閉じる
+		mfcRec.Fin();
+	}
+	catch(...){
+		//	レコード開いてる？
+		if ( mfcRec.IsOpen() ){
+			//	レコード閉じる
+			mfcRec.Fin();
+		}
+	}
+
+	// 最終結果を持つ一時テーブル名作成
+#ifdef _DEBUG
+	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+#else
+	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+#endif
+
+	// データ行の設定
+	if( nKeiRow == 0 ){	// 計なし様式
+		switch(nKeiType){
+			case ID_OUTKEI_PAGEKEI:
+			case ID_OUTKEI_BOTH:
+				nLclDataRowMax = nDataRowMax - 1;
+				break;
+		}
+	}
+	else{
+		nLclDataRowMax = nDataRowMax - 1;
+	}
+
+	int clmIndex = 4;	// seq,NumPage,NumRow,FgFunc以外
+
+	// カラム名取得
+	if( GetColumnName( strColumnArray, clmIndex ) != 0 ){
+		return DB_ERR_OPEN;
+	}
+
+	// SELECT句のカラム名作成
+	for(int i=0; i<(int)strColumnArray.GetCount(); i++){
+		strColumn = strColumn + _T(", ") + strColumnArray.GetAt(i);
+	}
+
+#ifdef _DEBUG
+	// 一時テーブル名作成
+	strTempRowIdTbl.Format( _T("##row_id_tbl_%d"), nFormSeq );
+	// 最終結果を持つ一時テーブル名作成
+	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+#else
+	// 一時テーブル名作成
+	strTempRowIdTbl.Format( _T("#row_id_tbl_%d"), nFormSeq );
+	// 最終結果を持つ一時テーブル名作成
+	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+#endif
+
+	// ソート頁、行順に一意なシーケンス(row)の作成
+	if(pSw == 0)	strMoto=GetDefaultSQL();
+	else			strMoto=strTempUtiwakeTbl + _T("_s");
+	if(pSw2 == 0)	{
+		strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE FgShow = %d "),
+			strTempRowIdTbl, strTempRowIdTbl, strTempRowIdTbl, strMoto, ID_FGSHOW_OFF);
+	}
+	else	{
+		strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE (FgShow=%d OR FgShow=%d) "),
+			strTempRowIdTbl, strTempRowIdTbl, strTempRowIdTbl, strMoto, ID_FGSHOW_OFF, ID_FGSHOW_IKKATU);
+	}
+
+	// 頁計、累計を削除
+	strSQL.Format( strSQL + _T("DELETE FROM %s WHERE FgShow = 0 AND FgFunc = 14 or FgFunc = 15 "),
+		strTempRowIdTbl, GetSQLZeroJudgment());
+
+	// 後からソートを行う場合は、ここで不要なデータを削除する
+	// （不要なデータの科目見出しが作成されてしまうため）
+	if(pSw2 != 0)	{
+		// 空行
+		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_NULL);
+		strSQL = strSQL + strSQL2;
+		// 小計行
+		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_SYOKEI);
+		strSQL = strSQL + strSQL2;
+		// 小計行（空行）
+		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_SYOKEINULL);
+		strSQL = strSQL + strSQL2;
+		// 中計行
+		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_CHUKEI);
+		strSQL = strSQL + strSQL2;
+		// 中計行（空行）
+		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_CHUKEINULL);
+		strSQL = strSQL + strSQL2;
+		//// 累計行
+		//strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_RUIKEI);
+		//strSQL = strSQL + strSQL2;
+		//// 頁計行
+		//strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_PAGEKEI);
+		//strSQL = strSQL + strSQL2;
+		// 一括集計金額行（自動）
+		strSQL2.Format(_T("DELETE FROM %s WHERE FgFunc=%d "),strTempRowIdTbl,ID_FGFUNC_IKKATUAUTO);
+		strSQL = strSQL + strSQL2;
+	}
+
+	// 手動・自動一括金額のFgFunc更新（FgFuncソートによって自動・手動一括金額が小計より後にきてしまうため）
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_IKKATUAUTO,	ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempRowIdTbl, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+	// 科目行追加
+	if( InsertKamokuRow( strTempRowIdTbl ) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+	nRet=0;
+	if(nOutNullLine != 0)	{
+		// ソートダイアログの「小計行の次に空行を挿入する」がＯＮの場合
+		// 頁の最終行が小計でかつ、次の行が空白行以外の場合
+		// 空白行を挿入する
+		if(InsertKeiNullLine(nFormSeq,nLclDataRowMax,&nRet) != DB_ERR_OK)	{
+			return DB_ERR_EXESQL;
+		}
+	}
+	// データ行のみのテーブルにページ番号、行番号を振り直す
+	if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strMoto,nFormSeq,nRet) != DB_ERR_OK)	{
+		return DB_ERR_EXESQL;
+	}
+// midori 157107 del -->
+	//if(nOutNullLine != 0)	{
+// midori 157107 del <--
+	// InsertKeiNullLineで空行の次行に空白を挿入した結果
+	// 頁の先頭にきた空白行を削除する
+	if(DeleteFirstNullLine(nFormSeq,nLclDataRowMax,&nRet) != DB_ERR_OK)	{
+		return DB_ERR_EXESQL;
+	}
+	if(nRet != 0)	{
+		// 頁の先頭にきた空白行を削除した場合は、データ行のみのテーブルにページ番号、行番号を振り直す
+		if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strMoto,nFormSeq,0) != DB_ERR_OK)	{
+			return DB_ERR_EXESQL;
+		}
+	}
+// midori 157107 del -->
+	//}
+// midori 157107 del <--
+
+// midori 157042 add -->
+	//if (KamokuRowEnableSgn(0) == 1) {				// 改良No.21-0086,21-0529 del
+	if(KamokuRowEnableSgn(0, nFormSeq) == 1)	{	// 改良No.21-0086,21-0529 add
+		// 科目行の科目名称を計名称欄にコピーする
+		strSQL.Format(_T("UPDATE %s SET KeiStr = KnName WHERE FgFunc = %d"),strTempUtiwakeTbl,ID_FGFUNC_KAMOKU);
+
+		try{
+			ExecuteSQLWork( strSQL );
+		}
+		catch(CDBException* e){
+			// 解放
+			e->Delete();
+
+			return DB_ERR_EXESQL;
+		}
+	}
+// midori 157042 add <--
+
+	//*****************************************************************
+	// NULL以外の最終ページ、最終行取得
+	//*****************************************************************
+	CRecordset rs(m_lo_pdb);
+	int nDataMaxPage, nDataCurRow;
+	CString strDataMaxPage, strDataCurRow;
+	if(pSw2 == 0)	{
+		strSQL.Format(_T("SELECT MAX(NumPage) AS 'value' FROM %s WHERE FgShow = %d AND FgFunc <> %d"), 
+			strTempUtiwakeTbl, ID_FGSHOW_OFF, ID_FGFUNC_NULL);
+	}
+	else	{
+		strSQL.Format(_T("SELECT MAX(NumPage) AS 'value' FROM %s WHERE (FgShow=%d OR FgShow=%d) AND FgFunc <> %d"), 
+			strTempUtiwakeTbl, ID_FGSHOW_OFF, ID_FGSHOW_IKKATU, ID_FGFUNC_NULL);
+	}
+	// オープン
+	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) ) {
+		
+		rs.Close();
+		return DB_ERR_OPEN;
+	}
+	
+	// 取得
+	rs.GetFieldValue( _T("value"), strDataMaxPage );
+	sscanf_s( strDataMaxPage, "%d", &nDataMaxPage);
+
+	if( strDataMaxPage.IsEmpty() != FALSE ){
+		nDataMaxPage = 0;
+	}
+
+	rs.Close();
+
+	if(pSw2 == 0)	{
+		strSQL.Format(_T("SELECT MAX(NumRow) AS 'value' FROM %s WHERE FgShow = %d AND FgFunc <> %d AND NumPage = %d"), 
+			strTempUtiwakeTbl, ID_FGSHOW_OFF, ID_FGFUNC_NULL, nDataMaxPage);
+	}
+	else	{
+		strSQL.Format(_T("SELECT MAX(NumRow) AS 'value' FROM %s WHERE (FgShow=%d OR FgShow=%d) AND FgFunc <> %d AND NumPage = %d"), 
+			strTempUtiwakeTbl, ID_FGSHOW_OFF, ID_FGFUNC_NULL, ID_FGSHOW_IKKATU, nDataMaxPage);
+	}
+	// オープン
+	if ( !rs.Open( CRecordset::forwardOnly, strSQL ) ) {
+		
+		rs.Close();
+		return DB_ERR_OPEN;
+	}
+	
+	// 取得
+	rs.GetFieldValue( _T("value"), strDataCurRow );
+	sscanf_s( strDataCurRow, "%d", &nDataCurRow);
+
+	if( strDataCurRow.IsEmpty() != FALSE ){
+		nDataCurRow = 0;
+	}
+
+	rs.Close();
+
+	//*****************************************************************
+	// 最終ページが空白の場合は削除する
+	//*****************************************************************
+	int nMaxPage, nCurRow;
+	strSQL.Format(_T("DELETE FROM %s WHERE NumPage >= %d AND NumRow > %d "), strTempUtiwakeTbl, nDataMaxPage, nDataCurRow );
+	strSQL.Format(strSQL + _T("DELETE FROM %s WHERE NumPage > %d "), strTempUtiwakeTbl, nDataMaxPage );
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	// 最終ページ取得
+	nMaxPage = GetMaxPageFromTempTable( strTempUtiwakeTbl );
+
+	// 全ページが空行なら、0ページとして処理を抜ける
+	if( nMaxPage == DB_ERR_OPEN ){
+		return BD_ERR_ALL_NULL;
+	}
+
+	// 最終ページの最終行取得
+	nCurRow = GetMaxRowFromTempTable( strTempUtiwakeTbl, nMaxPage );
+
+	// 最終ページを空白行で埋める
+	if( InsertNullRowToLastPage(strTempUtiwakeTbl, nKeiType, nKeiRow, nMaxPage, nLclDataRowMax, nCurRow, strColumnArray) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+//2020/12/24 157154の対応は行わないため、コメント
+//// midori 157118 add -->
+//	if(pSw == 0) {
+//		ClearSyoKeiStr(nFormSeq);
+//	}
+//// midori 157118 add <--
+
+	// 計行を挿入
+	if( InsertKeiRow(strTempUtiwakeTbl, nFormSeq, nKaiPage, nKeiType, nKeiRow, nMaxPage, nDataRowMax, nNameKeiBitArray, strColumnArray ) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+// midori 157118 del -->
+//// midori 157118 add -->
+//	if(pSw == 0) {
+//		ClearSyoKeiStr(nFormSeq);
+//	}
+//// midori 157118 add <--
+// midori 157118 del <--
+
+	return DB_ERR_OK;
+}
+
+// midori 157099,157119_2 del -->
+//// midori 157098 add -->
+//// --------------------------------------------------------------------------------------------------------------------
+////	CreateKamokuAddTable()
+////		科目行を削除した一時テーブルを作成する
+////		②、⑪の内訳書のみを対象とする。
+////
+////	引数
+////			
+////	戻値
+////			
+////			
+////			
+//// --------------------------------------------------------------------------------------------------------------------
+//int CdbUc000Common::CreateKamokuDelTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray )
+//{
+//	int						nKeiRow=GetRowKei(nFormSeq);	// 計あり様式か、計なし様式か
+//	int						nKeiType=GetOutKei(nFormSeq);	// 計設定の種類
+//	int						ii=0;
+//	int						nLclDataRowMax=nDataRowMax;		// 1ページの最大行数（合計行含む）
+//	int						nRet=0;
+//	CString					strTbl=_T("");					// テーブル名		uc_???_xxxxxxx
+//	CString					strTempUtiwakeTbl=_T("");		// 一時テーブル名	##temp_utiwake_tbl_?
+//	CString					strTempRowIdTbl=_T("");			// 一時テーブル名	##row_id_tbl_?
+//	CString					strQuery=_T("");
+//	CString					strQuery2=_T("");
+//	CString					strQuery3=_T("");
+//	CString					strColumn=_T("");
+//	CMyStringArray			strColumnArray;
+//	CRecordset				rs(m_lo_pdb);
+//
+//	// データ行の設定
+//	if(nKeiRow == 0)	{	// 計なし様式
+//		switch(nKeiType)	{
+//			case ID_OUTKEI_PAGEKEI:
+//			case ID_OUTKEI_BOTH:
+//				nLclDataRowMax = nDataRowMax - 1;
+//				break;
+//		}
+//	}
+//	else	{
+//		nLclDataRowMax = nDataRowMax - 1;
+//	}
+//
+//	int	clmIndex = 4;	// seq,NumPage,NumRow,FgFunc以外
+//
+//	// カラム名取得
+//	if(GetColumnName(strColumnArray,clmIndex) != 0)	{
+//		return DB_ERR_OPEN;
+//	}
+//
+//	// SELECT句のカラム名作成
+//	for(int i=0; i<(int)strColumnArray.GetCount(); i++)	{
+//		strColumn = strColumn + _T(", ") + strColumnArray.GetAt(i);
+//	}
+//
+//#ifdef _DEBUG
+//	// 一時テーブル名作成
+//	strTempRowIdTbl.Format(_T("##row_id_tbl_%d"),nFormSeq);
+//	// 最終結果を持つ一時テーブル名作成
+//	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+//#else
+//	// 一時テーブル名作成
+//	strTempRowIdTbl.Format(_T("#row_id_tbl_%d"),nFormSeq);
+//	// 最終結果を持つ一時テーブル名作成
+//	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+//#endif
+//
+//	// テーブル名作成
+//	strTbl = GetDefaultSQL();
+//	// ソート頁、行順に一意なシーケンス(row)の作成
+//	strQuery.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s WHERE FgShow = %d "),
+//		strTempRowIdTbl, strTempRowIdTbl, strTempRowIdTbl, strTbl, ID_FGSHOW_OFF);
+//
+//	// 頁計・累計の削除（ページを跨る場合、頁計・累計に値が入ると空行小計の削除判定、ソート時の小計の紐付けができなくなるため）
+//	strQuery2.Format(_T("AND FgFunc NOT IN (%d, %d) "), ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+//
+//	// 科目行を削除
+//	strQuery3.Format(_T("AND FgFunc NOT IN (%d) "),ID_FGFUNC_KAMOKU);
+//
+//	strQuery = strQuery + strQuery2 + strQuery3;
+//
+//	ExecuteSQLWork(strQuery);
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// データ行のみのテーブルにページ番号、行番号を振り直す
+//	// (CalcPageRowNumToTempTable 関数を変更して作成)
+//	// ------------------------------------------------------------------------------------------------------------
+//	// データ行のみのテーブルにページ番号、行番号を振り直す
+//	if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl,nFormSeq,0) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//	// 頁の先頭にきた空白行を削除する
+//	nRet = 0;
+//	if(DeleteFirstNullLine(nFormSeq,nLclDataRowMax,&nRet) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//	if(nRet != 0)	{
+//		// 頁の先頭にきた空白行を削除した場合は、データ行のみのテーブルにページ番号、行番号を振り直す
+//		if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl,nFormSeq,0) != DB_ERR_OK)	{
+//			return DB_ERR_EXESQL;
+//		}
+//	}
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 最終ページ以外を空白行で埋める
+//	// (CreateNotExistZeroTableから改頁を行う場合に呼び出しているのと同じ関数を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	if(InsertNullRowExceptLastPage(strTempUtiwakeTbl,nLclDataRowMax,strColumnArray) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 最終ページ、最終ページの最終行取得
+//	// (CreateNotExistZeroTableから呼び出しているのと同じ処理を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	int nMaxPage, nCurRow;
+//
+//	// 最終ページ取得
+//	nMaxPage = GetMaxPageFromTempTable( strTempUtiwakeTbl );
+//
+//	// 全ページが空行なら、0ページとして処理を抜ける
+//	if(nMaxPage == 0)	{
+//		return BD_ERR_ALL_NULL;
+//	}
+//
+//	// 最終ページの最終行取得
+//	nCurRow = GetMaxRowFromTempTable(strTempUtiwakeTbl,nMaxPage);
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 最終ページを空白行で埋める
+//	// (CreateNotExistZeroTableから呼び出しているのと同じ関数を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	if(InsertNullRowToLastPage(strTempUtiwakeTbl,nKeiType,nKeiRow,nMaxPage,nLclDataRowMax,nCurRow,strColumnArray) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//// midori 157118 add -->
+//	EditSyokeiStr(nFormSeq);
+//// midori 157118 add <--
+//
+//	// ------------------------------------------------------------------------------------------------------------
+//	// 計行を挿入
+//	// (CreateNotExistZeroTableから呼び出しているのと同じ関数を使用)
+//	// ------------------------------------------------------------------------------------------------------------
+//	if(InsertKeiRow(strTempUtiwakeTbl,nFormSeq,0,nKeiType,nKeiRow,nMaxPage,nDataRowMax,nNameKeiBitArray,strColumnArray,1) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//// midori 157118 del -->
+////// midori 157113 add -->
+////	EditSyokeiStr(nFormSeq);
+////// midori 157113 add <--
+//// midori 157118 del <--
+//
+//	return(DB_ERR_OK);
+//}
+//// midori 157098 add <--
+// midori 157099,157119_2 del <--
+
+/**********************************************************************
+	IsInsertKamokuRow()
+		科目行を挿入するかのチェック。
+		②受取手形の内訳書、⑪借入金の内訳書以外では印刷設定の「科目行を
+		出力する」で判定し、それ以外の様式ではFALSE
+
+	引数
+			int					様式シーケンス
+	戻値
+			int					TRUE:科目行を出力する
+								FALSE:科目行を出力しない
+
+***********************************************************************/
+BOOL CdbUc000Common::IsInsertKamokuRow(int nFormSeq)
+{
+	BOOL nRet = FALSE;
+	CdbUcInfSub mfcRecSub( m_lo_pdb);
+
+// 改良No.21-0086,21-0529 cor -->
+//	if( nFormSeq == ID_FORMNO_021 || nFormSeq == ID_FORMNO_111 ){
+// ------------------------------
+	if(nFormSeq == ID_FORMNO_021 || (bG_InvNo == TRUE && nFormSeq == ID_FORMNO_081) || nFormSeq == ID_FORMNO_111)	{
+// 改良No.21-0086,21-0529 cor <--
+		if( mfcRecSub.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){
+			if( !(mfcRecSub.IsEOF()) ){
+				if( mfcRecSub.m_GeneralConstVal[15] & BIT_D1 ){
+					CCtrlSubGeneralVar cs( mfcRecSub );
+					if( cs.bOutKamokuRow ){
+						nRet = TRUE;
+					}
+				}
+			}
+			mfcRecSub.Fin();
+		}
+	}
+	return nRet;
+}
+// midori 156188_2 add <--
+
+// 14-1821_15-1030 del -->
+///**********************************************************************
+//	CalcSykeiAfterSort()
+//		
+//
+//	引数
+//			なし
+//	戻値
+//			int					成功 : TRUE
+//								失敗 : FALSE
+//***********************************************************************/
+//// 20-0450 del -->
+////BOOL CdbUc000Common::CalcSykeiAfterSort(CALCKEI_INFO uCalcInfo, CString strSortItem1, CString strSortItem2)
+//// 20-0450 del <--
+//// 20-0450 add -->
+//BOOL CdbUc000Common::CalcSykeiAfterSort(CALCKEI_INFO uCalcInfo, CString strSortItem1, CString strSortItem2, int pSw)
+//// 20-0450 add <--
+//{
+//	CString strSQL;
+//	CString strSonota;
+//
+//	// 一時テーブルが存在する場合は削除
+//	strSQL.Format(_T("if object_id('tempdb..#row_id_sykei_tbl', 'u') is not null drop table #row_id_sykei_tbl "
+//					 "if object_id('tempdb..#key_row_tbl', 'u') is not null drop table #key_row_tbl "));
+//
+//	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+//	if( m_lo_FormSeq > 0 ){
+//		strSonota.Format(_T("AND FormSeq = %d "), m_lo_FormSeq);
+//	}
+//
+//	// 一意のページ数を無視した行番号(row)を振る
+//	strSQL.Format(strSQL + _T("SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* "
+//							 "INTO #row_id_sykei_tbl "
+//							 "FROM %s "
+//							 "WHERE (FgShow = %d OR FgShow = %d) %s"),
+//							 GetDefaultSQL(), ID_FGSHOW_OFF, ID_FGSHOW_IKKATU, strSonota);
+//
+//// 20-0450 add -->
+//	if(pSw != 0)	{
+//		// ⑥有価証券の内訳書で第１ソート項目が種類または銘柄の場合
+//		if(pSw == 1)	{
+//			strSQL = strSQL + _T("UPDATE #row_id_sykei_tbl SET Syurui=LEFT(Syurui,CHARINDEX(NCHAR(13),Syurui)-1) ");
+//		}
+//		else	{
+//			strSQL = strSQL + _T("UPDATE #row_id_sykei_tbl SET Syurui=CASE CHARINDEX(NCHAR(13),Syurui) WHEN 0 THEN NULL ELSE RIGHT(Syurui,LEN(Syurui)-CHARINDEX(NCHAR(13),Syurui)-1) END ");
+//		}
+//	}
+//// 20-0450 add <--
+//
+//	// グループ化項目が以下の場合は@orderの型をintからvarchar(60)へ変更
+//	CString strOrder1Type;
+//	if( strSortItem1.Compare(_T("AdName1")) == 0 || strSortItem1.Compare(_T("Syurui")) == 0 || strSortItem1.Compare(_T("HdName")) == 0 ){
+//		strOrder1Type = _T("varchar(60)");
+//
+//		// NULLを判断できないので、NULLを""(空白)に変換
+//		strSQL.Format(strSQL + _T("UPDATE #row_id_sykei_tbl SET %s = '' WHERE %s IS NULL AND FgFunc <> 22 "), strSortItem1, strSortItem1);
+//		if( !(strSortItem2.IsEmpty() )){
+//			strSQL.Format(strSQL + _T("UPDATE #row_id_sykei_tbl SET %s = '' WHERE %s IS NULL AND FgFunc <> 22 "), strSortItem2, strSortItem2);
+//		}
+//	}
+//	else{
+//		strOrder1Type = _T("int");
+//	}
+//
+//	// 小計のみの共通テーブル作成
+//	strSQL.Format(strSQL + _T(";with "
+//							  "row_sykei_tbl(row) as ( "
+//							  "SELECT row "
+//							  "FROM #row_id_sykei_tbl "
+//							  "WHERE FgFunc = %d ),"), ID_FGFUNC_SYOKEI);
+//
+//	// 小計の1行前のレコードのみの共通テーブル作成
+//	if( strSortItem2.IsEmpty() ){
+//		strSQL.Format(strSQL + _T("sykei_prev_tbl(key_order1, row, numgroup) as ( "
+//			"SELECT #row_id_sykei_tbl.%s, row_sykei_tbl.row, #row_id_sykei_tbl.NumGroup "
+//			"FROM row_sykei_tbl, #row_id_sykei_tbl "
+//			"WHERE row_sykei_tbl.row-1 = #row_id_sykei_tbl.row ) "),
+//			strSortItem1);
+//	}
+//	else{
+//		strSQL.Format(strSQL + _T("sykei_prev_tbl(key_order1, row, numgroup, key_order2) as ( "
+//			"SELECT #row_id_sykei_tbl.%s, row_sykei_tbl.row, #row_id_sykei_tbl.NumGroup, #row_id_sykei_tbl.%s "
+//			"FROM row_sykei_tbl, #row_id_sykei_tbl "
+//			"WHERE row_sykei_tbl.row-1 = #row_id_sykei_tbl.row ) "),
+//			strSortItem1, strSortItem2);
+//	}
+//
+//	// 共通テーブルを一時テーブルにコピー
+//	strSQL.Format(strSQL + _T("SELECT * INTO #key_row_tbl FROM sykei_prev_tbl "));
+//
+//	// 一括金額行にソート項目を反映(元データにはソート項目を持っていない)
+//	if( strSortItem2.IsEmpty() ){
+//		strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+//			"SELECT row, NumGroup FROM #key_row_tbl "
+//			"DECLARE @numgroup int DECLARE @row int "
+//			"OPEN cur FETCH cur INTO @row, @numgroup WHILE @@fetch_status = 0 "
+//			"BEGIN "
+//				"UPDATE #key_row_tbl SET key_order1 = "
+//				"(SELECT DISTINCT %s "
+//				"FROM #row_id_sykei_tbl, #key_row_tbl "
+//				"WHERE #row_id_sykei_tbl.NumGroup = #key_row_tbl.NumGroup AND #key_row_tbl.NumGroup = @numgroup AND #row_id_sykei_tbl.FgShow = %d) "
+//				"WHERE row = @row AND numgroup <> 0 "
+//			"FETCH cur INTO @row, @numgroup "
+//			"END CLOSE cur DEALLOCATE cur "),
+//			strSortItem1, ID_FGSHOW_IKKATU);
+//	}
+//	else{
+//		strSQL.Format(strSQL + _T("DECLARE cur cursor for "
+//			"SELECT row, NumGroup FROM #key_row_tbl "
+//			"DECLARE @numgroup int DECLARE @row int "
+//			"OPEN cur FETCH cur INTO @row, @numgroup WHILE @@fetch_status = 0 "
+//			"BEGIN "
+//				"UPDATE #key_row_tbl SET key_order1 = "
+//				"(SELECT DISTINCT %s "
+//				"FROM #row_id_sykei_tbl, #key_row_tbl "
+//				"WHERE #row_id_sykei_tbl.NumGroup = #key_row_tbl.NumGroup AND #key_row_tbl.NumGroup = @numgroup AND #row_id_sykei_tbl.FgShow = %d) "
+//				"WHERE row = @row AND numgroup <> 0 "
+//				"UPDATE #key_row_tbl SET key_order2 = "
+//				"(SELECT DISTINCT %s "
+//				"FROM #row_id_sykei_tbl, #key_row_tbl "
+//				"WHERE #row_id_sykei_tbl.NumGroup = #key_row_tbl.NumGroup AND #key_row_tbl.NumGroup = @numgroup AND #row_id_sykei_tbl.FgShow = %d) "
+//				"WHERE row = @row AND numgroup <> 0 "
+//			"FETCH cur INTO @row, @numgroup "
+//			"END CLOSE cur DEALLOCATE cur "),
+//			strSortItem1, ID_FGSHOW_IKKATU, strSortItem2, ID_FGSHOW_IKKATU);
+//	}
+//
+//	// 集計
+//	CString strUpdateTmpTbl;
+//	CString strUpdateBaseTbl;
+//	for(int i=0; i<uCalcInfo.intMaxCount; i++){
+//		// 一時テーブル用
+//		if( strSortItem2.IsEmpty() ){
+//			// サブ項目(strSortItem2)なし
+//			strUpdateTmpTbl.Format(strUpdateTmpTbl + 
+//			_T("UPDATE #row_id_sykei_tbl "
+//			"SET %s = (SELECT SUM(%s) FROM #row_id_sykei_tbl "
+//			"WHERE (%s = @order1 AND %s IS NOT NULL) AND (NumGroup = @numgroup OR NumGroup = 0) AND (FgShow = %d) "
+//			"GROUP BY %s) WHERE row = @row "),
+//			uCalcInfo.strField[i], uCalcInfo.strField[i], strSortItem1, uCalcInfo.strField[i], ID_FGSHOW_OFF, strSortItem1);
+//		}
+//		else{
+//			// サブ項目(strSortItem2)あり
+//			strUpdateTmpTbl.Format(strUpdateTmpTbl + 
+//			_T("UPDATE #row_id_sykei_tbl "
+//			"SET %s = (SELECT SUM(%s) FROM #row_id_sykei_tbl "
+//			"WHERE (%s = @order1 AND %s = @order2 AND %s IS NOT NULL) AND (NumGroup = @numgroup OR NumGroup = 0) AND (FgShow = %d) "
+//			"GROUP BY %s, %s ) WHERE row = @row "),
+//			uCalcInfo.strField[i], uCalcInfo.strField[i], strSortItem1, strSortItem2, 
+//			uCalcInfo.strField[i], ID_FGSHOW_OFF, strSortItem1, strSortItem2);
+//		}
+//		
+//
+//		// 元テーブル用
+//		strUpdateBaseTbl.Format(strUpdateBaseTbl + 
+//			_T("UPDATE %s "
+//			"SET %s = #row_id_sykei_tbl.%s "
+//			"FROM #row_id_sykei_tbl "
+//			"WHERE %s.FgFunc = %d and %s.seq = #row_id_sykei_tbl.seq "),
+//			GetDefaultSQL(), uCalcInfo.strField[i], uCalcInfo.strField[i], GetDefaultSQL(), ID_FGFUNC_SYOKEI, GetDefaultSQL());
+//	}
+//
+//	// 小計集計
+//	if( strSortItem2.IsEmpty()){
+//		// サブ項目(strSortItem2)なし
+//		strSQL.Format(strSQL + _T("DECLARE cur cursor for SELECT key_order1, row, numgroup FROM #key_row_tbl "
+//							  "DECLARE @order1 %s "
+//							  "OPEN cur FETCH cur INTO @order1, @row, @numgroup WHILE @@fetch_status = 0 "
+//							  "BEGIN "
+//							  "%s "
+//							  "FETCH cur INTO @order1, @row, @numgroup "
+//							  "END CLOSE cur DEALLOCATE cur "),
+//							  strOrder1Type, strUpdateTmpTbl);
+//	}
+//	else{
+//		// サブ項目(strSortItem2)あり
+//		strSQL.Format(strSQL + _T("DECLARE cur cursor for SELECT key_order1, row, numgroup, key_order2 FROM #key_row_tbl "
+//							  "DECLARE @order1 %s DECLARE @order2 varchar(60) "
+//							  "OPEN cur FETCH cur INTO @order1, @row, @numgroup, @order2 WHILE @@fetch_status = 0 "
+//							  "BEGIN "
+//							  "%s "
+//							  "FETCH cur INTO @order1, @row, @numgroup, @order2 "
+//							  "END CLOSE cur DEALLOCATE cur "),
+//							  strOrder1Type, strUpdateTmpTbl);
+//	}
+//	
+//
+//	// 元のテーブルを更新
+//	strSQL.Format(strSQL + strUpdateBaseTbl);
+//
+//	try{
+//		// SQL実行
+//		ExecuteSQLWork( strSQL );
+//	}
+//	catch(CException* e ){
+//		e->Delete();
+//	}
+//
+//	return TRUE;
+//}
+// 14-1821_15-1030 del <--
+
+//********************************************************************************
+//	where Val <> 0 で条件付けても、ValがNULLは引っかからないので、Val is nullを付加する
+//		【引数】	なし
+//					
+//		【戻値】	CString SQLのWHERE句の一部
+//********************************************************************************
+CString CdbUc000Common::GetSQLValIsNull()
+{
+	CString strSQL;
+
+	strSQL.Format(_T("OR (Val IS NULL) AND FgFunc <> %d"), ID_FGFUNC_NULL);
+
+	return strSQL;
+}
+
+long CdbUc000Common::GetColumnSortAddressBank(BYTE ItemSeq)
+{
+	return -1;
+}
+
+// midori 160606 cor -->
+//CString CdbUc000Common::GetSQLUpdateYokukiZeroClear(CString column)
+// ---------------------
+CString CdbUc000Common::GetSQLUpdateYokukiZeroClear(CString column, int pSw)
+// midori 160606 cor <--
+{
+	CString sql;
+	CString sql_where;
+
+	sql = "UPDATE " + m_lo_TableName + " SET ";
+// midori 160606 cor -->
+	//sql+= column + " = 0 ";
+	//sql_where.Format("WHERE FgFunc <> %d AND %s IS NOT NULL ", ID_FGFUNC_NULL, column);
+// ---------------------
+	if(pSw == 0)	sql+= column + " = 0 ";
+	else			sql+= column + " = NULL ";
+	sql_where.Format("WHERE FgFunc <> %d AND FgShow = %d AND %s IS NOT NULL ",ID_FGFUNC_NULL,ID_FGSHOW_OFF,column);
+// midori 160606 cor <--
+
+	sql+= sql_where;
+
+	return sql;	
+}
+
+// 対象でない帳票は0を返す
+int CdbUc000Common::GetSortIkkatuOrder()
+{
+	return 0;
+}
+
+// midori 152909_2 del -->
+//// 「金額空欄を出力しない」OFF時、小計の下の行にある空行が”小計に紐づくデータ行である”としてカウントされてしまう（本来はカウントしたくない）為
+//// 小計に紐づくデータ行の開始行を1行下にずらす
+//// ！！注意！！@start_rowのインクリメントは SET @start_row += 1 だと長谷川のマシンでは通って他の品質の方のマシンだと通らない！！
+//CString CdbUc000Common::GetSQLDeleteNullLineUnderSyokei(const CString& strTable)
+// midori 152909_2 del <--
+// midori 152909_2 add -->
+//********************************************************************************
+// 「金額空欄を出力しない」OFF時、小計の下の行にある空行が”小計に紐づくデータ行である”としてカウントされてしまう（本来はカウントしたくない）為
+// 小計に紐づくデータ行の開始行を1行下にずらす
+// ！！注意！！@start_rowのインクリメントは SET @start_row += 1 だと長谷川のマシンでは通って他の品質の方のマシンだと通らない！！
+//		【引数】	CString	テーブル名
+//					int		0:小計 1:中計
+//					
+//		【戻値】	CString SQLのWHERE句の一部
+//********************************************************************************
+CString CdbUc000Common::GetSQLDeleteNullLineUnderSyokei(const CString& strTable, int pSw)
+// midori 152909_2 add <--
+{
+	if(m_OutZeroNull & BIT_D1)	return _T("");	// 空行を出力しないが立っている場合は関係ない為空を返す
+	CString str;
+
+// midori 152909_2 del -->
+	//str.Format( _T(	"IF(@start_row <> 0) BEGIN "	// 最初の小計は関係ない
+	//					"IF(EXISTS(SELECT row FROM %s WHERE (row = @start_row + 1) AND (FgFunc = 0))) BEGIN "	// 小計の次の行が空白行？
+	//						"SET @start_row = @start_row + 1 "	// 小計に紐づくデータ行の対象の開始行を1行スルー	
+	//					"END "
+	//				"END "
+	//	), strTable, ID_FGFUNC_NULL);
+// midori 152909_2 del <--
+// midori 152909_2 add -->
+	if(pSw == 0)	{
+		str.Format( _T(	"IF(@start_row <> 0) BEGIN "	// 最初の小計は関係ない
+							"IF(EXISTS(SELECT row FROM %s WHERE (row = @start_row + 1) AND (FgFunc = %d))) "	// 小計の次の行が空白行？
+								"SET @start_row = @start_row + 1 "	// 小計に紐づくデータ行の対象の開始行を1行スルー
+							"ELSE "
+								"IF(EXISTS(SELECT row FROM %s WHERE (row = @start_row + 1) AND (FgFunc = %d or FgFunc = %d))) "
+									"IF(EXISTS(SELECT row FROM %s WHERE (row = @start_row + 2) AND (FgFunc = %d))) "
+										"SET @start_row = @start_row + 2 "
+						"END "
+			), strTable, ID_FGFUNC_NULL, strTable, ID_FGFUNC_CHUKEI, ID_FGFUNC_CHUKEINULL, strTable, ID_FGFUNC_NULL );
+	}
+	else			{
+		str.Format( _T(	"IF(@start_row <> 0) BEGIN "	// 最初の中計は関係ない
+							"IF(EXISTS(SELECT row FROM %s WHERE (row = @start_row + 1) AND (FgFunc = %d))) BEGIN "	// 中計の次の行が空白行？
+								"SET @start_row = @start_row + 1 "	// 中計に紐づくデータ行の対象の開始行を1行スルー	
+							"END "
+						"END "
+			), strTable, ID_FGFUNC_NULL);
+	}
+// midori 152909_2 add <--
+
+	return str;
+}
+
+// midori 155525_2 del -->
+//int CdbUc000Common::CreateRangaiTempTable()
+// midori 155525_2 del <--
+// midori 155525_2 add -->
+int CdbUc000Common::CreateRangaiTempTable( int pOutZero )
+// midori 155525_2 add <--
+{
+	return 0;
+}
+
+int CdbUc000Common::GetRangaiData()
+{
+	return 0;
+}
+
+// CdbUc052Tanaoroshi2とCdbUc092Kaikakekin2以外からコールしてはいけない
+// virtual
+// midori 155525 del -->
+//int CdbUc000Common::GetPrintPageNum()
+// midori 155525 del <--
+// midori 155525 add -->
+int CdbUc000Common::GetPrintPageNum( int pOutZero )
+// midori 155525 add <--
+{
+	// 欄外出力形式	出力ページはNumPage = 1のレコードにのみセットされている
+	int st = RequeryPage(1);
+	if(st != DB_ERR_OK)	return 0;
+
+	if(IsEOF())	{
+		Fin();
+		return 0;
+	}
+
+	CConvOutRangai cr;
+	int OutType = 0, PrintType = 0;
+	int OutRangai = GetRangaiData();
+	cr.ToMemory(OutRangai, OutType, PrintType);
+
+// midori 161107 add -->
+	// 欄外に有効なデータがあるかを調べる
+// midori 155525 del -->
+	//if(RequeryPageRangai(PrintType) != DB_ERR_OK)	{
+// midori 155525 del <--
+// midori 155525 add -->
+	if(RequeryPageRangai(PrintType,pOutZero) != DB_ERR_OK)	{
+// midori 155525 add <--
+		return(0);
+	}
+	if(IsEOF())	{
+		Fin();
+		return(0);
+	}
+	// 元に戻す（１頁でリクエリ）
+	st = RequeryPage(1);
+	if(st != DB_ERR_OK)	return 0;
+
+	if(IsEOF())	{
+		Fin();
+		return 0;
+	}
+// midori 161107 add <--
+
+	int page = 0;
+	if(PrintType == 0){	// ページ共通共通
+		if(m_FgShow == 0)	page = 1;	// 印字するなら最大ページ1
+		else				page = 0;	// 印字しないなら最大ページ0
+	}
+	else{				// ページ個別出力
+		page = GetCountFgShow(0);		// FgShow = 0→出力する　FgShow = ID_FGSHOW_TANAOROSHI→出力しない
+	}
+
+	Fin();
+	return page;
+}
+
+// midori 160610 add -->
+//**********************************************************************************************************************
+// 一時テーブルのコピー処理
+//**********************************************************************************************************************
+int CdbUc000Common::TempTableCopy( int nFormSeq )
+{
+	CString		strSQL=_T("");
+	CString		strSQL2=_T("");
+	CString		strTempUtiwakeTbl1=_T("");
+	CString		strTempUtiwakeTbl2=_T("");
+
+#ifdef _DEBUG
+	// 一時テーブル名１作成
+	strTempUtiwakeTbl1.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+	// 一時テーブル名２作成
+	strTempUtiwakeTbl2.Format( _T("##temp_utiwake_tbl_%d_s"), nFormSeq );
+#else
+	// 一時テーブル名１作成
+	strTempUtiwakeTbl1.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+	// 一時テーブル名２作成
+	strTempUtiwakeTbl2.Format( _T("#temp_utiwake_tbl_%d_s"), nFormSeq );
+#endif
+
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT * INTO %s FROM %s "),
+		strTempUtiwakeTbl2, strTempUtiwakeTbl2, strTempUtiwakeTbl2, strTempUtiwakeTbl1);
+
+	if( ExecuteSQLWork( strSQL ) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+	return DB_ERR_OK;
+}
+
+/**********************************************************************************************************************
+	CreateKamokuSiteiTable()
+		０円出力ＯＦＦ、科目行を出力ＯＦＦでかつ
+		科目指定のみ行っている場合の一時テーブル作成処理
+		※ここでは [uc_???_xxxxxx] の内容を、そのまま [#row_id_tbl_?][#temp_utiwake_tbl_?] に書き込んでいるだけ
+	引数
+			int					現在の様式のSeq
+	戻値
+			int					正の数：ページ番号
+								負の数：失敗
+								0     ：ページなし
+//@
+**********************************************************************************************************************/
+int CdbUc000Common::CreateKamokuSiteiTable( int nFormSeq )
+{
+	CString		strSQL=_T("");
+	CString		strSQL2=_T("");
+	CString		strTempUtiwakeTbl=_T("");
+	CString		strTempRowIdTbl=_T("");
+
+#ifdef _DEBUG
+	// 一時テーブル名作成
+	strTempRowIdTbl.Format( _T("##row_id_tbl_%d"), nFormSeq );
+	// 最終結果を持つ一時テーブル名作成
+	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+#else
+	// 一時テーブル名作成
+	strTempRowIdTbl.Format( _T("#row_id_tbl_%d"), nFormSeq );
+	// 最終結果を持つ一時テーブル名作成
+	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+#endif
+
+	// ①一時テーブル[#row_id_tbl_?]作成
+	// ソート頁、行順に一意なシーケンス(row)の作成
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s "),
+		strTempRowIdTbl, strTempRowIdTbl, strTempRowIdTbl, GetDefaultSQL());
+	if(m_lo_FormSeq > 0)	{
+		// その他科目の内訳書の絞り込み
+		strSQL2.Format("WHERE FormSeq=%d",m_lo_FormSeq);
+		strSQL += strSQL2;
+	}
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+	strSQL.Format(_T("delete %s "),strTempRowIdTbl);
+	if( ExecuteSQLWork( strSQL ) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+	// ②最終結果を持つ一時テーブル名[#temp_utiwake_tbl_?]作成
+	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT * INTO %s FROM %s "),
+		strTempUtiwakeTbl, strTempUtiwakeTbl, strTempUtiwakeTbl, GetDefaultSQL());
+	if(m_lo_FormSeq > 0)	{
+		// その他科目の内訳書の絞り込み
+		strSQL2.Format("WHERE FormSeq=%d",m_lo_FormSeq);
+		strSQL += strSQL2;
+	}
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != DB_ERR_OK ){
+		return DB_ERR_EXESQL;
+	}
+
+	return DB_ERR_OK;
+}
+
+/**********************************************************************************************************************
+	UpdateKamokuSiteiTable()
+		科目指定を行っている場合の一時テーブル更新処理
+		[#temp_utiwake_tbl_?] から科目指定の内容に従って [#row_id_tbl2_?] にデータを書き込み
+		[#temp_utiwake_tbl_?] にまたデータを戻す
+	引数
+			int					現在の様式のSeq
+	戻値
+			int					正の数：ページ番号
+								負の数：失敗
+								0     ：ページなし
+**********************************************************************************************************************/
+int CdbUc000Common::UpdateKamokuSiteiTable( int nDataRowMax, int nFormSeq, int nNameKeiBitArray, int pSw )
+{
+// midori M-16113008 add -->
+	CString		strSQL=_T("");
+	CString		strTemp=_T("");
+	CRecordset	rs(m_lo_pdb);
+// midori M-16113008 add <--
+// midori 190505 add -->
+	int			sw = 0;
+// midori 190505 add <--
+
+	// ------------------------------------------------------------------------------
+	// 科目指定クラスの作成
+	// ------------------------------------------------------------------------------
+	CdbKamokuSitei*	pks;
+	pks = new CdbKamokuSitei(m_lo_pdb,nFormSeq);
+
+	// ------------------------------------------------------------------------------
+	// 科目指定に必要な必要な情報を取得する
+	// ------------------------------------------------------------------------------
+// midori 190505 del -->
+	//if(pks->Initialize() != DB_ERR_OK)	{
+// midori 190505 del <--
+// midori 190505 add -->
+	//sw = KamokuRowEnableSgn(0);			// 改良No.21-0086,21-0529 del
+	sw = KamokuRowEnableSgn(0, nFormSeq);	// 改良No.21-0086,21-0529 add
+
+	if(pks->Initialize(sw) != DB_ERR_OK)	{
+// midori 190505 add <--
+		ICSMessageBox(pks->m_ErrorMsg);
+		return(pks->m_ErrorCode);
+	}
+
+	//// ------------------------------------------------------------------------------
+	//// ０円除外、科目行を出力する場合は一時テーブルに非表示の一括行(FgShow=2)が
+	//// 抽出されていないのでここで抽出する
+	//// ------------------------------------------------------------------------------
+	//if(pSw != 0)	{
+	//	if(pks->AddIkkatuData(GetDefaultSQL()) != DB_ERR_OK)	{
+	//		ICSMessageBox(pks->m_ErrorMsg);
+	//		return(pks->m_ErrorCode);
+	//	}
+	//}
+
+	// ------------------------------------------------------------------------------
+	// 指定科目以外を一時テーブルから削除する
+	// ------------------------------------------------------------------------------
+// midori M-16113008 del -->
+	//if(pks->SiteigaiDelete(pks->m_KmPrSort) != DB_ERR_OK)	{
+// midori M-16113008 del <--
+// midori M-16113008 add -->
+	if(pks->SiteigaiDelete() != DB_ERR_OK)	{
+// midori M-16113008 add <--
+		ICSMessageBox(pks->m_ErrorMsg);
+		return(pks->m_ErrorCode);
+	}
+
+	// 指定科目以外を削除した結果、０件の場合はここで処理終了
+// midori M-16113008 del -->
+	//if(GetCountDataRecord(1) == 0)	{
+	//	return(DB_ERR_EOF);
+	//}
+// midori M-16113008 del <--
+// midori M-16113008 add -->
+	// 指定科目以外を除外した結果、空行・頁計・累計のみ残った場合
+	// データありとして判断していた
+	// GetNumPageFromTempTable 関数内の頁数判定でデータなしと判定していたが
+	// M-16113008の修正に伴い、ここでデータなしと判定するように変更
+	// 
+	strSQL = _T("SELECT MAX(NumPage) AS 'MaxPage' FROM ");
+#ifdef _DEBUG
+	strTemp.Format(_T("##temp_utiwake_tbl_%d"),nFormSeq);
+#else
+	strTemp.Format(_T("#temp_utiwake_tbl_%d"),nFormSeq);
+#endif
+	strSQL += strTemp;
+	strTemp.Format(" WHERE FgFunc<>%d AND FgFunc<>%d AND FgFunc<>%d", ID_FGFUNC_NULL, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI);
+	strTemp += (" AND FgShow=0");
+	strSQL += strTemp;
+
+	if(!rs.Open(CRecordset::forwardOnly,strSQL))	{
+		return(DB_ERR_EOF);
+	}
+	rs.GetFieldValue(_T("MaxPage"),strTemp);
+	rs.Close();
+	if(_tstoi(strTemp) == 0)	{
+		return(DB_ERR_EOF);
+	}
+// midori M-16113008 add <--
+
+	// ------------------------------------------------------------------------------
+	// 一時テーブルの書き換え処理
+	// ------------------------------------------------------------------------------
+// midori M-16113008 del -->
+	//// ①科目でソートを行うＯＮ
+	//if(pks->m_KmPrSort)	{
+// midori M-16113008 del <--
+		// OnMenuSortの中と同じ
+		if(pks->Ks_CmnCheckTableSort() == TRUE)	{
+			// ソート処理
+			if(pks->Ks_CmnTblSortMainProc() == FUNCTION_NG)	{
+				ICSMessageBox(pks->m_ErrorMsg);
+				return(pks->m_ErrorCode);
+			}
+
+			// 頁と行の再設定
+			pks->Ks_CmnTblUpdatePageRowAllResetMainAfterSort();
+		}
+// midori M-16113008 del -->
+	//}
+	//// ②科目でソートを行うＯＦＦ
+	//else	{
+	//	// 空白行削除、一括金額行再集計、不要になった計行の削除
+	//	if(CreateNotExistKamokuTable(pks,nDataRowMax,nFormSeq,nNameKeiBitArray) != 0)	{
+	//		return(DB_ERR);
+	//	}
+	//}
+// midori M-16113008 del <--
+
+	// ------------------------------------------------------------------------------
+	// 科目指定クラスの破棄
+	// ------------------------------------------------------------------------------
+	delete pks;
+
+	return(DB_ERR_OK);
+}
+
+// midori M-16113008 del -->
+////**********************************************************************
+//// 空白行削除、一括金額行再集計、不要になった計行の削除
+////**********************************************************************
+//int CdbUc000Common::CreateNotExistKamokuTable( CdbKamokuSitei* pks, int nDataRowMax, int nFormSeq, int nNameKeiBitArray )
+//{
+//	int nKeiRow			= GetRowKei( nFormSeq );		// 計あり様式か、計なし様式か
+//	int nKeiType		= GetOutKei( nFormSeq );		// 計設定の種類
+//	int	nLclDataRowMax	= nDataRowMax;					// 1ページの最大行数（合計行含む）
+//	int nKaiPage		= 0;							// ソートダイアログの「改頁を行う」の状態
+//	
+//	CString		strColumn=_T("");
+//	CString		strSQL=_T("");
+//	CString		strTempUtiwakeTbl=_T("");
+//	CString		strTempUtiwakeTbl2=_T("");
+//	CString		strTbl=_T("");
+//
+//	CMyStringArray strColumnArray;
+//
+//	//CdbUcInfSub	mfcRec( m_lo_pdb );	//	uc_inf_subテーブルクラス
+//
+//	//// ソートダイアログの改頁チェック取得
+//	//try{		
+//	//	//	初期化成功？
+//	//	if ( mfcRec.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){			
+//	//		//	レコードあり？
+//	//		if ( !( mfcRec.IsEOF() ) ){
+//	//			//	レコードを先頭に移動
+//	//			mfcRec.MoveFirst();
+//	//			// 「改頁を行う」チェックボックスの状態
+//	//			nKaiPage = mfcRec.m_OpKaiPage;
+//	//		}
+//	//	}
+//	//	//	レコード閉じる
+//	//	mfcRec.Fin();
+//	//}
+//	//catch(...){
+//	//	//	レコード開いてる？
+//	//	if ( mfcRec.IsOpen() ){
+//	//		//	レコード閉じる
+//	//		mfcRec.Fin();
+//	//	}
+//	//}
+//	nKaiPage = 0;
+//
+//	// 最終結果を持つ一時テーブル名作成
+//#ifdef _DEBUG
+//	strTempUtiwakeTbl.Format( _T("##temp_utiwake_tbl_%d"), nFormSeq );
+//	strTempUtiwakeTbl2.Format( _T("##temp_utiwake_tbl_%d_s"), nFormSeq );
+//#else
+//	strTempUtiwakeTbl.Format( _T("#temp_utiwake_tbl_%d"), nFormSeq );
+//	strTempUtiwakeTbl2.Format( _T("#temp_utiwake_tbl_%d_s"), nFormSeq );
+//#endif
+//	strTbl = strTempUtiwakeTbl + _T("_s");
+//
+//	// データ行の設定
+//	if( nKeiRow == 0 ){	// 計なし様式
+//		switch(nKeiType){
+//			case ID_OUTKEI_PAGEKEI:
+//			case ID_OUTKEI_BOTH:
+//				nLclDataRowMax = nDataRowMax - 1;
+//				break;
+//		}
+//	}
+//	else{
+//		nLclDataRowMax = nDataRowMax - 1;
+//	}
+//
+//	int clmIndex = 4;	// seq,NumPage,NumRow,FgFunc以外
+//
+//	// カラム名取得
+//	if( GetColumnName( strColumnArray, clmIndex ) != 0 ){
+//		return DB_ERR_OPEN;
+//	}
+//
+//	// SELECT句のカラム名作成
+//	for(int i=0; i<(int)strColumnArray.GetCount(); i++){
+//		strColumn = strColumn + _T(", ") + strColumnArray.GetAt(i);
+//	}
+//
+//	// 一時テーブル名作成
+//	CString strTempRowIdTbl;
+//#ifdef _DEBUG
+//	strTempRowIdTbl.Format( _T("##row_id_tbl_%d"), nFormSeq );
+//#else
+//	strTempRowIdTbl.Format( _T("#row_id_tbl_%d"), nFormSeq );
+//#endif
+//
+//	// 下記①～③の処理は "temp_utiwake_tbl_?" に対して行う
+//
+//	// ①空白行の削除
+//	if(DeleteKeiNullKamokuRow(strTempUtiwakeTbl) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	//CdbKamokuSitei*	pks;
+//	//pks = new CdbKamokuSitei(m_lo_pdb,nFormSeq);
+//	//pks->Initialize();
+//
+//	// ②一括金額行再集計
+//	if(pks->Kn_CmnIkkatuSaisyukei(GetDefaultSQL()) == FUNCTION_NG)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// ③不要になった計行の削除
+//	if(pks->Kn_CmnKeiDelete() == FUNCTION_NG)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	//delete pks;
+//
+//	// 科目を除外した一時テーブルを退避しておく
+//	if(TempTableCopy(nFormSeq) != 0)	{
+//		return(DB_ERR_EXESQL);
+//	}
+//	// 退避したテーブルに対しては、書き換えたフラグを元に戻しておく
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempUtiwakeTbl2, ID_FGFUNC_IKKATUMANUAL_ZERO,	ID_FGFUNC_IKKATUMANUAL);
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempUtiwakeTbl2, ID_FGFUNC_IKKATUAUTO_ZERO,	ID_FGFUNC_IKKATUAUTO);
+//	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTempUtiwakeTbl2, ID_FGFUNC_DATA_TEMP,			ID_FGFUNC_DATA);
+//	if(ExecuteSQLWork(strSQL) != 0)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// ※ "temp_utiwake_tbl_?" -> "temp_row_id_tbl_?" へデータ移行
+//	strSQL.Format(_T("if object_id('tempdb..%s', 'u') is not null drop table %s SELECT ROW_NUMBER()OVER(ORDER BY NumPage,NumRow) as row,* INTO %s FROM %s"),
+//		strTempRowIdTbl,strTempRowIdTbl,strTempRowIdTbl,strTempUtiwakeTbl);
+//	if(ExecuteSQLWork(strSQL) != 0)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// データ行のみのテーブルにページ番号、行番号を振り直す
+//	if(CalcPageRowNumToTempTable(strTempUtiwakeTbl,strTempRowIdTbl,nLclDataRowMax,strColumn,strTbl) != DB_ERR_OK)	{
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	//*****************************************************************
+//	// 最終ページ、最終ページの最終行取得
+//	//*****************************************************************
+//	int nMaxPage, nCurRow;
+//
+//	// 最終ページ取得
+//	nMaxPage = GetMaxPageFromTempTable( strTempUtiwakeTbl );
+//
+//	// 全ページが空行なら、0ページとして処理を抜ける
+//	if( nMaxPage == 0 ){
+//		return BD_ERR_ALL_NULL;
+//	}
+//
+//	// 最終ページの最終行取得
+//	nCurRow = GetMaxRowFromTempTable( strTempUtiwakeTbl, nMaxPage );
+//
+//	//*****************************************************************
+//	// 改頁を行わない場合の、最終行が空白の場合は削除する
+//	//*****************************************************************
+//	if( nKaiPage == 0 ){
+//		strSQL.Format("IF EXISTS (SELECT * FROM %s WHERE NumPage = %d AND NumRow = %d AND FgFunc = 0 ) DELETE FROM %s WHERE NumPage = %d AND NumRow = %d", 
+//			strTempUtiwakeTbl, nMaxPage, nCurRow, strTempUtiwakeTbl, nMaxPage, nCurRow );
+//
+//		// SQL実行
+//		if( ExecuteSQLWork( strSQL ) != 0 ){
+//			return DB_ERR_EXESQL;
+//		}
+//
+//		// 最終ページ取得
+//		nMaxPage = GetMaxPageFromTempTable( strTempUtiwakeTbl );
+//
+//		// 全ページが空行なら、0ページとして処理を抜ける
+//		if( nMaxPage == DB_ERR_OPEN ){
+//			return BD_ERR_ALL_NULL;
+//		}
+//
+//		// 最終ページの最終行取得
+//		nCurRow = GetMaxRowFromTempTable( strTempUtiwakeTbl, nMaxPage );
+//	}
+//
+//	// 最終ページを空白行で埋める
+//	if( InsertNullRowToLastPage(strTempUtiwakeTbl, nKeiType, nKeiRow, nMaxPage, nLclDataRowMax, nCurRow, strColumnArray) != DB_ERR_OK ){
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	// 計行を挿入
+//	if( InsertKeiRow(strTempUtiwakeTbl, nFormSeq, nKaiPage, nKeiType, nKeiRow, nMaxPage, nDataRowMax, nNameKeiBitArray, strColumnArray) != DB_ERR_OK ){
+//		return DB_ERR_EXESQL;
+//	}
+//
+//	return DB_ERR_OK;
+//}
+// midori M-16113008 del <--
+
+//**********************************************************************
+// 科目指定を行う＋科目でソートを行わない場合の
+// 空白行削除
+//**********************************************************************
+int CdbUc000Common::DeleteKeiNullKamokuRow(CString strTable)
+{
+	CString		strSQL;
+
+	// 頁計・累計の除外（ページをまたぐ場合、頁計・累計に値が入ると空行小計の削除判定、ソート時の小計の紐付けができなくなるため）
+	strSQL.Format(_T("DELETE %s WHERE FgShow!=%d OR (FgFunc=%d OR FgFunc=%d)"),strTable,ID_FGSHOW_OFF,ID_FGFUNC_RUIKEI,ID_FGFUNC_PAGEKEI);
+
+	// 手動・自動一括金額のFgFunc更新（FgFuncソートによって自動・手動一括金額が小計より後にきてしまうため）
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTable, ID_FGFUNC_IKKATUMANUAL,	ID_FGFUNC_IKKATUMANUAL_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTable, ID_FGFUNC_IKKATUAUTO,		ID_FGFUNC_IKKATUAUTO_ZERO);
+	strSQL = strSQL + GetSQLUpdateFgFuncFromIkkatu(strTable, ID_FGFUNC_DATA,			ID_FGFUNC_DATA_TEMP);
+
+	//// 空白行を削除
+	//strSQL.Format(strSQL+_T("DELETE FROM %s WHERE FgFunc=%d"),strTable,ID_FGFUNC_NULL);
+
+	// SQL実行
+	if( ExecuteSQLWork( strSQL ) != 0 ){
+		return DB_ERR_EXESQL;
+	}
+
+	//// 一括金額を再集計するため、表示フラグが "2:非表示（一括）" のデータを本体から持ってくる
+	//strSQL.Format(_T("INSERT INTO %s SELECT * FROM %s WHERE FgShow=%d"),strTable,GetDefaultSQL(),ID_FGSHOW_IKKATU);
+
+	//// SQL実行
+	//if( ExecuteSQLWork( strSQL ) != 0 ){
+	//	return DB_ERR_EXESQL;
+	//}
+
+	return DB_ERR_OK;
+}
+// midori 160610 add <--
+
+// midori 152137 add -->
+//**************************************************
+//	ソート項目（カナ入力有り）の種類を取得
+//	【引数】	intFormSeq  …　新財務のFormSeq番号
+//				intItemSeq	…　ソート項目のシーケンス番号
+//	【戻値】	1			…	科目
+//				2			…	銀行
+//				3			…	取引先
+//				0			…	上記以外
+//**************************************************
+int CdbUc000Common::GetSortItem(int intFormSeq,int intItemSeq)
+{
+	int ret = 0;		// 戻り値
+
+	switch (intFormSeq) {
+	case ID_FORMNO_011:
+		// 金融機関
+		if(intItemSeq == 1)			ret = 2;
+		// 種類
+		else if(intItemSeq == 2)	ret = 1;
+		break;
+	case ID_FORMNO_021:
+		// 振出人
+		if(intItemSeq == 1)			ret = 3;
+		// 科目
+		else if(intItemSeq == 8)	ret = 1;
+		break;
+	case ID_FORMNO_031:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		// 相手先(名称)
+		else if(intItemSeq == 2)	ret = 3;
+		break;
+	case ID_FORMNO_041:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		// 相手先(名称)
+		else if(intItemSeq == 2)	ret = 3;
+		break;
+	case ID_FORMNO_042:
+		// 貸付先
+		if(intItemSeq == 1)			ret = 3;
+		break;
+	case ID_FORMNO_051:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		break;
+	case ID_FORMNO_061:
+		// 区分
+		if(intItemSeq == 1)			ret = 1;
+		break;
+	case ID_FORMNO_071:
+		break;
+	case ID_FORMNO_081:
+		// 支払先
+		if(intItemSeq == 1)			ret = 3;
+// 改良No.21-0086,21-0529 add -->
+		// 科目
+		else if(intItemSeq == 9)	ret = 1;
+// 改良No.21-0086,21-0529 add <--
+		break;
+	case ID_FORMNO_091:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		// 相手先
+		else if(intItemSeq == 2)	ret = 3;
+		break;
+	case ID_FORMNO_101:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		// 相手先
+		else if(intItemSeq == 2)	ret = 3;
+		break;
+	case ID_FORMNO_102:
+		// 所得の種類
+		if(intItemSeq == 3)			ret = 1;
+		break;
+	case ID_FORMNO_111:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		// 借入先
+		else if(intItemSeq == 2)	ret = 2;
+		break;
+	case ID_FORMNO_121:
+		// 区分
+		if(intItemSeq == 1)			ret = 1;
+		break;
+	case ID_FORMNO_131:
+		break;
+	// ソート無し
+	case ID_FORMNO_141:
+	case ID_FORMNO_142:
+		break;
+	case ID_FORMNO_151:
+		// 地代・家賃の区分
+		if(intItemSeq == 1)			ret = 1;
+		break;
+	case ID_FORMNO_152:
+		break;
+	case ID_FORMNO_153:
+		break;
+	case ID_FORMNO_161:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		// 相手先
+		else if(intItemSeq == 3)	ret = 3;
+		break;
+	case ID_FORMNO_162:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		// 相手先
+		else if(intItemSeq == 3)	ret = 3;
+		break;
+	case ID_FORMNO_171:
+	case ID_FORMNO_172:
+	case ID_FORMNO_173:
+	case ID_FORMNO_174:
+	case ID_FORMNO_175:
+	case ID_FORMNO_176:
+	case ID_FORMNO_177:
+	case ID_FORMNO_178:
+	case ID_FORMNO_179:
+	case ID_FORMNO_1710:
+	case ID_FORMNO_1711:
+	case ID_FORMNO_1712:
+	case ID_FORMNO_1713:
+	case ID_FORMNO_1714:
+	case ID_FORMNO_1715:
+	case ID_FORMNO_1716:
+	case ID_FORMNO_1717:
+	case ID_FORMNO_1718:
+	case ID_FORMNO_1719:
+	case ID_FORMNO_1720:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		break;
+	case ID_FORMNO_181:
+	case ID_FORMNO_182:
+	case ID_FORMNO_183:
+	case ID_FORMNO_184:
+	case ID_FORMNO_185:
+	case ID_FORMNO_186:
+	case ID_FORMNO_187:
+	case ID_FORMNO_188:
+	case ID_FORMNO_189:
+	case ID_FORMNO_1810:
+	case ID_FORMNO_1811:
+	case ID_FORMNO_1812:
+	case ID_FORMNO_1813:
+	case ID_FORMNO_1814:
+	case ID_FORMNO_1815:
+	case ID_FORMNO_1816:
+	case ID_FORMNO_1817:
+	case ID_FORMNO_1818:
+	case ID_FORMNO_1819:
+	case ID_FORMNO_1820:
+		// 科目
+		if(intItemSeq == 1)			ret = 1;
+		break;
+	default:
+		break;
+	}
+
+	return(ret);
+}
+
+int CdbUc000Common::IsKamokuSort(int nFormSeq, CDatabase* pdb)
+{
+	int			nRet = 0;
+	CdbUcInfSub	mfcRecSub( pdb);
+
+	if( mfcRecSub.RequeryFormSeq( nFormSeq ) == DB_ERR_OK ){
+		if( !(mfcRecSub.IsEOF()) ){
+			// 簡素化様式かどうか
+			if( mfcRecSub.m_GeneralVar[2] & BIT_D1 ){
+				CCtrlSubGeneralVar cs( mfcRecSub );
+				if( cs.bKamokuSort )	nRet = 1;
+				else					nRet = 0;
+			}
+		}
+		mfcRecSub.Fin();
+	}
+	return(nRet);
+}
+
+//**************************************************
+//	５０音順（銀行、取引先）を取得
+//	【引数】	nFormSeq	…　新財務のFormSeq番号
+//				CDatabase	…　CDatabase
+//				
+//**************************************************
+void CdbUc000Common::IsSort(int nFormSeq, CDatabase* pdb,int* rbank,int* raddress)
+{
+	CdbUcInfMain	mfcRecMain(pdb);
+
+	*rbank = 0;
+	*raddress = 0;
+
+	if( mfcRecMain.Init() == DB_ERR_OK ){
+		if( !(mfcRecMain.IsEOF()) ){
+			if( mfcRecMain.m_GeneralVar[1] & BIT_D5 )	*rbank = 1;
+// midori 152745 del -->
+			//if( mfcRecMain.m_GeneralVar[1] & BIT_D6 )	*raddress = 1;
+// midori 152745 del <--
+// midori 152745 add -->
+			switch(nFormSeq)	{
+				// ② 受取手形の内訳書
+				case	ID_FORMNO_021:
+				// ③ 売掛金（未収入金）の内訳書
+				case	ID_FORMNO_031:
+				// ④－２ 貸付金及び受取利息の内訳書
+				case	ID_FORMNO_042:
+				// ⑩－１ 仮受金（前受金・預り金）の内訳書
+				case	ID_FORMNO_101:
+				// ⑯－２ 雑損失等の内訳書
+				case	ID_FORMNO_162:
+					// 得意先を参照
+					if(mfcRecMain.m_GeneralVar[1] & BIT_D7)	*raddress = 1;
+					break;
+				// ④－１ 仮払金（前渡金）の内訳書
+				// ⑧ 支払手形の内訳書
+				// ⑨ 買掛金（未払金・未払費用）の内訳書
+				// ⑯－１ 雑益、雑損失等の内訳書
+				default:
+					// 仕入先を参照
+					if(mfcRecMain.m_GeneralVar[1] & BIT_D6)	*raddress = 1;
+					break;
+			}
+// midori 152745 add <--
+		}
+		mfcRecMain.Fin();
+	}
+}
+// midori 152137 add <--
+
+// midori 190505 add -->
+// -------------------------------------------------------------------------------------------------------
+// 科目行が挿入されているデータ行の金額がすべて0円の場合、科目行を削除する
+// 引数			int			様式番号
+//				int			0:番号順	1:カナ順
+// -------------------------------------------------------------------------------------------------------
+void CdbUc000Common::DeleteKamokuRow(int nFormSeq,int pSw,CString pstrTable)
+{
+	int				nKnOrder=0;
+	int				scnt=0;
+	int				flg=0;
+	int				flg2=0;
+	CString			strKnKana=_T("");
+	CdbPrtWork3*	rsData;
+
+	// 金額空欄、0円を削除
+	if((m_OutZeroNull & BIT_D0) && (m_OutZeroNull & BIT_D1))	flg = 0;
+	// 金額0円を削除
+	else if( m_OutZeroNull & BIT_D0 )							flg = 1;
+	// 金額空欄を削除
+	else if( m_OutZeroNull & BIT_D1 )							flg = 2;
+
+	// 科目行の対象行が全て０円判定なら、科目行を削除
+	rsData = new CdbPrtWork3(m_lo_pdb,nFormSeq,pstrTable);
+	rsData->RequeryFgShowSortPageRow(ID_FGSHOW_OFF);
+	scnt = 0;
+	rsData->MoveLast();
+	while(!rsData->IsBOF())	{
+		switch(rsData->m_FgFunc)	{
+			case	ID_FGFUNC_DATA_TEMP:			// データ行
+			case	ID_FGFUNC_IKKATUMANUAL_ZERO:	// 一括集計金額行（手動）
+			case	ID_FGFUNC_IKKATUAUTO_ZERO:		// 一括集計金額行（自動）
+				flg2 = 0;
+				if(flg == 0) {
+					//if(nFormSeq == ID_FORMNO_021)	{														// 改良No.21-0086,21-0529 del
+					if(nFormSeq == ID_FORMNO_021 || (bG_InvNo == TRUE && nFormSeq == ID_FORMNO_081))	{	// 改良No.21-0086,21-0529 add
+						if(_tstoi(rsData->m_Val) != 0) {
+							flg2 = 1;
+						}
+					}
+					else {
+						if((_tstoi(rsData->m_Val) != 0) || (_tstoi(rsData->m_Risoku) != 0)) {
+							flg2 = 1;
+						}
+					}
+				}
+				else if(flg == 1) {
+					//if(nFormSeq == ID_FORMNO_021)	{														// 改良No.21-0086,21-0529 del
+					if(nFormSeq == ID_FORMNO_021 || (bG_InvNo == TRUE && nFormSeq == ID_FORMNO_081))	{	// 改良No.21-0086,21-0529 add
+						if(rsData->m_Val.IsEmpty() == TRUE || _tstoi(rsData->m_Val) != 0) {
+							flg2 = 1;
+						}
+					}
+					else {
+						if( (rsData->m_Val.IsEmpty() == TRUE || (_tstoi(rsData->m_Val) != 0)) || 
+							(rsData->m_Risoku.IsEmpty() == TRUE || (_tstoi(rsData->m_Risoku) != 0)) ) {
+							flg2 = 1;
+						}
+					}
+				}
+				else {
+					//if(nFormSeq == ID_FORMNO_021)	{														// 改良No.21-0086,21-0529 del
+					if(nFormSeq == ID_FORMNO_021 || (bG_InvNo == TRUE && nFormSeq == ID_FORMNO_081))	{	// 改良No.21-0086,21-0529 add
+						if(rsData->m_Val.IsEmpty() == FALSE) {
+							flg2 = 1;
+						}
+					}
+					else {
+						if(rsData->m_Val.IsEmpty() == FALSE || rsData->m_Risoku.IsEmpty() == FALSE) {
+							flg2 = 1;
+						}
+					}
+				}
+				if(flg2 == 1)	{
+// midori 156189,156190,156191 del -->
+					//// 科目データの取得
+					//if(pSw == 0) {
+					//	if(nKnOrder != rsData->m_KnOrder) {
+					//		scnt = 0;
+					//	}
+					//}
+					//else {
+					//	if(strKnKana.Compare(rsData->m_KnKana) != 0) {
+					//		scnt = 0;
+					//	}
+					//}
+					//nKnOrder = rsData->m_KnOrder;
+					//strKnKana = rsData->m_KnKana;
+// midori 156189,156190,156191 del <--
+					scnt++;
+				}
+				break;
+			case	ID_FGFUNC_KAMOKU:		// 科目行
+// midori 156189,156190,156191 del -->
+				//if(pSw == 0) {
+				//	if(nKnOrder != rsData->m_KnOrder) {
+				//		scnt = 0;
+				//	}
+				//}
+				//else {
+				//	if(strKnKana.Compare(rsData->m_KnKana) != 0) {
+				//		scnt = 0;
+				//	}
+				//}
+				//nKnOrder = rsData->m_KnOrder;
+				//strKnKana = rsData->m_KnKana;
+// midori 156189,156190,156191 del <--
+				if(scnt == 0)	{
+					// データの発生が無ければ削除する
+					rsData->Delete();
+				}
+				scnt = 0;
+				break;
+			default:
+				break;
+		}
+		rsData->MovePrev();
+	}
+	rsData->Fin();
+	delete rsData;
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+//	データ行数の取得（金額が入力されている行限定）
+// --------------------------------------------------------------------------------------------------------------------
+//	引数	
+//	戻値	int					データ件数
+// --------------------------------------------------------------------------------------------------------------------
+int CdbUc000Common::GetCountDataRecord2(int pFormSeq, int pOutZero, int pOutNull)
+{
+	int			retVal=0;
+// midori 157001 del -->
+	//int			cnt1=0,cnt2=0;
+// midori 157001 del <--
+// midori 157001 add -->
+	int			cnt1=0;
+// midori 157001 add <--
+	CString		SqlStr=_T("");
+	CString		SqlStr1=_T("");
+	CString		SqlStr2=_T("");
+	CString		SqlStr3=_T("");
+	CString		SqlStr4=_T("");
+	CString		strTemp=_T("");
+	CDBVariant	val;
+	CRecordset	rs(m_lo_pdb);
+
+	//if(KamokuRowEnableSgn(0) == 0) {				// 改良No.21-0086,21-0529 del
+	if(KamokuRowEnableSgn(0, pFormSeq) == 0)	{	// 改良No.21-0086,21-0529 add
+		return(1);
+	}
+
+	// 空行以外のデータ
+	// 頁計、累計、小計、中計、小計NULL、中計NULLはチェックの対象外
+	strTemp.Format(_T("FgFunc<>%d AND FgFunc<>%d AND FgFunc<>%d AND FgFunc <> % d AND FgFunc <> %d AND FgFunc <> %d AND FgFunc <> %d "), ID_FGFUNC_NULL, ID_FGFUNC_RUIKEI, ID_FGFUNC_PAGEKEI,ID_FGFUNC_SYOKEI,ID_FGFUNC_SYOKEINULL,ID_FGFUNC_CHUKEI,ID_FGFUNC_CHUKEINULL);
+
+	//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+	// 0円、空白以外のデータがある
+	SqlStr1 = _T("SELECT count(Seq) AS Num ");
+	SqlStr2 = _T("FROM ") + m_lo_TableName + _T(" ");
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if(m_lo_FormSeq > 0)	{
+		SqlStr3.Format("WHERE FormSeq=%d AND %s", m_lo_FormSeq, strTemp);
+	}
+	else	{
+		SqlStr3.Format("WHERE %s", strTemp);
+	}
+	SqlStr3 = SqlStr3 + _T(" AND FgShow=0");
+
+	// 0円、金額NULLの対応
+	if(pFormSeq == ID_FORMNO_021)	{
+		if(pOutZero == 1 && pOutNull == 1)	{
+			SqlStr4.Format(_T(" AND (%s != 0 AND %s IS NOT NULL)"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutZero == 1 )	{
+			SqlStr4.Format(_T(" AND (FgFunc != %d AND (%s != 0 OR %s IS NULL))"), ID_FGFUNC_KAMOKU, GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND (%s IS NOT NULL)"), GetZeroMoneyMoveField());
+		}
+	}
+	else if(pFormSeq == ID_FORMNO_042)	{
+		if( pOutZero == 1 && pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 AND %s IS NOT NULL) OR (Risoku != 0 AND Risoku IS NOT NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutZero == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 OR %s IS NULL) OR (Risoku != 0 OR Risoku IS NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND (%s IS NOT NULL OR Risoku IS NOT NULL)"), GetZeroMoneyMoveField());
+		}
+	}
+	else if(pFormSeq == ID_FORMNO_061)	{
+		if( pOutZero == 1 && pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 AND %s IS NOT NULL) OR (Val3 != 0 AND Val3 IS NOT NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutZero == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 OR %s IS NULL) OR (Val3 != 0 OR Val3 IS NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND (%s IS NOT NULL OR Val3 IS NOT NULL) "), GetZeroMoneyMoveField());
+		}
+	}
+	else if(pFormSeq == ID_FORMNO_071)	{
+		if( pOutZero == 1 && pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 AND %s IS NOT NULL) OR (MsVal != 0 AND MsVal IS NOT NULL) OR (MsVal2 != 0 AND MsVal2 IS NOT NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutZero == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 OR %s IS NULL) OR (MsVal != 0 OR MsVal IS NULL) OR (MsVal2 != 0 OR MsVal2 IS NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND (%s IS NOT NULL OR MsVal IS NOT NULL OR MsVal2 IS NOT NULL)"), GetZeroMoneyMoveField());
+		}
+	}
+// 改良No.21-0086,21-0529 add -->
+	else if(pFormSeq == ID_FORMNO_081)	{
+		if(bG_InvNo == TRUE)	{
+			if(pOutZero == 1 && pOutNull == 1)	{
+				SqlStr4.Format(_T(" AND (%s != 0 AND %s IS NOT NULL)"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+			}
+			else if(pOutZero == 1)	{
+				SqlStr4.Format(_T(" AND (FgFunc != %d AND (%s != 0 OR %s IS NULL))"), ID_FGFUNC_KAMOKU, GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+			}
+			else if(pOutNull == 1)	{
+				SqlStr4.Format(_T(" AND (%s IS NOT NULL)"), GetZeroMoneyMoveField());
+			}
+		}
+	}
+// 改良No.21-0086,21-0529 add <--
+	else if(pFormSeq == ID_FORMNO_111)	{
+		if( pOutZero == 1 && pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 AND %s IS NOT NULL) OR (Risoku != 0 AND Risoku IS NOT NULL)) "), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutZero == 1 )	{
+			SqlStr4.Format(_T(" AND (FgFunc != %d AND ((%s != 0 OR %s IS NULL) OR (Risoku != 0 OR Risoku IS NULL)))"), ID_FGFUNC_KAMOKU, GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND (%s IS NOT NULL OR Risoku IS NOT NULL) "), GetZeroMoneyMoveField());
+		}
+	}
+	else if(pFormSeq == ID_FORMNO_121)	{
+		if( pOutZero == 1 && pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 AND %s IS NOT NULL) OR (Val2 != 0 AND Val2 IS NOT NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutZero == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 OR %s IS NULL) OR (Val2 != 0 OR Val2 IS NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND (%s IS NOT NULL OR Val2 IS NOT NULL) "), GetZeroMoneyMoveField());
+		}
+	}
+	else if(pFormSeq == ID_FORMNO_131)	{
+		if( pOutZero == 1 && pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 AND %s IS NOT NULL) OR (Val2 != 0 AND Val2 IS NOT NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutZero == 1 )	{
+			SqlStr4.Format(_T(" AND ((%s != 0 OR %s IS NULL) OR (Val2 != 0 OR Val2 IS NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if( pOutNull == 1 )	{
+			SqlStr4.Format(_T(" AND (%s IS NOT NULL OR Val2 IS NOT NULL)"), GetZeroMoneyMoveField());
+		}
+	}
+	else if(pFormSeq == ID_FORMNO_141)	{
+		if(pOutZero == 1 && pOutNull == 1)	{
+			SqlStr4.Format( _T(" AND ((%s != 0 AND %s IS NOT NULL) "), GetZeroMoneyMoveField(), GetZeroMoneyMoveField()); 
+			SqlStr4 +=		_T(" OR (EmVal != 0 and EmVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (PrVal != 0 and PrVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (BfVal != 0 and BfVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (PfVal != 0 and PfVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (EtVal != 0 and EtVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (RtVal != 0 and RtVal IS NOT NULL)) ");
+		}
+		else if( pOutZero == 1 )	{
+			SqlStr4.Format( _T(" AND ((%s != 0) OR (%s IS NULL) "),GetZeroMoneyMoveField(),GetZeroMoneyMoveField()); 
+			SqlStr4 +=		_T(" OR (EmVal != 0) OR (EmVal IS NULL) ");
+			SqlStr4 +=		_T(" OR (PrVal != 0) OR (PrVal IS NULL) ");
+			SqlStr4 +=		_T(" OR (BfVal != 0) OR (BfVal IS NULL) ");
+			SqlStr4 +=		_T(" OR (PfVal != 0) OR (PfVal IS NULL) ");
+			SqlStr4 +=		_T(" OR (EtVal != 0) OR (EtVal IS NULL) ");
+			SqlStr4 +=		_T(" OR (RtVal != 0) OR (RtVal IS NULL)) ");
+		}
+		else if( pOutNull == 1 )	{
+			SqlStr4.Format( _T(" AND ((%s IS NOT NULL) "), GetZeroMoneyMoveField());
+			SqlStr4 +=		_T(" OR (EmVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (PrVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (BfVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (PfVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (EtVal IS NOT NULL) ");
+			SqlStr4 +=		_T(" OR (RtVal IS NOT NULL)) ");
+		}
+	}
+	else {
+		if(pOutZero == 1 && pOutNull == 1)	{
+			SqlStr4.Format(_T(" AND (%s != 0 and %s IS NOT NULL)"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if(pOutZero == 1)	{
+			SqlStr4.Format(_T(" AND (%s != 0 or %s IS NULL)"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+		}
+		else if(pOutNull == 1)	{
+			SqlStr4.Format(_T(" AND (%s IS NOT NULL)"), GetZeroMoneyMoveField());
+		}
+	}
+
+	// SQL文を結合
+	SqlStr = SqlStr1 + SqlStr2 + SqlStr3 + SqlStr4;
+
+	// データ件数確認
+	if( !OpenEx(&rs, SqlStr, m_lo_TableName) )	{
+		return(-1);
+	}
+
+	if(!rs.IsEOF())	{
+		rs.GetFieldValue(_T("Num"), val);
+		if(val.m_dwType == DBVT_NULL)	{	// NULLだった場合
+			cnt1 = 0;
+		}
+		else	{							// 値の取得OK
+			cnt1 = val.m_lVal;
+		}
+	}
+	rs.Close();
+
+// midori 157001 del -->
+	////-----------------------------------------------------------------------------------------------------------------------------------------------------------
+	//// 0円、空白に該当するデータがある
+	//cnt2 = 0;
+
+	//// ※SqlStr1,SqlStr2,SqlStr3 はそのまま使用
+	//// SqlStr4 のみ書き換え
+	//// 0円、金額NULLの対応
+	//SqlStr4.Empty();
+	//if(pFormSeq == ID_FORMNO_021)	{
+	//	if(pOutZero == 1 && pOutNull == 1)	{
+	//		SqlStr4.Format(_T(" AND (FgFunc <> %d and (%s = 0 or %s IS NULL))"), ID_FGFUNC_KAMOKU, GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutZero == 1 )	{
+	//		SqlStr4.Format(_T(" AND ((%s = 0) AND (%s IS NOT NULL))"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutNull == 1 )	{
+	//		SqlStr4.Format(_T(" AND (FgFunc <> %d and (%s IS NULL))"), ID_FGFUNC_KAMOKU, GetZeroMoneyMoveField());
+	//	}
+	//}
+	//else if(pFormSeq == ID_FORMNO_042)	{
+	//	if( pOutZero == 1 && pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s = 0 OR %s IS NULL) AND (Risoku = 0 OR Risoku IS NULL))", GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutZero == 1 )	{
+	//		SqlStr4.Format(" AND (((%s = 0) AND (%s IS NOT NULL)) AND ((Risoku = 0)) AND (Risoku IS NOT NULL))", GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s IS NULL) AND (Risoku IS NULL))", GetZeroMoneyMoveField());
+	//	}
+	//}
+	//else if(pFormSeq == ID_FORMNO_061)	{
+	//	if( pOutZero == 1 && pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s = 0 OR %s IS NULL) AND (Val3 = 0 OR Val3 IS NULL)) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutZero == 1 )	{
+	//		SqlStr4.Format(" AND (((%s = 0) AND (%s IS NOT NULL)) AND ((Val3 = 0)) AND (Val3 IS NOT NULL)) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s IS NULL) AND (Val3 IS NULL)) ", GetZeroMoneyMoveField());
+	//	}
+	//}
+	//else if(pFormSeq == ID_FORMNO_071)	{
+	//	if( pOutZero == 1 && pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s = 0 OR %s IS NULL) AND (MsVal = 0 OR MsVal IS NULL) AND (MsVal2 = 0 OR MsVal2 IS NULL)) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutZero == 1 )	{
+	//		SqlStr4.Format(" AND (((%s = 0) AND (%s IS NOT NULL)) AND ((MsVal = 0) AND (MsVal IS NOT NULL)) AND ((MsVal2 = 0) AND (MsVal2 IS NOT NULL))) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s IS NULL) AND (MsVal IS NULL) AND (MsVal2 IS NULL)) ", GetZeroMoneyMoveField());
+	//	}
+	//}
+	//else if(pFormSeq == ID_FORMNO_111)	{
+	//	if( pOutZero == 1 && pOutNull == 1 )	{
+	//		SqlStr4.Format(_T(" AND (FgFunc <> %d and ((%s = 0 OR %s IS NULL) AND (Risoku = 0 OR Risoku IS NULL))) "), ID_FGFUNC_KAMOKU, GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if( pOutZero == 1 )	{
+	//		SqlStr4.Format(" AND (((%s = 0) AND (%s IS NOT NULL)) AND ((Risoku = 0) AND (Risoku IS NOT NULL))) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField() );
+	//	}
+	//	else if( pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND (FgFunc <> %d and ((%s IS NULL) AND (Risoku IS NULL))) ", ID_FGFUNC_KAMOKU, GetZeroMoneyMoveField() );
+	//	}
+	//}
+	//else if(pFormSeq == ID_FORMNO_121)	{
+	//	if( pOutZero == 1 && pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s = 0 OR %s IS NULL) AND (Val2 = 0 OR Val2 IS NULL)) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField() );
+	//	}
+	//	else if( pOutZero == 1 )	{
+	//		SqlStr4.Format(" AND (((%s = 0) AND (%s IS NOT NULL)) AND ((Val2 = 0) AND (Val2 IS NOT NULL))) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField() );
+	//	}
+	//	else if( pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s IS NULL) AND (Val2 IS NULL)) ", GetZeroMoneyMoveField());
+	//	}
+	//}
+	//else if(pFormSeq == ID_FORMNO_131)	{
+	//	if( pOutZero == 1 && pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s = 0 OR %s IS NULL) AND (Val2 = 0 OR Val2 IS NULL)) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField() );
+	//	}
+	//	else if( pOutZero == 1 )	{
+	//		SqlStr4.Format(" AND (((%s = 0) AND (%s IS NOT NULL)) AND ((Val2 = 0) AND (Val2 IS NOT NULL))) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField() );
+	//	}
+	//	else if( pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s IS NULL) AND (Val2 IS NULL)) ", GetZeroMoneyMoveField() );
+	//	}
+	//}
+	//else if(pFormSeq == ID_FORMNO_141)	{
+	//	if(pOutZero == 1 && pOutNull == 1)	{
+	//		SqlStr4.Format(" AND ((%s = 0 OR %s IS NULL) AND (EmVal = 0 OR EmVal IS NULL) AND (PrVal = 0 OR PrVal IS NULL) AND "
+	//						"(BfVal = 0 OR BfVal IS NULL) AND (PfVal = 0 OR PfVal IS NULL) AND (EtVal = 0 OR EtVal IS NULL) AND (RtVal = 0 OR RtVal IS NULL)) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField() );
+	//	}
+	//	else if( pOutZero == 1 )	{
+	//		SqlStr4.Format(" AND (((%s = 0) AND (%s IS NOT NULL)) AND ((EmVal = 0) AND (EmVal IS NOT NULL)) AND "
+	//						"((PrVal = 0) AND (PrVal IS NOT NULL)) AND ((BfVal = 0) AND (BfVal IS NOT NULL)) AND ((PfVal = 0) AND "
+	//						"(PfVal IS NOT NULL)) AND ((EtVal = 0) AND (EtVal IS NOT NULL)) AND ((RtVal = 0) AND (RtVal IS NOT NULL))) ", GetZeroMoneyMoveField(), GetZeroMoneyMoveField() );
+	//	}
+	//	else if( pOutNull == 1 )	{
+	//		SqlStr4.Format(" AND ((%s IS NULL) AND (EmVal IS NULL) AND (PrVal IS NULL) AND (BfVal IS NULL) AND (PfVal IS NULL) AND (EtVal IS NULL) AND (RtVal IS NULL)) ", GetZeroMoneyMoveField() );
+	//	}
+	//}
+	//else {
+	//	if(pOutZero == 1 && pOutNull == 1)	{
+	//		SqlStr4.Format(_T(" AND (%s = 0 OR %s IS NULL)"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if(pOutZero == 1)	{
+	//		SqlStr4.Format(_T(" AND (%s = 0 and %s IS NOT NULL)"), GetZeroMoneyMoveField(), GetZeroMoneyMoveField());
+	//	}
+	//	else if(pOutNull == 1)	{
+	//		SqlStr4.Format(_T(" AND (%s IS NULL)"), GetZeroMoneyMoveField());
+	//	}
+	//}
+
+	//// SQL文を結合
+	//SqlStr = SqlStr1 + SqlStr2 + SqlStr3 + SqlStr4;
+
+	//// データ件数確認
+	//if( !OpenEx(&rs, SqlStr, m_lo_TableName) )	{
+	//	return(-1);
+	//}
+
+	//if(!rs.IsEOF())	{
+	//	rs.GetFieldValue(_T("Num"), val);
+	//	if(val.m_dwType == DBVT_NULL)	{	// NULLだった場合
+	//		cnt2 = 0;
+	//	}
+	//	else	{							// 値の取得OK
+	//		cnt2 = val.m_lVal;
+	//	}
+	//}
+	//rs.Close();
+
+	////-----------------------------------------------------------------------------------------------------------------------------------------------------------
+	//retVal = 0;
+	//if(cnt1 > 0 && cnt2 > 0)	{
+	//	// 0円(空欄)以外のデータ→有、0円(空欄)データ→有
+	//	retVal = 1;
+	//}
+	//else if(cnt1 > 0 && cnt2 <= 0)	{
+	//	// 0円(空欄)以外のデータ→有、0円(空欄)データ→無
+	//	retVal = 2;
+	//}
+	//else if(cnt1 <= 0 && cnt2 > 0)	{
+	//	// 0円(空欄)以外のデータ→無、0円(空欄)データ→有
+	//	retVal = 3;
+	//}
+// midori 157001 del <--
+
+// midori 157001 add -->
+	//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+	retVal = 0;
+	if(cnt1 > 0) {
+		retVal = 1;
+	}
+// midori 157001 add <--
+
+	return(retVal);
+}
+// midori 190505 add <--
+
+// midori 156188_2 add -->
+// ------------------------------------------------------------------------------
+//	「科目行を挿入する」 有効/無効のサインを変更する
+//	条件	①事業期間の期首が平成31年4月1日以降
+//			②過年度確定で無い
+//
+//	引数	int		0:過年度確定サインのチェック無し
+//					1:過年度確定サインのチェック有り
+//			
+// ------------------------------------------------------------------------------
+//int CdbUc000Common::KamokuRowEnableSgn(int pSw)				// 改良No.21-0086,21-0529 del
+int CdbUc000Common::KamokuRowEnableSgn(int pSw, int nFormSeq)	// 改良No.21-0086,21-0529 add
+{
+	CdbUcInfMain	mfcRecMain( m_lo_pdb );	//	「uc_inf_main」テーブル用クラス
+	int				symd=0,eymd=0;
+	int				ret=0;
+	BOOL			bG_KansoLock=FALSE;
+	CRecordset		rs(m_lo_pdb);
+	CString			strSql = _T("");
+	CString			strData[2] = {_T("")};
+// 改良No.21-0086,21-0529 add -->
+	CZmGen8			ZmGen;
+	BOOL			bG_InvNoLock = FALSE;
+// 改良No.21-0086,21-0529 add <--
+
+	try{
+		rs.Open(CRecordset::forwardOnly,_T("select ss_ymd,ee_ymd from zvolume"));
+		rs.GetFieldValue((short)0,strData[0]);
+		rs.GetFieldValue((short)1,strData[1]);
+		rs.Close();
+	}catch(CDBException* e) {
+		e->Delete();
+		return(-1);
+	}
+	symd = _tstoi(strData[0]);
+	eymd = _tstoi(strData[1]);
+
+	// 1.期末が平成31年4月1日より前のマスターは現様式
+	if(eymd < 20190401)	{
+		bG_KansoLock = TRUE;
+	}
+	// 2.期首が平成31年4月1日以降のマスターは新様式
+	else if(symd >= 20190401)	{
+		bG_KansoLock = TRUE;
+	}
+	// 3.上記以外はプログラム内で様式を切り替えられるようにする
+	else	{
+		bG_KansoLock = FALSE;
+	}
+
+// 改良No.21-0086,21-0529 add -->
+	// 1.期末が令和6年3月1日より前のマスター、またはインボイス改正マスターでないマスター　は簡素化様式
+	if(eymd < 20240301 || m_Invoice == false)	{
+		bG_InvNoLock = TRUE;
+	}
+	// 2.期首が令和6年3月1日以降且つインボイス改正マスターである マスターは登録番号追加版様式
+	else if(symd >= 20240301 && m_Invoice == true)	{
+		bG_InvNoLock = TRUE;
+	}
+	// 3.上記以外はプログラム内で様式を切り替えられるようにする
+	else	{
+		bG_InvNoLock = FALSE;
+	}
+// 改良No.21-0086,21-0529 add <--
+
+	if(mfcRecMain.Init() == DB_ERR_OK)	{
+		if(!(mfcRecMain.IsEOF()))	{
+			mfcRecMain.MoveFirst();
+			// (mfcRecMain.m_GeneralVar[2] & BIT_D1)	チェック有り：簡素化後の様式
+			// bG_KansoLock == TRUE						簡素化前⇔簡素化後の変更不可
+// 改良No.21-0086,21-0529 cor -->
+			//if((mfcRecMain.m_GeneralVar[2] & BIT_D1) && bG_KansoLock == TRUE)	{
+			//	ret = 1;
+			//}
+// ------------------------------
+			if(nFormSeq == ID_FORMNO_081) {
+				if((mfcRecMain.m_GeneralVar[2] & BIT_D1) && bG_KansoLock == TRUE && bG_InvNoLock == TRUE)	{
+					ret = 1;
+				}
+			}
+			else	{
+				if((mfcRecMain.m_GeneralVar[2] & BIT_D1) && bG_KansoLock == TRUE) {
+					ret = 1;
+				}
+			}
+// 改良No.21-0086,21-0529 cor <--
+			if(pSw == 1) {
+				// 過年度確定
+				if((mfcRecMain.m_GeneralVar[1] & BIT_D2)) {
+					ret = 0;
+				}
+			}
+		}
+	}
+	mfcRecMain.Fin();
+
+	return(ret);
+}
+// midori 156188_2 add <--
+
+// midori 190505 add -->
+// ----------------------------------------------------------------------------------------
+//	UpdateFgFunc()
+//		ソートで使用する "FgFunc"項目を更新
+//		
+//	引数
+//			int					"FgFunc"の更新後の値
+//			int					更新を行う"FgFunc"の値
+//	戻値
+//			int					DB_ERR_OK (0)     ：成功
+//								DB_ERR_OK (0) 以外：失敗
+// ----------------------------------------------------------------------------------------
+int CdbUc000Common::UpdateFgFunc(int nFgFunc,int nFgFuncW)
+{
+	CString		str = "";		// UPDATE xxx SET FgFunc=x
+	CString		strCommand;
+
+	// SQLコマンド作成
+	strCommand.Format("UPDATE %s SET FgFunc=%d WHERE FgFunc=%d", m_lo_TableName, nFgFunc, nFgFuncW);
+
+	// FormSeq対応(帳表 ⑰⑱その他１、２対応)
+	if (m_lo_FormSeq > 0) {
+		str.Format(" AND (FormSeq = %d)", m_lo_FormSeq);
+		strCommand += str;
+	}
+
+	return	ExecuteSQLWork(strCommand);
+}
+// midori 190505 add <--
+
+// midori 157042 add -->
+// ----------------------------------------------------------------------------------------
+//	UpdateFgFunc()
+//			入力データに科目行があるかチェックを行う
+//		
+//	引数	なし
+//
+//	戻値
+//			int					0:科目行無し
+//								1:科目行有り
+// ----------------------------------------------------------------------------------------
+int CdbUc000Common::GetKmkRowSw(void)
+{
+	int			ret = 0;
+	CString		strData = _T("");
+	CString		strSQL = _T("");
+	CRecordset	rs( m_lo_pdb );
+
+	// 入力データに科目行があるかチェックを行う
+	strSQL.Format(_T("SELECT count(Seq) as SecCnt FROM %s WHERE FgShow = %d AND FgFunc = %d "), GetDefaultSQL(), ID_FGSHOW_OFF, ID_FGFUNC_KAMOKU);
+	// オープン
+	rs.Open(CRecordset::forwardOnly, strSQL);
+	// 取得
+	rs.GetFieldValue(_T("SecCnt"), strData);
+	rs.Close();
+
+	// 入力データに科目行あり
+	if (_tstoi(strData) > 0) {
+		ret = 1;
+	}
+	return(ret);
+}
+// midori 157042 add <--
+
+// midori 157118 add -->
+// ----------------------------------------------------------------------------------------
+// DelCrLfString()
+//	改行文字列削除
+//	引数	szBuf	…	文字列
+//
+//	戻値	改行文字列削除文字列
+// ----------------------------------------------------------------------------------------
+CString CdbUc000Common::DelCrLfString(CString szBuf)
+{
+	CString		szRet;		//	戻値
+	CString		szCrLf;		//	改行文字列
+	int			nPos = -1;	//	改行位置
+	int			nLen = -1;	//	文字列長
+	int			nCrLf = -1;	//	改行の文字列長
+
+	//	初期化
+	szRet.Empty();
+	szCrLf.Empty();
+	//	改行文字列作成
+	szCrLf = '\r';
+	szCrLf += '\n';
+
+	//	改行文字列検索
+	nPos = szBuf.Find(szCrLf);
+
+	//	改行あり？
+	if (nPos >= 0) {
+		nLen = szBuf.GetLength();							//	文字列長取得
+		nCrLf = szCrLf.GetLength();							//	改行の文字列長取得
+		szRet = szBuf.Left(nPos);							//	改行文字までの文字列取得
+		szRet += szBuf.Right(nLen - (nPos + nCrLf));	//	改行文字列以降の文字列取得
+	}
+	//	改行なし
+	else {
+		//	引数を戻値にセット
+		szRet = szBuf;
+	}
+
+	//	戻値を返す
+	return(szRet);
+}
+// midori 157118 add <--
+
+// midori 157127 add -->
+// ----------------------------------------------------------------------------------------
+//	uc_lst_item_sort：データ取得
+//		IN		int				項目番号
+//				ITEMSORT_INFO*	取得情報の格納領域
+//		RET		BOOL			TRUE:正常終了，FALSE:エラー
+// ----------------------------------------------------------------------------------------
+BOOL CdbUc000Common::CmnUcLstItemSortGetData(int intFormSeq,int intItemSeq, ITEMSORT_INFO* uItemSort)
+{
+	CdbUcLstItemSort	rsLstIS( m_lo_pdb );
+	BOOL				bRet = FALSE;
+
+	// データ初期化
+	uItemSort->bytFgSykei		= 0;			// 小計の対象である/ない
+	uItemSort->bytFgItem		= 0;			// 項目の種類を示す番号
+	uItemSort->strOrderStr		= "";			// 並び替え用SQL文字列
+	uItemSort->strFieldSykei	= "";			// 小計のグループ判定に使用するフィールド名
+	uItemSort->strFieldSykei2	= "";			// 小計のグループ判定に使用するフィールド名
+
+	// パラメータチェック
+	if ((intFormSeq <= 0) || (intItemSeq <= 0)) {
+		rsLstIS.Fin();
+		return FALSE;
+	}
+
+	// クエリー実行
+	if (rsLstIS.RequeryFormItem(intFormSeq, intItemSeq) == DB_ERR_OK) {
+		if (!rsLstIS.IsEOF()) {
+			// 必要情報をセット
+			uItemSort->bytFgSykei		= rsLstIS.m_FgSykei;		// 小計の対象である/ない
+			uItemSort->bytFgItem		= rsLstIS.m_FgItem;			// 項目の種類を示す番号
+			uItemSort->strOrderStr		= rsLstIS.m_OrderStr;		// 並び替え用SQL文字列
+			uItemSort->strFieldSykei	= rsLstIS.m_FieldSykei;		// 小計のグループ判定に使用するフィールド名
+			uItemSort->strFieldSykei2	= rsLstIS.m_FieldSykei2;	// 小計のグループ判定に使用するフィールド名
+			uItemSort->strOrderStr2		= rsLstIS.m_OrderStr2;		// 50音並び替え用SQL文字列
+// 20-0450 add -->
+			uItemSort->intItemSeq		= rsLstIS.m_ItemSeq;
+// 20-0450 add <--
+			bRet = TRUE;
+		}
+	}
+	rsLstIS.Fin();
+
+	return bRet;
+}
+// midori 157127 add <--

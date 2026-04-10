@@ -1,0 +1,4653 @@
+﻿// インボイス登録番号追加対応_23/09/11 add -->
+//--------------------------------------------------
+//	frmUc081SiharaitegataI.cpp
+//--------------------------------------------------
+
+#include "stdafx.h"
+#include "UCHIWAKE.h"
+#include "frmUc081Siharaitegata.h"
+
+//extern	int		KamokuRowEnableSgn(CDatabase* pDB, int pSw);			// 改良No.21-0086,21-0529 del
+extern	int		KamokuRowEnableSgn(CDatabase* pDB, int pSw, int nFormSeq);	// 改良No.21-0086,21-0529 add
+
+IMPLEMENT_DYNCREATE( CfrmUc081SiharaitegataI, CfrmUc000Common )
+
+
+BEGIN_MESSAGE_MAP( CfrmUc081SiharaitegataI, CfrmUc000Common )
+	ON_WM_SIZE()
+	ON_COMMAND( ID_BUTTON_F2, OnButtonF2 )
+	ON_COMMAND( ID_BUTTON_F4, OnButtonF4 )
+	ON_COMMAND( ID_BUTTON_F5, OnButtonF5 )
+	ON_COMMAND( ID_BUTTON_F6, OnButtonF6 )
+	ON_COMMAND( ID_BUTTON_F7, OnButtonF7 )
+	ON_COMMAND( ID_BUTTON_F8, OnButtonF8 )
+	ON_COMMAND( ID_BUTTON_F9, OnButtonF9 )
+	ON_COMMAND( ID_BUTTON_F11, OnButtonF11 )
+	ON_COMMAND( ID_BUTTON_F12, OnButtonF12 )
+	ON_COMMAND( ID_BUTTON_HOME, OnButtonHome )
+	ON_COMMAND( ID_BUTTON_INSERT, OnButtonInsert )
+	ON_COMMAND( ID_PRINTSETUP_MENU, &CfrmUc081SiharaitegataI::OnMenuPrintSetup )
+	ON_COMMAND( ID_PRINTALL_MENU, &CfrmUc081SiharaitegataI::OnMenuPrintAll )
+	ON_COMMAND( ID_SPECIALROW_MENU, &CfrmUc081SiharaitegataI::OnMenuSpecialRow )
+	ON_COMMAND( ID_SORT_MENU, &CfrmUc081SiharaitegataI::OnMenuSort )
+	ON_COMMAND(ID_IKKATUADD_MENU, &CfrmUc081SiharaitegataI::OnIkkatuAddMenu)
+	ON_COMMAND( ID_DISPDIALOG_MENU, &CfrmUc081SiharaitegataI::OnMenuIkkatuKingaku )
+	ON_COMMAND( ID_ZEROMONEY_MENU, &CfrmUc081SiharaitegataI::OnMenuZeroMoney )
+	ON_COMMAND( ID_ZEROMONEYMOVE_MENU, &CfrmUc081SiharaitegataI::OnMenuZeroMoneyMove )
+	ON_COMMAND( ID_AMOUTDIALOG_MENU, &CfrmUc081SiharaitegataI::OnMenuOutKeiSetup )
+	ON_COMMAND( ID_CLEAR_MENU, &CfrmUc081SiharaitegataI::OnMenuClear )
+	ON_COMMAND( ID_RENDO_MENU, &CfrmUc081SiharaitegataI::OnMenuZaimuRendo )
+	ON_COMMAND( ID_TITLEMENU, &CfrmUc081SiharaitegataI::OnMenuTitleRestore )
+	ON_COMMAND( ID_USER_SETTING_MENU, &CfrmUc081SiharaitegataI::OnMenuOptionSetting )
+	ON_COMMAND( ID_COPY_SETTING_INFO_MENU, &CfrmUc081SiharaitegataI::OnMenuCopySettingInfo )
+	ON_COMMAND( ID_DELETE_DATA_MENU, &CfrmUc081SiharaitegataI::OnMenuDeleteDataEachYoushiki )
+	ON_BN_CLICKED( IDC_PAGEBACK_BUTTON1, &CfrmUc081SiharaitegataI::OnPageBack )
+	ON_BN_CLICKED( IDC_PAGENEXT_BUTTON1, &CfrmUc081SiharaitegataI::OnPageNext )
+	ON_BN_CLICKED( IDC_PAGENEW_BUTTON1, &CfrmUc081SiharaitegataI::OnPageNew )
+	ON_BN_CLICKED( IDC_PAGEINSERT_BUTTON1, &CfrmUc081SiharaitegataI::OnPageInsert )
+	ON_BN_CLICKED( IDC_ROWCOPY_BUTTON1, &CfrmUc081SiharaitegataI::OnRowCopy )
+	ON_BN_CLICKED( IDC_ROWPASTE_BUTTON1, &CfrmUc081SiharaitegataI::OnRowPaste )
+	ON_BN_CLICKED( IDC_ROWINSERT_BUTTON1, &CfrmUc081SiharaitegataI::OnRowInsert )
+	ON_BN_CLICKED( IDC_YOUSHIKINEXT_BUTTON1, &CfrmUc081SiharaitegataI::OnMoveYoushikiNext )
+	ON_BN_CLICKED( IDC_YOUSHIKIBACK_BUTTON1, &CfrmUc081SiharaitegataI::OnMoveYoushikiBack )
+	ON_UPDATE_COMMAND_UI( ID_BUTTON_F6, &CfrmUc081SiharaitegataI::OnUpdateButtonF6 )
+	ON_UPDATE_COMMAND_UI( ID_BUTTON_F7, &CfrmUc081SiharaitegataI::OnUpdateButtonF7 )
+	ON_UPDATE_COMMAND_UI( ID_BUTTON_F8, &CfrmUc081SiharaitegataI::OnUpdateButtonF8 )
+	ON_UPDATE_COMMAND_UI( ID_BUTTON_F9, &CfrmUc081SiharaitegataI::OnUpdateButtonF9 )
+	ON_UPDATE_COMMAND_UI( ID_BUTTON_F11, &CfrmUc081SiharaitegataI::OnUpdateButtonF11 )
+	ON_UPDATE_COMMAND_UI( ID_BUTTON_F12, &CfrmUc081SiharaitegataI::OnUpdateButtonF12 )
+	ON_UPDATE_COMMAND_UI( ID_BUTTON_HOME, &CfrmUc081SiharaitegataI::OnUpdateButtonHome )
+	ON_UPDATE_COMMAND_UI( ID_IKKATUADD_MENU, &CfrmUc081SiharaitegataI::OnUpdateIkkatuaddMenu)
+	ON_UPDATE_COMMAND_UI( ID_DISPDIALOG_MENU, &CfrmUc081SiharaitegataI::OnUpdateMenuIkkatuKingaku )
+	ON_UPDATE_COMMAND_UI( ID_SORT_MENU, &CfrmUc081SiharaitegataI::OnUpdateMenuSort )
+	ON_UPDATE_COMMAND_UI( ID_CLEAR_MENU, &CfrmUc081SiharaitegataI::OnUpdateMenuClear )
+	ON_UPDATE_COMMAND_UI( ID_ZEROMONEY_MENU, &CfrmUc081SiharaitegataI::OnUpdateMenuZeroMoney )
+	ON_UPDATE_COMMAND_UI( ID_ZEROMONEYMOVE_MENU, &CfrmUc081SiharaitegataI::OnUpdateMenuZeroMoneyMove)
+	ON_UPDATE_COMMAND_UI( ID_RENDO_MENU, &CfrmUc081SiharaitegataI::OnUpdateMenuZaimuRendo )
+	ON_UPDATE_COMMAND_UI(ID_SPECIALROW_MENU, &CfrmUc081SiharaitegataI::OnUpdateMenuSpecialRow)
+	ON_UPDATE_COMMAND_UI( ID_TITLEMENU, &CfrmUc081SiharaitegataI::OnUpdateMenuTitleRestore )
+	ON_UPDATE_COMMAND_UI( ID_DELETE_DATA_MENU, &CfrmUc081SiharaitegataI::OnUpdateMenuDeleteDataEachYoushiki )
+	ON_MESSAGE(WM_USER_REDRAWVIEW, OnUserReDrawView)
+END_MESSAGE_MAP()
+
+
+CfrmUc081SiharaitegataI::CfrmUc081SiharaitegataI()
+	: CfrmUc000Common( CfrmUc081SiharaitegataI::IDD )
+{
+	m_pDB = ( (CUCHIWAKEApp*)AfxGetApp() )->m_pDB;
+	m_pTitleDiag = &m_TitleDiag;
+	m_pPageDiag	= &m_PageDiag;
+	m_pHeadDiag = &m_HeadDiag;		// 修正No.168481,168502,168517 add
+	m_pDiagKei2 = &m_DiagKei2;		// 修正No.168481,168502,168517 add
+}
+
+CfrmUc081SiharaitegataI::~CfrmUc081SiharaitegataI()
+{
+	// 2009.09.08 TS自動ログオフ対応(virEndProcへ移動)
+	TRACE(_T("***** CfrmUc081SiharaitegataI::~CfrmUc081SiharaitegataI\n"));
+}
+
+void CfrmUc081SiharaitegataI::DoDataExchange( CDataExchange* pDX )
+{
+	CfrmUc000Common::DoDataExchange( pDX );
+	DDX_Control( pDX, IDC_YOUSHIKIDIAG1, m_Diag1 );
+	DDX_Control( pDX, IDC_YOUSHIKIDIAG2, m_Diag2 );
+	DDX_Control( pDX, IDC_YOUSHIKIDIAG_KEI1, m_DiagKei1 );
+	DDX_Control( pDX, IDC_YOUSHIKIDIAG_KEI2, m_DiagKei2 );
+	DDX_Control( pDX, IDC_TITLEDIAG1, m_TitleDiag );
+	DDX_Control( pDX, IDC_PAGEDIAG1, m_PageDiag );
+	DDX_Control( pDX, IDC_NUMBER_DIAG1, m_NumberDiag );
+	DDX_Control( pDX, IDC_TOPICDIAG1, m_HeadDiag);
+	DDX_Control(pDX, IDC_SAVEDATA_DIAG1, m_SaveDataDiag);
+	DDX_Control(pDX, IDC_ICSDISPGUIDE1, m_Guide1);
+}
+
+void CfrmUc081SiharaitegataI::OnInitialUpdate()
+{
+	CfrmUc000Common::OnInitialUpdate();
+	ResizeParentToFit();
+
+	// 帳表テーブルのオープンOK?
+	if(m_InitialFlag == TRUE)	{
+// 改良No.21-0086,21-0529 add -->
+		// コンボボックスアイテムのリサイズ制御
+		m_Diag1.ComboxFontMode(TRUE);
+		m_Diag2.ComboxFontMode(TRUE);
+// 改良No.21-0086,21-0529 add <--
+
+		// 背景色を取得
+		m_ViewColor = CmnGetBackColor();
+
+		// 欄外ガイドの背景色
+		m_Guide1.SetBackColor(m_ViewColor);
+		m_Guide1.ShowWindow(FALSE);
+
+		// 帳表表示処理OK?
+		if(virStartJob() == TRUE)	{
+			// 最小化／最大化ボックスを無効に設定
+		}
+		else	{
+			// カーソルフラグ=FALSE(この後フォーカスセット処理が走らないように)
+			m_CursorSetFlag = FALSE;
+		}
+	}
+}
+
+#ifdef _DEBUG
+void CfrmUc081SiharaitegataI::AssertValid() const
+{
+	CfrmUc000Common::AssertValid();
+}
+
+#ifndef _WIN32_WCE
+void CfrmUc081SiharaitegataI::Dump( CDumpContext& dc ) const
+{
+	CfrmUc000Common::Dump( dc );
+}
+#endif
+#endif //_DEBUG
+
+BEGIN_EVENTSINK_MAP( CfrmUc081SiharaitegataI, CfrmUc000Common )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG1, 3, CfrmUc081SiharaitegataI::TerminationYoushikidiag1, VTS_I2 VTS_I2 VTS_I2 VTS_UNKNOWN )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG1, 2, CfrmUc081SiharaitegataI::EditOFFYoushikidiag1, VTS_I2 )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG1, 1, CfrmUc081SiharaitegataI::EditONYoushikidiag1, VTS_I2 )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG1, 12, CfrmUc081SiharaitegataI::VScrollYoushikidiag1, VTS_I2)
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG1, 8, CfrmUc081SiharaitegataI::ComboSelYoushikidiag1, VTS_I2 VTS_UNKNOWN)	// 改良No.21-0086,21-0529 add
+
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG2, 3, CfrmUc081SiharaitegataI::TerminationYoushikidiag1, VTS_I2 VTS_I2 VTS_I2 VTS_UNKNOWN )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG2, 2, CfrmUc081SiharaitegataI::EditOFFYoushikidiag1, VTS_I2 )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG2, 1, CfrmUc081SiharaitegataI::EditONYoushikidiag1, VTS_I2 )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG2, 12, CfrmUc081SiharaitegataI::VScrollYoushikidiag1, VTS_I2)
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_YOUSHIKIDIAG2, 8, CfrmUc081SiharaitegataI::ComboSelYoushikidiag1, VTS_I2 VTS_UNKNOWN)	// 改良No.21-0086,21-0529 add
+
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_TITLEDIAG1, 3, CfrmUc081SiharaitegataI::TerminationTitlediag1, VTS_I2 VTS_I2 VTS_I2 VTS_UNKNOWN )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_TITLEDIAG1, 2, CfrmUc081SiharaitegataI::EditOFFTitlediag1, VTS_I2 )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_TITLEDIAG1, 1, CfrmUc081SiharaitegataI::EditONTitlediag1, VTS_I2 )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_TITLEDIAG1, 6, CfrmUc081SiharaitegataI::FocusTitlediag1, VTS_NONE )
+
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_PAGEDIAG1, 3, CfrmUc081SiharaitegataI::TerminationPagediag1, VTS_I2 VTS_I2 VTS_I2 VTS_UNKNOWN )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_PAGEDIAG1, 2, CfrmUc081SiharaitegataI::EditOFFPagediag1, VTS_I2 )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_PAGEDIAG1, 1, CfrmUc081SiharaitegataI::EditONPagediag1, VTS_I2 )
+	ON_EVENT(CfrmUc081SiharaitegataI, IDC_PAGEDIAG1, 6, CfrmUc081SiharaitegataI::FocusPagediag1, VTS_NONE )
+END_EVENTSINK_MAP()
+
+//********************************************************************************
+//	初期処理
+//********************************************************************************
+BOOL	CfrmUc081SiharaitegataI::virStartJob()
+{
+	// 初期値設定
+	if ( CmnSetInitialUchiwakeInfo() != TRUE){	// 共通データ
+		return FALSE;
+	}
+
+	// ---- 登録番号一覧関連 ----->
+	pZmSel = NULL;
+	// 初期化
+	InitZmSel();
+	// ---- 登録番号一覧関連 <-----
+
+	m_InvnoErrFlg = 0;	// 修正No.168443 add
+
+	// 科目、銀行、取引先参照の番号が正しく連番になっているかチェック
+	// 連番になっていない場合、修復処理を行う
+	((CUCHIWAKEApp*)AfxGetApp())->OrderCheckEx(m_uInfo.intFormSeq);
+
+	virSetInitialValue();			// 帳表固有データ
+
+	// テーブルデータ無しなら１頁分のデータを作成
+	CmnTblInitialMakeData();
+
+	// 帳表タイトル表示
+	virUpdateControlTitle();
+
+	// 頁の表示
+	m_ChangeFont = TRUE;
+	if ( virUpdateControlTblData() != TRUE ){
+		return FALSE;
+	}
+
+	// 開始インデックスへ移動
+	CmnDiagSetFocus( m_pDiag, m_uInfo.intCurRow, m_uInfo.intCurCol );
+
+	// 様式送りボタンの制御
+	UpdateYoushikiMoveButton( m_YoushikiSkip );
+
+	return TRUE;
+}
+
+//********************************************************************************
+//	共通データの初期値設定
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virSetInitialUchiwakeInfo()
+{
+	// 「支払手形」の固有データ
+	m_uInfo.intOutKeiDialog		= AM_TYPE_ALL;					// 計設定ダイアログのボタン指定
+	m_uInfo.intRowMax			= ID_ROWKOBETU_081;				// １頁内の合計行を含む全体の行数
+	m_uInfo.intRowMaxData		= ID_ROWKOBETU_081 - 1;			// １頁内のデータ行数（合計行は含まず）
+	m_uInfo.intColMax			= ID_COLMAX_081I;				// １行内のコントロール個数
+	m_uInfo.intColMaxData		= ID_COLMAXDATA_081I;			// １行内の列数
+	m_uInfo.intCtlStartIndex	= ID_CTLSTARTINDEX_081I;		// １行目の入力項目の先頭インデックス番号
+	m_uInfo.intT1StartIndex		= ID_T1STARTNORMAL_081I;		// 合計行①の先頭インデックス番号
+	m_uInfo.intT2StartIndex		= ID_T2STARTNORMAL_081I;		// 合計行②の入力項目の先頭インデックス番号
+// 改良No.21-0086,21-0529 cor -->
+	//m_uInfo.intCursolDefPos = ID_COL_081I_INVONOT;			// カーソル移動時の初期位置（タイトルから↓，合計から↑で使用）
+	//m_uInfo.intCursolKeiPos = ID_COL_081I_INVONOT;			// 合計行のカーソル移動位置（カーソル移動で使用）
+// ------------------------------
+	m_uInfo.intCursolDefPos		= ID_COL_081I_KAMOKU;			// カーソル移動時の初期位置（タイトルから↓，合計から↑で使用）
+	m_uInfo.intCursolKeiPos		= ID_COL_081I_KAMOKU;			// 合計行のカーソル移動位置（カーソル移動で使用）
+// 改良No.21-0086,21-0529 cor <--
+
+	m_uInfo.intFormSeq			= ID_FORMNO_081;				// 様式シーケンス番号
+	m_uInfo.intFormNo			= 8;							// 様式番号（uc_inf_sub）
+	m_uInfo.intFormNo2			= 1;							// 様式番号枝番（uc_inf_sub）
+
+	m_uInfo.intRowNormal		= ID_ROWNORMAL_081;				// 通常時：１頁内の合計行を含む全体の行数
+	m_uInfo.intRowKobetu		= ID_ROWKOBETU_081;				// 個別時：１頁内の合計行を含む全体の行数
+	m_uInfo.intT1StartNormal	= ID_T1STARTNORMAL_081I;		// 通常時：合計行①の先頭インデックス
+	m_uInfo.intT2StartNormal	= ID_T2STARTNORMAL_081I;		// 通常時：合計行②の先頭インデックス
+	m_uInfo.intT1StartKobetu	= ID_T1STARTKOBETU_081I;		// 個別時：合計行①の先頭インデックス
+	m_uInfo.intT2StartKobetu	= ID_T2STARTKOBETU_081I;		// 個別時：合計行②の先頭インデックス
+	m_uInfo.intRowKei			= ID_ROWKEI_081;				// 帳表固定の合計行数（1:合計あり，0:なし）
+	m_uInfo.intKei1StartIndex	= ID_COL_081I_KEI1_MEISYO;		// 計ダイアグラム1行目の先頭インデックス
+	m_uInfo.intKei2StartIndex	= ID_COL_081I_KEI2_MEISYO;		// 計ダイアグラム2行目の先頭インデックス
+
+	// 集計処理の設定
+	m_uInfo.uCalcInfo.intMaxCount = ID_CALC_081_MAX;		// 集計フィールド件数
+	m_uInfo.uCalcInfo.strField[0] = ID_CALC_081_FIELD1;		// 集計フィールド名称1
+}
+
+//**************************************************
+// ICSDiagコントロールを通常／個別で切り替える
+// 【引数】    なし
+// 【戻値】    なし
+//**************************************************
+void	CfrmUc081SiharaitegataI::virSetInitialDiag()
+{
+	// オブジェクト未生成時は処理を抜ける
+	if ( (m_Diag1.m_hWnd == NULL) || (m_Diag2.m_hWnd == NULL)){
+		return;
+	}
+
+	//表示するダイアグの設定
+	m_Diag		= CmnGetDiagType( &m_Diag1, &m_Diag2 );
+	m_DiagKei	= CmnGetDiagType( &m_DiagKei1, &m_DiagKei2 );
+
+	// 親クラスのダイアグにコピー
+	m_pDiag		= m_Diag;
+	m_pDiagKei	= m_DiagKei;
+
+	// 入力不可行でのDeleteキー無効
+	m_pDiag->EnableDelete(0);
+
+// 改良No.21-0086,21-0529 add -->
+	int		nIndex;
+
+	//	コンボボックスの属性取得
+	nIndex = CmnGetControlIndex(1, ID_COL_081I_KAMOKU);
+	m_pDiag->GetAttribute(nIndex, (LPUNKNOWN)&m_uInfo.uComboAttr);
+// 改良No.21-0086,21-0529 add <--
+}
+
+//********************************************************************************
+//	帳表固有変数の初期値設定
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virSetInitialValue()
+{
+	// 1ページ分のローカルバッファをクリア
+	RecBufClearAllData();
+
+	// 行コピー用のローカルバッファをクリア
+	m_nCopyFlag = 0;
+	RecBufClearData( &m_CopyData );
+	return;
+}
+
+//********************************************************************************
+//	帳表コントロールの初期化（データ領域）
+//********************************************************************************
+BOOL	CfrmUc081SiharaitegataI::InitialControlDataArea()
+{
+	int					intMax;
+	int					i;
+	DIAGRAM_ATTRIBUTE	diaatt;
+
+	// 全データクリア
+	m_pDiag->AllClear();
+	m_pDiagKei->AllClear();
+
+	// 各Diagに背景色を設定
+	SetDiagBackColor();
+
+	// 背景色クリア
+	CmnDiagSetAttrColorAllClear( m_pDiag );
+
+	// 列の属性により更にクリアと初期設定が必要
+	intMax = m_uInfo.intT1StartIndex;
+	for ( i = m_uInfo.intCtlStartIndex; i < intMax; i += m_uInfo.intColMax ) {
+		// 簡素化様式の場合、日付の入力方法を"元号 ××.××.××"に変更する
+		// 振出年月日
+		m_pDiag->GetAttribute((i + ID_COL_081I_SPDATE - 1),(LPUNKNOWN)&diaatt);
+		diaatt.attr_dayattr = 15;
+		m_pDiag->SetAttribute((i + ID_COL_081I_SPDATE - 1),(LPUNKNOWN)&diaatt,TRUE);
+		// 支払期日
+		m_pDiag->GetAttribute((i + ID_COL_081I_PMDATE - 1),(LPUNKNOWN)&diaatt);
+		diaatt.attr_dayattr = 15;
+		m_pDiag->SetAttribute((i + ID_COL_081I_PMDATE - 1),(LPUNKNOWN)&diaatt,TRUE);
+
+		// ComboBox：クリア
+		CmnDiagSetString(m_pDiag, i + ID_COL_081I_KAMOKU - 1, "", 0);	// 科目				// 改良No.21-0086,21-0529 add
+		CmnDiagSetString(m_pDiag, i + ID_COL_081I_INVONOT - 1, "", 0);	// 登録番号(T選択)
+
+		// 漢字入力欄の初期化
+		CmnDiagSetAttrInpmax( m_pDiag, i + ID_COL_081I_ADNAME1 - 1, MAX_KETA_081_ADNAME1 );		// 支払先1
+		CmnDiagSetAttrInpmax( m_pDiag, i + ID_COL_081I_SPDATE  - 1, MAX_KETA_081_SPDATE );		// 振出年月日
+		CmnDiagSetAttrInpmax( m_pDiag, i + ID_COL_081I_PMDATE  - 1, MAX_KETA_081_PMDATE );		// 支払期日
+		CmnDiagSetAttrInpmax( m_pDiag, i + ID_COL_081I_BKNAME1 - 1, MAX_KETA_081_BKNAME1 );		// 支払銀行名
+		CmnDiagSetAttrInpmax( m_pDiag, i + ID_COL_081I_BKNAME2 - 1, MAX_KETA_081_BKNAME2 );		// 支払銀行名(支店名)
+		CmnDiagSetAttrInpmax( m_pDiag, i + ID_COL_081I_TEKI    - 1, MAX_KETA_081_TEKI );		// 摘要
+
+		// 金額欄：桁数初期化
+		CmnDiagSetAttrDigit( m_pDiag, i + ID_COL_081I_VAL - 1, ID_VAL_081_K_DATA );				// 金額
+
+		//	入力不可モードの解除
+		SetInputMode( CmnGetControlRow( i ), DIAG_MDFY_INPUT );
+	}
+
+	// ComboBoxの初期設定
+	if ( InitialControlComboBox() != TRUE ){
+		return FALSE;
+	}
+
+	// 半角/全角設定
+	CmnDiagSetAttrColZenHan( m_pDiag , ID_COL_081I_ADNAME1 );	// 支払先1
+	CmnDiagSetAttrColZenHan( m_pDiag , ID_COL_081I_BKNAME1 );	// 支払銀行名
+	CmnDiagSetAttrColZenHan( m_pDiag , ID_COL_081I_BKNAME2 );	// 支払支店名
+	CmnDiagSetAttrColZenHan( m_pDiag , ID_COL_081I_TEKI );		// 摘要
+
+	return TRUE;
+}
+
+//********************************************************************************
+//	帳表コントロールの初期化（ComboBox）
+//********************************************************************************
+BOOL	CfrmUc081SiharaitegataI::InitialControlComboBox()
+{
+	DIAGRAM_DATA	diadata;		// ICSDIAG構造体(科目)
+	DIAGRAM_DATA	diadata2;		// ICSDIAG構造体(T選択)		// 改良No.21-0086,21-0529 add
+	int				intTotalType;
+	int				intMax;
+	int				intIndex;
+	int				intIndex2;									// 改良No.21-0086,21-0529 add
+	int				i;
+	BOOL			bFlg = FALSE;	// フォントサイズ変更する？	// 改良No.21-0086,21-0529 add
+
+	// カレント頁の合計行の種別を取得
+	intTotalType = CmnGetControlTotalType();
+
+	// カレント頁で"頁計と累計"を表示する場合、対象行は"-1"となる
+	switch(intTotalType) {
+		case ID_OUTKEI_BOTH:			// 頁計と累計
+			intMax = m_uInfo.intRowMaxData - 1;
+			break;
+		default:
+			intMax = m_uInfo.intRowMaxData;
+			break;
+	}
+
+// 改良No.21-0086,21-0529 cor -->
+	//// 初期化
+	//m_clsFunc.DiagInit(&diadata);
+	//// ComboBoxの選択項目設定
+	//diadata.text_combo = _T("T\r\n \r\n");
+
+	//// 全行設定
+	//for(i = 1; i <= intMax; i++) {
+	//	// 対象コントロールのインデックス番号を取得
+	//	intIndex = CmnGetControlIndex(i, ID_COL_081I_INVONOT);
+
+	//	// 初期設定（リスト情報をセット）
+	//	m_pDiag->SetData(intIndex, (LPUNKNOWN)&diadata);
+
+	//	// フォントサイズ設定
+	//	if(m_EndView == FALSE && m_ChangeFont != FALSE && m_ImportMode == FALSE) {
+	//		// T選択
+	//		m_pDiag->ChangeFontSize(intIndex, m_TselFSize);
+	//	}
+	//}
+// ------------------------------
+	// 初期化
+	m_clsFunc.DiagInit(&diadata);
+	m_clsFunc.DiagInit(&diadata2);
+
+	// ComboBoxの選択項目設定
+	// 科目
+	if(CmnUcLstKamokuGetComboList(&diadata.text_combo, bFlg) != TRUE) {
+		return FALSE;
+	}
+	// T選択
+	diadata2.text_combo = _T("T\r\n \r\n");
+
+	// 全行設定
+	for(i=1; i<=intMax; i++)	{
+		// 対象コントロールのインデックス番号を取得
+		intIndex = CmnGetControlIndex(i, ID_COL_081I_KAMOKU);		// 科目
+		intIndex2 = CmnGetControlIndex(i, ID_COL_081I_INVONOT);		// T選択
+
+		// 初期設定（リスト情報をセット）
+		// 科目
+		m_pDiag->ModifyItem(intIndex, DIAG_MDFY_NODROPDOWN);
+		m_pDiag->SetData(intIndex, (LPUNKNOWN)&diadata);
+		// T選択
+		m_pDiag->ModifyItem(intIndex2, DIAG_MDFY_NODROPDOWN);
+		m_pDiag->SetData(intIndex2, (LPUNKNOWN)&diadata2);
+
+		// フォントサイズ設定
+		if(m_EndView == FALSE && m_ChangeFont != FALSE && m_ImportMode == FALSE)	{
+			// 科目
+			SetComboFontSize(m_pDiag, intIndex, bFlg);
+			// T選択
+			m_pDiag->ChangeFontSize(intIndex2, m_TselFSize);
+		}
+	}
+// 改良No.21-0086,21-0529 cor <--
+	m_ChangeFont = FALSE;
+
+	return TRUE;
+}
+
+//********************************************************************************
+//	帳表コントロールの初期化（頁計/累計領域）
+//		文言はデータに含まれているので、その内容を使用する
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::InitialControlTotalArea()
+{
+	int		nKeiType;			//	計の種別
+	int		nDataRow;			//	データ行属性
+	int		nDataRowPos;		//	データ行位置
+	int		nKeiRow[2];			//	計行属性
+	int		nCnt;				//	カウント
+	int		nStart;				//	開始位置
+	int		intIndex=0;
+	int		nSw=0;
+// 改良No.21-0086,21-0529 add -->
+	int		flg = 0;
+	int		flg2 = 0;
+// 改良No.21-0086,21-0529 add <--
+
+	intIndex = CmnGetControlIndex(m_uInfo.intCurRow,m_uInfo.intCurCol);
+
+	// カレント頁の合計行の種別を取得
+	nKeiType = CmnGetControlTotalType();
+	
+	nDataRowPos = m_uInfo.intRowMax - 2;
+
+	//	計の種別で分岐
+	switch ( nKeiType ){
+		case ID_OUTKEI_OFF:				// なし
+		case ID_OUTKEI_PAGEKEI:			// 頁計
+		case ID_OUTKEI_RUIKEI:			// 累計
+			//	データ行の設定
+			if(m_DataKakutei == FALSE)	{
+				if(IsSpecialRow(m_ReadData[nDataRowPos+1].m_FgFunc) != 0)	{
+					nDataRow = (DIAG_MDFY_NOINPUT | DIAG_MDFY_OPAQUE);
+// 改良No.21-0086,21-0529 add -->
+					if(m_ReadData[nDataRowPos + 1].m_FgFunc == ID_FGFUNC_SYOKEI || m_ReadData[nDataRowPos + 1].m_FgFunc == ID_FGFUNC_CHUKEI || m_ReadData[nDataRowPos + 1].m_FgFunc == ID_FGFUNC_KAMOKU) {
+						//if(KamokuRowEnableSgn(m_pDB, 0) == 1) {
+						if(KamokuRowEnableSgn(m_pDB, 0, m_uInfo.intFormSeq) == 1) {
+							flg = 1;
+						}
+					}
+					else if(IsSpecialRow2(m_ReadData[nDataRowPos+1].m_FgFunc) != 0) {
+						flg2 = 1;
+					}
+// 改良No.21-0086,21-0529 add <--
+				}
+				else	{
+					nDataRow = (DIAG_MDFY_EDIT | DIAG_MDFY_OPAQUE);
+				}
+			}
+			else	nDataRow = (DIAG_MDFY_READONLY | DIAG_MDFY_OPAQUE);
+			//	計行の設定
+			nKeiRow[0] = ( DIAG_MDFY_READONLY | DIAG_MDFY_TRANSPARENT );
+			// 28行目の合計行①
+			nStart = m_uInfo.intT1StartIndex;
+			for(nCnt=0; nCnt<m_uInfo.intColMax; nCnt++)	{
+				m_pDiag->ModifyItem(nStart + nCnt, nKeiRow[0]);
+			}
+			break;
+		case ID_OUTKEI_BOTH:			// 頁計と累計
+			//	データ行の設定
+			nDataRow = ( DIAG_MDFY_READONLY | DIAG_MDFY_TRANSPARENT );
+			//	計行の設定
+			nKeiRow[0] = ( DIAG_MDFY_READONLY | DIAG_MDFY_OPAQUE );
+			break;
+	}
+
+	int	col=0,per=0;
+
+	// 28行目のデータ行
+	nStart = nDataRowPos * m_uInfo.intColMax;
+	for(nCnt=0; nCnt<m_uInfo.intColMax; nCnt++)	{
+		if((nDataRow & DIAG_MDFY_READONLY) == 0)	{
+			// 28行目が入力可能な場合
+			per = (nCnt % m_uInfo.intColMax);
+			col = per - m_uInfo.intCtlStartIndex + 1;
+			if(col == ID_COL_081I_SPDATE || col == ID_COL_081I_PMDATE)	{
+				// 日付ならMODIFY_GENGODEFをONにする
+				nDataRow = nDataRow | MODIFY_GENGODEF;
+			}
+		}
+		m_pDiag->ModifyItem( nStart + nCnt, nDataRow );
+		if((intIndex == (nStart + nCnt)) && ((nDataRow & DIAG_MDFY_READONLY) != 0))	nSw=1;
+	}
+
+// 改良No.21-0086,21-0529 add -->
+	if(flg == 1)	{
+		// 科目行、小計行の名称を入力可能にする
+		m_pDiag->ModifyItem(CmnGetControlIndex((nDataRowPos + 1), ID_COL_081I_ADNAME1), (DIAG_MDFY_EDIT | DIAG_MDFY_OPAQUE));
+		// 入力可能の場合、カーソルポジションの移動は行わないようにする
+		if((intIndex == CmnGetControlIndex((nDataRowPos + 1), ID_COL_081I_ADNAME1)))		nSw = 0;
+	}
+	else if(flg2 == 1)	{
+		// 一括自動行の科目を入力可能にする
+		m_pDiag->ModifyItem(CmnGetControlIndex((nDataRowPos + 1), ID_COL_081I_KAMOKU), (DIAG_MDFY_EDIT | DIAG_MDFY_OPAQUE));
+	}
+// 改良No.21-0086,21-0529 add <--
+
+	if(nSw != 0)	{
+		// 現在のカーソルポジションが入力不可になった場合は先頭に戻す
+		m_uInfo.intCurRow = 1;
+		m_uInfo.intCurCol = 1;
+	}
+
+	// 計専用ダイアグラムの金額欄を入力不可にする
+	int intKeiRow = (DIAG_MDFY_READONLY | DIAG_MDFY_OPAQUE);
+	m_pDiagKei->ModifyItem(ID_COL_081I_KEI1_VAL, intKeiRow);
+	m_pDiagKei->ModifyItem(ID_COL_081I_KEI2_VAL, intKeiRow);
+
+// 改良No.21-0086,21-0529 add -->
+	// 合計行の名称欄は、カーソルを飛ばしたいので入力許可する
+	switch(nKeiType)	{
+		case ID_OUTKEI_OFF:
+		case ID_OUTKEI_PAGEKEI:
+		case ID_OUTKEI_RUIKEI:
+			break;
+		case ID_OUTKEI_BOTH:
+			break;
+	}
+// 改良No.21-0086,21-0529 add <--
+
+	// 合計行の金額欄は、13桁
+	CmnDiagSetAttrDigit( m_pDiagKei, ID_COL_081I_KEI1_VAL, ID_VAL_081_K_TOTAL );
+	CmnDiagSetAttrDigit( m_pDiagKei, ID_COL_081I_KEI2_VAL, ID_VAL_081_K_TOTAL );
+}
+
+//********************************************************************************
+//	帳表コントロールの特殊行初期化
+//	IN	int		行番号
+//		int		特殊行フラグ（FgFunc）
+//	RET	なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::InitialControlSpecialRow( int intRow, int intFgFunc )
+{
+	int				nIndex;		//	インデックス
+	DIAGRAM_DATA	diadata;	// ICSDIAG構造体
+
+	// 対象行の色を変更
+	CmnDiagSetAttrSpecialRow( m_pDiag, intRow, intFgFunc );
+
+	// 特殊行の金額欄は桁数変更 ･･･ 頁計/累計行は初期設定するのでここでは対象外
+	switch ( intFgFunc ) {
+		case ID_FGFUNC_SYOKEI:			// 小計
+		case ID_FGFUNC_SYOKEINULL:		// 小計（空行）
+		case ID_FGFUNC_CHUKEI:			// 中計
+		case ID_FGFUNC_CHUKEINULL:		// 中計（空行）
+		case ID_FGFUNC_IKKATUMANUAL:	// 一括集計金額行（手動）
+		case ID_FGFUNC_IKKATUAUTO:		// 一括集計金額行（自動）
+			// 桁数を設定
+			CmnDiagSetAttrDigit( m_pDiag, CmnGetControlIndex( intRow , ID_COL_081I_VAL ), ID_VAL_081_K_TOTAL );
+			break;
+	}
+
+	// 特殊行は入力不可とする
+	switch (intFgFunc) {
+		case ID_FGFUNC_SYOKEI:			// 小計
+		case ID_FGFUNC_SYOKEINULL:		// 小計（空行）
+		case ID_FGFUNC_CHUKEI:			// 中計
+		case ID_FGFUNC_CHUKEINULL:		// 中計（空行）
+		case ID_FGFUNC_IKKATUAUTO:		// 一括集計金額行（自動）
+		case ID_FGFUNC_KAMOKU:			// 科目行（見出し）			// 改良No.21-0086,21-0529 add
+			// 一括集計金額行（自動）以外？
+			if(intFgFunc != ID_FGFUNC_IKKATUAUTO) {
+// 改良No.21-0086,21-0529 add -->
+				// 「科目」はComboBoxのため、DropDown不可とする
+				m_pDiag->ModifyItem(CmnGetControlIndex(intRow, ID_COL_081I_KAMOKU), DIAG_MDFY_NODROPDOWN);
+// 改良No.21-0086,21-0529 add <--
+				// 「登録番号(T選択)」はComboBoxのため、DropDown不可とする
+				m_pDiag->ModifyItem(CmnGetControlIndex(intRow, ID_COL_081I_INVONOT), DIAG_MDFY_NODROPDOWN);
+
+				// ComboBoxの選択項目クリア
+				m_clsFunc.DiagInit(&diadata);
+				diadata.text_combo = _T("\r\n");
+				m_pDiag->SetData(CmnGetControlIndex(intRow, ID_COL_081I_KAMOKU), (LPUNKNOWN)&diadata);	// 改良No.21-0086,21-0529 add
+				m_pDiag->SetData(CmnGetControlIndex(intRow, ID_COL_081I_INVONOT), (LPUNKNOWN)&diadata);
+			}
+
+			//	入力不可モードの設定
+			if(m_DataKakutei == FALSE)	SetInputMode(intRow,DIAG_MDFY_NOINPUT);
+			else						SetInputMode(intRow,DIAG_MDFY_READONLY);
+
+// 改良No.21-0086,21-0529 add -->
+			if(KamokuRowEnableSgn(m_pDB, 1, m_uInfo.intFormSeq) == 1)	{
+				// 小計、科目行の場合、名称のみ編集を可能にする
+				if(intFgFunc == ID_FGFUNC_SYOKEI || intFgFunc == ID_FGFUNC_CHUKEI || intFgFunc == ID_FGFUNC_KAMOKU)	{
+					// 支払先
+					m_pDiag->ModifyItem(CmnGetControlIndex(intRow, ID_COL_081I_ADNAME1), DIAG_MDFY_INPUT);
+				}
+				// 小計の場合、26文字編集可能にする
+				if(intFgFunc == ID_FGFUNC_SYOKEI || intFgFunc == ID_FGFUNC_CHUKEI)	{
+					// 支払先
+					CmnDiagSetAttrInpmax(m_pDiag, CmnGetControlIndex(intRow, ID_COL_081I_ADNAME1), MAX_KETA_081_SYOKEI);
+				}
+				// 一括集計金額（自動）行の場合、科目のみ入力可能とする
+				if(intFgFunc == ID_FGFUNC_IKKATUAUTO)	{
+					// 科目
+					m_pDiag->ModifyItem(CmnGetControlIndex(intRow, ID_COL_081I_KAMOKU), DIAG_MDFY_INPUT);
+				}
+			}
+// 改良No.21-0086,21-0529 add <--
+			break;
+
+		//	特殊行以外
+		default:
+			break;
+	}
+}
+
+//********************************************************************************
+//	帳表タイトル情報の表示
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virUpdateControlTitle()
+{
+	DIAGRAM_ATTRIBUTE diaatt;
+
+	// 帳表ナンバーの背景色設定
+	CmnDiagSetAttrColor( &m_NumberDiag, 0, &m_ViewColor );
+
+	// 帳表ナンバー表示
+	CmnDiagSetString( &m_NumberDiag, 0, m_uInfo.strTitleNumber, 1 );
+
+	// 帳表タイトル表示
+	CmnDiagSetString( &m_TitleDiag, 0, m_uInfo.strTitleName, 0 );
+
+	//	タイトル入力最大文字数設定
+	CmnDiagSetAttrInpmax( &m_TitleDiag, 0, ID_TITLE_INPMAX );
+	
+	long	nMode;		//	入力不可モードフラグ
+
+	// 全ての様式において、編集可能
+	nMode = DIAG_MDFY_INPUT;	//	入力可
+
+	//	入力不可モード切り替え
+	m_TitleDiag.ModifyItem( 0, nMode );
+
+	// 帳表タイトル_半角/全角設定
+	m_TitleDiag.GetAttribute( 0 , (LPUNKNOWN)&diaatt );
+	diaatt.attr_editattr = diaatt.attr_editattr | DIAG_EATTR_ZENHAN;
+	m_TitleDiag.SetAttribute( 0 , (LPUNKNOWN)&diaatt , TRUE );
+
+	// 保管ﾃﾞｰﾀ件数の背景色設定
+	CmnDiagSetAttrColor(&m_SaveDataDiag, 0, &m_ViewColor);
+}
+
+//********************************************************************************
+//	帳表ページ情報の表示
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::UpdateControlPage()
+{
+	BOOL	bBack = TRUE;
+	BOOL	bNext = TRUE;
+
+	// 最大頁取得
+	m_uInfo.intMaxPage = CmnTblGetPageMax();
+
+	// カレント頁番号のチェック
+	if ( m_uInfo.intCurPage > m_uInfo.intMaxPage ) {
+		m_uInfo.intCurPage = m_uInfo.intMaxPage;
+	}
+
+	// カレント頁/最大頁表示
+	CmnDiagSetValue( &m_PageDiag, 1, m_uInfo.intCurPage, 0 );
+	CmnDiagSetValue( &m_PageDiag, 3, m_uInfo.intMaxPage, 1 );
+
+	// 前頁/次頁ボタンの制御
+	CmnCheckEnableMoveButton( &bBack, &bNext );
+	PostMessage(WM_USER_CONTROLPAGE, bBack, bNext);
+}
+
+//********************************************************************************
+//	帳表データの表示（１ページ分）
+//********************************************************************************
+BOOL	CfrmUc081SiharaitegataI::virUpdateControlTblData()
+{
+	// ダイアログ切替
+	if( m_pDiag != NULL ){
+		virSetInitialDiag();
+	}
+
+// 改良No.21-0086,21-0529 add -->
+	int			sw = 0;
+	sw = KamokuRowEnableSgn(m_pDB, 0, m_uInfo.intFormSeq);
+// 改良No.21-0086,21-0529 add <--
+
+	CdbUc081Siharaitegata	dbRec( m_pDB );
+	
+	m_pDiag->DeleteInput();		//	入力ボックス削除 
+
+	// 頁情報の表示
+	UpdateControlPage();
+
+	// コントロールのクリア＋初期設定
+	if ( InitialControlDataArea() != TRUE ){	// データ行
+		return FALSE;
+	}
+
+	//----------------------- １行データ表示 ------------------------------//
+
+	// 倍長設定
+	l_defn( 0x16 );
+
+	// 指定ページ番号のデータを取得
+	dbRec.Init( m_uInfo.intCurPage );
+
+	// 1ページ分のローカルバッファをクリア
+	RecBufClearAllData();
+
+	// 1ページ分のデータ1レコードづつ取得し、画面に表示
+	while ( !dbRec.IsEOF() ) {		// ファイル終端まで
+		// 1ページ分のローカルバッファにデータを格納
+		RecBufSetData( &dbRec );
+
+		// 対象行金額欄の桁数を変更
+		InitialControlSpecialRow( dbRec.m_NumRow, dbRec.m_FgFunc );
+
+		// 累計/頁計の場合、特殊処理
+		if ( ( dbRec.m_FgFunc == ID_FGFUNC_RUIKEI ) || ( dbRec.m_FgFunc == ID_FGFUNC_PAGEKEI ) ) {
+			// 累計/頁計の表示
+			UpdateControlRowTotal( &dbRec );
+		}
+		// 累計・頁計・空行以外
+		else {
+			// データ行の表示（空行，特殊行を含む）
+			//UpdateControlRowData( &dbRec );	// 改良No.21-0086,21-0529 del
+			UpdateControlRowData(&dbRec, sw);	// 改良No.21-0086,21-0529 add
+		}
+
+		// 電子申告の文字数を超えていれば、項目の文字色を変える
+		// 支払銀行名称
+		CmnInitialControlFgStringCell( m_pDiag, dbRec.m_NumRow, ID_COL_081I_BKNAME1, dbRec.m_FgFunc, UC_BANK_LEN, dbRec.m_BkName1);
+		// 支払銀行支店名
+		CmnInitialControlFgStringCell( m_pDiag, dbRec.m_NumRow, ID_COL_081I_BKNAME2, dbRec.m_FgFunc, UC_BANK_LEN, dbRec.m_BkName2);
+		// 摘要
+		CmnInitialControlFgStringCell( m_pDiag, dbRec.m_NumRow, ID_COL_081I_TEKI, dbRec.m_FgFunc, UC_081_TEKI_LEN, dbRec.m_Teki);
+
+		dbRec.MoveNext();
+	}
+
+	// 閉じる
+	dbRec.Fin();
+
+	InitialControlTotalArea();				// 頁計/累計行
+
+	// 保管ﾃﾞｰﾀ件数の表示
+	virUpdateControlTblData2();
+
+	// プロパティで設定した行毎の入力桁数が SetAttribuute 関数によってクリアされているので
+	// すべての設定が終わったここで、設定し直す
+	//CmnDiagSetAttrEditFormat(m_pDiag, ID_COL_081I_ADNAME1, MAX_KETA_081_ADNAME1, 2, _T("10,10"));	// 支払先			// 改良No.21-0086,21-0529 del
+	CmnDiagSetAttrEditFormat(m_pDiag, ID_COL_081I_BKNAME1, MAX_KETA_081_BKNAME1, 2, _T("5,5"));		// 支払銀行名
+	CmnDiagSetAttrEditFormat(m_pDiag, ID_COL_081I_BKNAME2, MAX_KETA_081_BKNAME2, 2, _T("5,5"));		// 支払銀行支店名
+	CmnDiagSetAttrEditFormat(m_pDiag, ID_COL_081I_TEKI, MAX_KETA_081_TEKI, 3, _T("15,15,10"));		// 摘要
+
+	// [計行] 支払銀行支店名を非表示にする
+	CmnDiagSetAttrDisableHide(&m_DiagKei1, 5, 2);
+	CmnDiagSetAttrDisableHide(&m_DiagKei1, 12, 2);
+	CmnDiagSetAttrDisableHide(&m_DiagKei2, 5, 2);
+	CmnDiagSetAttrDisableHide(&m_DiagKei2, 12, 2);
+	CmnDiagSetAttrDisableHide(&m_DiagKei2, 19, 2);
+	CmnDiagSetAttrDisableHide(&m_DiagKei2, 26, 2);
+
+	TitleColorChg();
+
+	// 画面更新
+	m_pDiag->Refresh();
+	m_pDiagKei->Refresh();
+
+	return TRUE;
+}
+
+//********************************************************************************
+//	保管件数の表示
+//********************************************************************************
+BOOL CfrmUc081SiharaitegataI::virUpdateControlTblData2()
+{
+	int					hcnt=0;
+	CString				cs=_T("");
+
+	hcnt=virGetDataTableObject()->GetCountFgShow(ID_FGSHOW_HOKAN);
+	cs.Format(_T("保管%3d件"),hcnt);
+	CmnDiagSetString(&m_SaveDataDiag,0,cs,1);
+
+	return TRUE;
+}
+
+//********************************************************************************
+//	帳表データの１行表示（空行，データ行，特殊行）
+//		IN		CdbUc081Siharaitegata*	「支払手形」
+//				int						 1:小計、中計行の名称編集可能
+//		RET		なし
+//********************************************************************************
+// 改良No.21-0086,21-0529 cor -->
+//void	CfrmUc081SiharaitegataI::UpdateControlRowData( CdbUc081Siharaitegata* prmDbRec ) {
+// ------------------------------
+void	CfrmUc081SiharaitegataI::UpdateControlRowData(CdbUc081Siharaitegata* prmDbRec, int pSw)
+{
+// 改良No.21-0086,21-0529 cor <--
+	DIAGRAM_DATA		diadata;	// ICSDiag構造体
+	int					intCell;	// 保存フィールド
+	CString				cs1, cs2, cst;
+// 改良No.21-0086,21-0529 add -->
+	CString				strkei = _T("");
+	CString				strkei2 = _T("");
+// 改良No.21-0086,21-0529 add <--
+
+	// 初期化
+	m_clsFunc.DiagInit( &diadata );
+
+	// 読込み対象セル取得
+// 改良No.21-0086,21-0529 cor -->
+	//intCell = CmnGetControlIndex( prmDbRec->m_NumRow, ID_COL_081I_INVONOT );
+// ------------------------------
+	intCell = CmnGetControlIndex(prmDbRec->m_NumRow, ID_COL_081I_KAMOKU);
+
+	// 科目
+	m_clsFunc.DiagInit(&diadata);
+	switch(prmDbRec->m_FgFunc)	{
+		//------------------------------
+		//	空行
+		case ID_FGFUNC_NULL:
+		//	データ行
+		case ID_FGFUNC_DATA:
+		//	一括金額（手動）
+		case ID_FGFUNC_IKKATUMANUAL:
+		//	一括金額（自動）
+		case ID_FGFUNC_IKKATUAUTO:
+		//------------------------------
+			//	コンボの選択インデックス
+			// KnOrder（科目順序）をキーにコンボボックスのインデックスを取得
+			m_SortMap1.Lookup(prmDbRec->m_KnOrder, diadata.data_combo);
+			break;
+		default:
+			break;
+	}
+	m_pDiag->SetData(intCell, (LPUNKNOWN)&diadata);
+	intCell++;
+// 改良No.21-0086,21-0529 cor <--
+
+	// 登録番号を分割
+	cs1 = cs2 = _T("");
+	if(prmDbRec->m_InvNo.IsEmpty() == FALSE) {
+		InvoNoSplit(prmDbRec->m_InvNo, &cs1, &cs2);
+	}
+
+	// 登録番号（T選択）	ID_COL_081I_INVONOT
+	m_clsFunc.DiagInit(&diadata);
+	switch(prmDbRec->m_FgFunc)	{
+		//------------------------------
+		//	空行
+		case ID_FGFUNC_NULL:
+		//	データ行
+		case ID_FGFUNC_DATA:
+		//	一括金額（手動）
+		case ID_FGFUNC_IKKATUMANUAL:
+		//------------------------------
+			if(strcmp(cs1, _T(" ")) == 0)	diadata.data_combo = 1;
+			else							diadata.data_combo = 0;
+			break;
+		//------------------------------
+		//	一括金額（自動）
+		case ID_FGFUNC_IKKATUAUTO:
+		//	小計
+		case ID_FGFUNC_SYOKEI:
+		//	小計（空行）
+		case ID_FGFUNC_SYOKEINULL:
+		//	中計
+		case ID_FGFUNC_CHUKEI:
+		//	中計計（空行）
+		case ID_FGFUNC_CHUKEINULL:
+		//------------------------------
+			diadata.data_combo = 1;
+			break;
+		//------------------------------
+		default:
+			break;
+	}
+	m_pDiag->SetData(intCell, (LPUNKNOWN)&diadata);
+	intCell++;
+
+	// 登録番号			ID_COL_081I_INVONO
+	m_clsFunc.DiagInit(&diadata);
+	switch(prmDbRec->m_FgFunc)	{
+		//------------------------------
+		//	空行
+		case ID_FGFUNC_NULL:
+		//	データ行
+		case ID_FGFUNC_DATA:
+		//	一括金額（手動）
+		case ID_FGFUNC_IKKATUMANUAL:
+		//------------------------------
+			diadata.data_edit = cs2;
+			break;
+		//------------------------------
+		default:
+			break;
+	}
+	m_pDiag->SetData(intCell, (LPUNKNOWN)&diadata);
+	intCell++;
+
+	// 支払先1
+	//	データ行？
+	switch(prmDbRec->m_FgFunc) {
+		//------------------------------
+		//	空行
+		case ID_FGFUNC_NULL:
+		//	データ行
+		case ID_FGFUNC_DATA:
+		//	一括金額（手動）
+		case ID_FGFUNC_IKKATUMANUAL:
+		//	一括金額（自動）
+		case ID_FGFUNC_IKKATUAUTO:
+		//------------------------------
+			diadata.data_edit = m_clsFunc.StrDocking(prmDbRec->m_AdName1, prmDbRec->m_AdName2);
+			break;
+		//------------------------------
+		//	小計
+		case ID_FGFUNC_SYOKEI:
+		//------------------------------
+// 改良No.21-0086,21-0529 add -->
+			if(pSw == 1)	{
+				diadata.data_edit = prmDbRec->m_KeiStr;
+			}
+			else	{
+				m_clsFunc.KeiStrSprit(prmDbRec->m_KeiStr, &strkei, &strkei2);
+				if(strkei2.IsEmpty() == FALSE)	diadata.data_edit = strkei + _T("\r\n") + strkei2;
+				else							diadata.data_edit = prmDbRec->m_KeiStr;
+			}
+			break;
+// 改良No.21-0086,21-0529 add <--
+		//------------------------------
+		//	小計（空行）
+		case ID_FGFUNC_SYOKEINULL:
+		//	中計
+		case ID_FGFUNC_CHUKEI:
+		//	中計計（空行）
+		case ID_FGFUNC_CHUKEINULL:
+		//------------------------------
+			diadata.data_edit = prmDbRec->m_KeiStr;
+			break;
+// 改良No.21-0086,21-0529 add -->
+		//------------------------------
+		//	科目行（見出し）
+		case ID_FGFUNC_KAMOKU:
+		//------------------------------
+			diadata.data_edit = prmDbRec->m_KeiStr;
+			break;
+// 改良No.21-0086,21-0529 add <--
+		default:
+			break;
+	}
+	m_pDiag->SetData( intCell, ( LPUNKNOWN )&diadata );
+	intCell++;
+
+	CdateConvert	dc;
+	// 振出年月日
+	dc.Convert( prmDbRec->m_SpDate, diadata.data_day, DC_DATE_GWMD );
+	if ( dc.m_nDate != 0 ) {
+		m_pDiag->SetData( intCell, ( LPUNKNOWN )&diadata );
+	}
+	else {
+		m_pDiag->DataClear( intCell , TRUE );
+	}
+	intCell++;
+
+	// 支払期日
+	dc.Convert( prmDbRec->m_PmDate, diadata.data_day, DC_DATE_GWMD );
+	if ( dc.m_nDate != 0 ) {
+		m_pDiag->SetData( intCell, ( LPUNKNOWN )&diadata );
+	}
+	else {
+		m_pDiag->DataClear( intCell , TRUE );
+	}
+	intCell++;
+
+	// 支払銀行名
+	diadata.data_edit = prmDbRec->m_BkName1;
+	m_pDiag->SetData( intCell, ( LPUNKNOWN )&diadata );
+	intCell++;
+
+	// 支払支店名
+	diadata.data_edit = prmDbRec->m_BkName2;
+	m_pDiag->SetData( intCell, ( LPUNKNOWN )&diadata );
+	intCell++;
+
+	// 金額
+	if ( prmDbRec->m_Val != "" ) {
+		CmnChangeFieldValData( &diadata.data_val[0], prmDbRec->m_Val );
+		m_pDiag->SetData( intCell, ( LPUNKNOWN )&diadata );
+	}
+	else {
+		m_pDiag->DataClear( intCell, TRUE );
+	}
+	intCell++;
+
+	// 摘要
+	diadata.data_edit = prmDbRec->m_Teki;
+	m_pDiag->SetData( intCell, ( LPUNKNOWN )&diadata );
+}
+
+//********************************************************************************
+//	帳表データの１行表示（累計，頁計行）
+//		IN		CdbUc081Siharaitegata*	「支払手形」テーブル情報
+//		RET		なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::UpdateControlRowTotal( CdbUc081Siharaitegata* prmDbRec )
+{
+	int		intTotalType;
+	int		intRowName = 0;		// 名称表示行（0:非表示）
+	int		intRowVal = 0;		// 金額表示行（0:非表示）
+
+	// カレント頁の合計行の種別を取得
+	intTotalType = CmnGetControlTotalType();
+
+	switch ( intTotalType ) {
+	case ID_OUTKEI_OFF:
+		// カレント頁："なし"なら、合計行②に名称のみ表示
+		if ( ( prmDbRec->m_FgFunc == ID_FGFUNC_PAGEKEI ) || ( prmDbRec->m_FgFunc == ID_FGFUNC_RUIKEI ) ) {
+			intRowName = 2;
+		}
+		break;
+	case ID_OUTKEI_PAGEKEI:
+		// カレント頁："頁計"なら、合計行②に"頁計"を表示
+		if ( prmDbRec->m_FgFunc == ID_FGFUNC_PAGEKEI ) {
+			intRowName = 2;
+			intRowVal = 2;
+		}
+		break;
+	case ID_OUTKEI_RUIKEI:
+		// カレント頁："累計"なら、合計行②に"累計"を表示
+		if ( prmDbRec->m_FgFunc == ID_FGFUNC_RUIKEI ) {
+			intRowName = 2;
+			intRowVal = 2;
+		}
+		break;
+	case ID_OUTKEI_BOTH:
+		// カレント頁："頁計＋累計"なら、合計行①に"頁計"＋合計行②に"累計"を表示
+		if ( prmDbRec->m_FgFunc == ID_FGFUNC_PAGEKEI ) {
+			intRowName = 1;
+			intRowVal = 1;
+		}
+		else if ( prmDbRec->m_FgFunc == ID_FGFUNC_RUIKEI ) {
+			intRowName = 2;
+			intRowVal = 2;
+		}
+		break;
+	}
+
+	// 頁計/累計の名称表示
+	if(intRowName > 0)	{
+		CmnDiagSetString(m_pDiagKei, CmnGetKeiDiagIndex(intRowName, ID_COL_081I_KEI1_MEISYO), prmDbRec->m_KeiStr, 1);
+	}
+	// 頁計/累計の金額表示
+	if(intRowVal > 0)	{
+		CmnDiagSetKingaku(m_pDiagKei, CmnGetKeiDiagIndex(intRowVal, ID_COL_081I_KEI1_VAL), prmDbRec->m_Val);
+	}
+}
+
+//********************************************************************************
+//	【F6:項目複写】１つ前のデータ表示処理
+//		IN		CdbUc000Common*	共通テーブルクラス
+//		RET		なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virFncCellCopyProc( CdbUc000Common* rsData )
+{
+	CdbUc081Siharaitegata*	rs;
+	int						intCol;	// 現在の列
+	int						ind1,ind2;
+	CString					cs1,cs2;
+
+	rs = (CdbUc081Siharaitegata*)rsData;
+
+	// 列取得
+	intCol = CmnGetControlCol();
+
+	// 列によって処理を分岐
+	switch( intCol ){
+// 改良No.21-0086,21-0529 add -->
+		// 科目
+		case ID_COL_081I_KAMOKU:
+			CmnDiagSetCombo2(m_pDiag, m_uInfo.intCurCtlIndex, rs->m_KnOrder);
+			break;
+// 改良No.21-0086,21-0529 add <--
+		// 登録番号（T選択）
+		case ID_COL_081I_INVONOT:
+		// 登録番号
+		case ID_COL_081I_INVONO:
+			if(intCol == ID_COL_081I_INVONOT) {
+				ind1 = m_uInfo.intCurCtlIndex;
+				ind2 = m_uInfo.intCurCtlIndex+1;
+			}
+			else {
+				ind1 = m_uInfo.intCurCtlIndex-1;
+				ind2 = m_uInfo.intCurCtlIndex;
+			}
+			// 登録番号選択
+			CmnDiagSetCombo3(m_pDiag, ind1, rs->m_InvNo);
+			// 登録番号
+			InvoNoSplit(rs->m_InvNo, &cs1, &cs2);
+			CmnDiagSetString( m_pDiag, ind2, cs2, 0 );
+			break;
+		// 支払先1
+		case ID_COL_081I_ADNAME1:
+			CmnDiagSetString( m_pDiag, m_uInfo.intCurCtlIndex, m_clsFunc.StrDocking( rs->m_AdName1,rs->m_AdName2 ) , 0 );
+			break;
+		// 振出年月日
+		case ID_COL_081I_SPDATE:
+			CmnDiagSetDateWMD( m_pDiag, m_uInfo.intCurCtlIndex, DC_DATE_GWMD, rs->m_SpDate );
+			break;
+		// 支払期日
+		case ID_COL_081I_PMDATE:
+			CmnDiagSetDateWMD( m_pDiag, m_uInfo.intCurCtlIndex, DC_DATE_GWMD, rs->m_PmDate );
+			break;
+		// 支払銀行名
+		case ID_COL_081I_BKNAME1:
+			CmnDiagSetString( m_pDiag, m_uInfo.intCurCtlIndex, rs->m_BkName1, 0 );
+			break;
+		// 支払支店名
+		case ID_COL_081I_BKNAME2:
+			CmnDiagSetString( m_pDiag, m_uInfo.intCurCtlIndex, rs->m_BkName2, 0 );
+			break;
+		// 金額
+		case ID_COL_081I_VAL:
+			CmnDiagSetKingaku( m_pDiag, m_uInfo.intCurCtlIndex, rs->m_Val );
+			break;
+		// 摘要
+		case ID_COL_081I_TEKI:
+			CmnDiagSetString( m_pDiag, m_uInfo.intCurCtlIndex, rs->m_Teki, 0 );
+			break;
+	}
+
+	// 画面更新
+	m_pDiag->Refresh();
+}
+
+//********************************************************************************
+//	【F9:参照】参照ダイアログで使用する種別を取得
+//		IN		int				カレント列番号
+//				int*			取引先時に使用するグループ番号（更新項目）･･･ NDS参照ダイアログで使用
+//									ID_ADDRESSGR_NONE	：なし
+//									ID_ADDRESSGR_URI	：売掛金
+//									ID_ADDRESSGR_KAI	：買掛金
+//				long*			現在選択項目のシーケンス番号　（更新項目）･･･ NDS参照ダイアログで使用
+//				int*			住所１の分割するバイト数 ･･･ ICS様住所検索で使用
+//				int*			住所２の分割するバイト数 ･･･ ICS様住所検索で使用
+//				int*			住所１の列番号
+//				int*			住所２の列番号
+//		RET		int				参照型の種別
+//									ID_DLGTYPE_BANK		：金融機関
+//									ID_DLGTYPE_ADDRESS	：取引先
+//									ID_DLGTYPE_KAMOKU	：科目
+//									ID_DLGTYPE_NONE		：参照不可
+//********************************************************************************
+int	CfrmUc081SiharaitegataI::virFncReferenceGetType(int intCol, int* intGrSeq, long* lngItemSeq, int* intAdd1, int* intAdd2, int* intAdd1Col, int* intAdd2Col, REFERENCE_INFO* pudReference)
+{
+	int		intRefType;
+
+	switch ( intCol ) {
+// 改良No.21-0086,21-0529 add -->
+		// 科目
+		case ID_COL_081I_KAMOKU:
+			intRefType = ID_DLGTYPE_KAMOKU;
+			*intGrSeq = ID_ADDRESSGR_NONE;
+			*lngItemSeq = m_ReadData[m_uInfo.intCurRow].m_KnSeq;
+			break;
+// 改良No.21-0086,21-0529 add <--
+
+		// 登録番号(法人番号)
+		case ID_COL_081I_INVONOT:
+		case ID_COL_081I_INVONO:
+			intRefType = ID_DLGTYPE_INVOICENO;
+			*intGrSeq = ID_ADDRESSGR_KAI;
+			*lngItemSeq = m_ReadData[m_uInfo.intCurRow].m_AdSeq;
+			break;
+
+		// 支払先1・支払先2
+		case ID_COL_081I_ADNAME1:
+			intRefType = ID_DLGTYPE_ADDRESS;
+			*intGrSeq = ID_ADDRESSGR_KAI;
+			*lngItemSeq = m_ReadData[m_uInfo.intCurRow].m_AdSeq;
+			break;
+
+		// 支払銀行・支店名
+		case ID_COL_081I_BKNAME1:
+		case ID_COL_081I_BKNAME2:
+			intRefType = ID_DLGTYPE_BANK;
+			*intGrSeq = ID_ADDRESSGR_NONE;
+			*lngItemSeq = m_ReadData[m_uInfo.intCurRow].m_BkSeq;
+			break;
+
+		// その他：参照対象外
+		default:
+			intRefType = ID_DLGTYPE_NONE;
+			*intGrSeq = ID_ADDRESSGR_NONE;
+			*lngItemSeq = 0;
+		break;
+	}
+	return intRefType;
+}
+
+//********************************************************************************
+//	【F9:参照】参照ダイアログで選択された内容を表示
+//		IN		CdlgReference*	参照ダイアログ情報
+//				int				参照ダイアログの種別
+//				int				カレント列番号
+//		RET		なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virFncReferenceSetData( CdlgReference* dlgRef, int intRefType, int intCol )
+{
+	CString			cst,cst2;
+	CString			str1,str2;
+
+	switch ( intRefType ) {
+// 改良No.21-0086,21-0529 add -->
+		// 科目
+		case ID_DLGTYPE_KAMOKU:
+			// 選択内容を表示
+			CmnDiagSetCombo2(m_pDiag, m_uInfo.intCurCtlIndex, dlgRef->m_udKamoku.m_KnOrder);
+			break;
+// 改良No.21-0086,21-0529 add <--
+
+		// 支払先1・支払先2
+		case ID_DLGTYPE_ADDRESS:
+			if(intCol == ID_COL_081I_INVONOT) {
+				// 選択内容を表示
+				//	登録番号（T選択）
+				CmnDiagSetCombo3(m_pDiag, m_uInfo.intCurCtlIndex, dlgRef->m_udAddress.m_InvNo);
+				// 登録番号
+				InvoNoSplit(dlgRef->m_udAddress.m_InvNo, &str1, &str2);
+				CmnDiagSetString(m_pDiag, m_uInfo.intCurCtlIndex+1, str2, 0);
+				// 名称
+				CmnDiagSetString(m_pDiag, m_uInfo.intCurCtlIndex+2, m_clsFunc.StrDocking(dlgRef->m_udAddress.m_AdName1,
+																						 dlgRef->m_udAddress.m_AdName2), 0);
+			}
+			else if(intCol == ID_COL_081I_INVONO) {
+				// 選択内容を表示
+				//	登録番号（T選択）
+				CmnDiagSetCombo3(m_pDiag, m_uInfo.intCurCtlIndex-1, dlgRef->m_udAddress.m_InvNo);
+				// 登録番号
+				InvoNoSplit(dlgRef->m_udAddress.m_InvNo, &str1, &str2);
+				CmnDiagSetString(m_pDiag, m_uInfo.intCurCtlIndex, str2, 0);
+				// 名称
+				CmnDiagSetString(m_pDiag, m_uInfo.intCurCtlIndex+1, m_clsFunc.StrDocking(dlgRef->m_udAddress.m_AdName1,
+																						 dlgRef->m_udAddress.m_AdName2), 0);
+			}
+			else if(intCol == ID_COL_081I_ADNAME1)	{
+				// 選択内容を表示
+				//	登録番号（T選択）
+				CmnDiagSetCombo3(m_pDiag, m_uInfo.intCurCtlIndex-2, dlgRef->m_udAddress.m_InvNo);
+				// 登録番号
+				InvoNoSplit(dlgRef->m_udAddress.m_InvNo, &str1, &str2);
+				CmnDiagSetString(m_pDiag, m_uInfo.intCurCtlIndex-1, str2, 0);
+				// 名称
+				CmnDiagSetString(m_pDiag, m_uInfo.intCurCtlIndex, m_clsFunc.StrDocking(dlgRef->m_udAddress.m_AdName1,
+																					   dlgRef->m_udAddress.m_AdName2), 0);
+			}
+			break;
+
+		// 支払銀行・支店名
+		case ID_DLGTYPE_BANK:
+			if(intCol == ID_COL_081I_BKNAME1)	{
+				// 選択内容を表示
+				str1 = str2 = _T("");	// 修正No.168454 add
+				cst = dlgRef->m_udBank.m_BkName1;
+				if(cst.GetLength() > 10) {
+					str2 = m_clsFunc.GetSpritString(cst, &str1, 10);
+				}
+				if(str2.IsEmpty() == FALSE)		cst2 = str1 + _T("\r\n") + str2;
+				else							cst2 = dlgRef->m_udBank.m_BkName1;
+				CmnDiagSetString(m_pDiag, m_uInfo.intCurCtlIndex, cst2, 0);
+
+				str1 = str2 = _T("");	// 修正No.168454 add
+				cst = dlgRef->m_udBank.m_BkName2;
+				if(cst.GetLength() > 10) {
+					str2 = m_clsFunc.GetSpritString(cst, &str1, 10);
+				}
+				if(str2.IsEmpty() == FALSE)		cst2 = str1 + _T("\r\n") + str2;
+				else							cst2 = dlgRef->m_udBank.m_BkName2;
+				CmnDiagSetString(m_pDiag, m_uInfo.intCurCtlIndex + 1, cst2, 0);
+			}
+			else if(intCol == ID_COL_081I_BKNAME2)	{
+				// 選択内容を表示
+				str1 = str2 = _T("");	// 修正No.168454 add
+				cst = dlgRef->m_udBank.m_BkName2;
+				if(cst.GetLength() > 10)	{
+					str2 = m_clsFunc.GetSpritString(cst, &str1, 10);
+				}
+				if(str2.IsEmpty() == FALSE)		cst2 = str1 + _T("\r\n") + str2;
+				else							cst2 = dlgRef->m_udBank.m_BkName2;
+				CmnDiagSetString( m_pDiag, m_uInfo.intCurCtlIndex, cst2, 0 );
+
+				str1 = str2 = _T("");	// 修正No.168454 add
+				cst = dlgRef->m_udBank.m_BkName1;
+				if(cst.GetLength() > 10)	{
+					str2 = m_clsFunc.GetSpritString(cst, &str1, 10);
+				}
+				if(str2.IsEmpty() == FALSE)		cst2 = str1 + _T("\r\n") + str2;
+				else							cst2 = dlgRef->m_udBank.m_BkName1;
+				CmnDiagSetString( m_pDiag, m_uInfo.intCurCtlIndex - 1, cst2, 0 );
+			}
+			break;
+
+		default:
+			return;
+			break;
+	}
+
+	m_pDiag->Refresh();
+}
+
+//********************************************************************************
+//	【F9:参照】参照ダイアログの操作によりテーブルを更新
+//		IN		int			参照ダイアログの種別
+//		RET		なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virFncReferenceUpdateTbl( int intRefType, int nRefMode/*=0*/ )
+{
+	CdbUcLstBank		rsBank( m_pDB );
+	CdbUcLstAddress		rsAddress( m_pDB );
+	CdbUcLstKamoku		rsKmk(m_pDB);		// 改良No.21-0086,21-0529 add
+
+	switch ( intRefType ) {
+// 改良No.21-0086,21-0529 add -->
+		// 科目
+		case ID_DLGTYPE_KAMOKU:
+			rsKmk.UpdateDataTable(m_uInfo.intFormSeq, nRefMode);
+			rsKmk.Fin();
+			break;
+// 改良No.21-0086,21-0529 add <--
+
+		// 支払先1・支払先2
+		case ID_DLGTYPE_ADDRESS:
+			// 取引先を使用する全テーブルの更新
+			rsAddress.UpdateDataTableAll_Inv(m_RegAutoRef);
+			rsAddress.Fin();
+			break;
+
+		// 支払銀行・支店名
+		case ID_DLGTYPE_BANK:
+			// 金融機関を使用する全テーブルの更新
+			CdbUcLstBank	rsBank( m_pDB );
+			rsBank.UpdateDataTableAll(m_RegAutoRef);
+			rsBank.Fin();
+			break;
+	}
+}
+
+void CfrmUc081SiharaitegataI::virActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame)
+{
+	int		index = 0;
+	CWnd*	pWnd = this->GetFocus();
+
+	if(pWnd != NULL)	{
+		if(m_DataKakutei == FALSE)	{
+			if(m_uInfo.intCurCol == ID_COL_081I_SPDATE || m_uInfo.intCurCol == ID_COL_081I_PMDATE)	{
+				if(m_uInfo.EditSign == 1)	{
+					m_uInfo.EditSign = -1;
+					m_uInfo.GenListSw = 0;
+					if(m_uInfo.intCurCol == ID_COL_081I_SPDATE)	{
+						m_uInfo.OldDate[0] = 0;
+						m_uInfo.OldGengo[0] = 0;
+					}
+					else	{
+						m_uInfo.OldDate[1] = 0;
+						m_uInfo.OldGengo[1] = 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+// 改良No.21-0086,21-0529 add -->
+void CfrmUc081SiharaitegataI::virActivateFrameK(UINT nState, CFrameWnd* pDeactivateFrame)
+{
+	int		index = 0;
+	CWnd*	pWnd = this->GetFocus();
+
+	if(pWnd != NULL)	{
+		if(m_DataKakutei == FALSE)	{
+			if(m_uInfo.intCurCol == ID_COL_081I_KAMOKU)	{
+				virKamokuAddCancel();
+			}
+		}
+	}
+}
+
+void CfrmUc081SiharaitegataI::virKamokuAddCancel()
+{
+	if(m_DataKakutei == TRUE)	return;
+
+	// ポジション取得
+	m_uInfo.intCurCtlIndex = m_pDiag->GetPosition();
+	// 行・列取得
+	CmnGetControlPosition(&m_uInfo.intCurRow, &m_uInfo.intCurCol, &m_uInfo.OldCol);
+	// 科目列なら
+	if(m_uInfo.intCurCol == ID_COL_081I_KAMOKU && m_F9OnSw != TRUE) {
+		DIAGRAM_DATA	diadata;
+		m_pDiag->GetData(m_uInfo.intCurCtlIndex, (LPUNKNOWN)&diadata);
+		// 【新規作成】が選択されていれば
+		if(diadata.data_combo > m_CmbCnt) {
+			// 前回の値に戻す
+			CmnDiagSetCombo(m_pDiag, CmnGetControlIndex(m_uInfo.intCurRow, ID_COL_081I_KAMOKU), m_uInfo.OldCombo);
+		}
+	}
+}
+// 改良No.21-0086,21-0529 add <--
+
+//********************************************************************************
+//	その他イベント処理
+//********************************************************************************
+BOOL	CfrmUc081SiharaitegataI::PreTranslateMessage( MSG* pMsg )
+{
+	BOOL			blnMove = TRUE;		// カーソル移動可能/不可フラグ
+	int				intOrgIndex;		// カーソル移動前のインデックス番号
+	int				intMoveRow;			// カーソル移動先（行）
+	int				intMoveCol;			// カーソル移動先（列）
+	int				rv=0;
+	int				intRet=0;
+	int				id=0;
+	int				nMaxDataCol=0;		// 1頁の最大行数
+	int				intTotalType=0;		// 合計タイプ
+	int				intCol=0;
+	int				sw=0;
+	DIAGRAM_DATA	diadata;			// 改良No.21-0086,21-0529 add
+
+	CWnd* pWnd = this->GetFocus();
+
+	if ( pWnd != NULL ){
+		id = pWnd->GetDlgCtrlID();
+		if(id == IDC_PAGEBACK_BUTTON1 || id == IDC_PAGENEXT_BUTTON1 || id == IDC_PAGENEW_BUTTON1 || 
+			id == IDC_PAGEINSERT_BUTTON1 || id == IDC_ROWCOPY_BUTTON1 || id == IDC_ROWPASTE_BUTTON1 || 
+			id == IDC_ROWINSERT_BUTTON1 || id == IDC_YOUSHIKIBACK_BUTTON1 || id == IDC_YOUSHIKINEXT_BUTTON1 )	{
+			nG_MScroll = 0;
+			sw = 1;
+		}
+	}
+
+	//	キーが押された？
+	if ( pMsg->message == WM_KEYDOWN ){
+		//	パラメータで分岐
+		switch( pMsg->wParam ){
+			// Enterキー
+			case VK_RETURN:
+				if(nG_MScroll == 1)	{
+					rv = CursorControl((short)pMsg->wParam,1);
+				}
+				else if(m_DataKakutei == FALSE && m_uInfo.intCurFocus == 1)	{
+					if(IsSpecialRow(m_ReadData[m_uInfo.intCurRow].m_FgFunc) == 1)	{
+// 改良No.21-0086,21-0529 cor -->
+						//intRet = GetFocusPosition(VK_RETURN);
+						//m_pDiag->SetPosition(intRet);
+						//rv=1;
+// ------------------------------
+						if(KamokuRowEnableSgn(m_pDB, 1, m_uInfo.intFormSeq) == 1)	{
+							if((m_ReadData[m_uInfo.intCurRow].m_FgFunc != ID_FGFUNC_SYOKEI && m_ReadData[m_uInfo.intCurRow].m_FgFunc != ID_FGFUNC_CHUKEI && m_ReadData[m_uInfo.intCurRow].m_FgFunc != ID_FGFUNC_KAMOKU) ||
+							   (m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_SYOKEI && m_uInfo.intCurCol != ID_COL_081I_ADNAME1) ||
+							   (m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_CHUKEI && m_uInfo.intCurCol != ID_COL_081I_ADNAME1) ||
+							   (m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_KAMOKU && m_uInfo.intCurCol != ID_COL_081I_ADNAME1)) {
+								intRet = GetFocusPosition(VK_RETURN);
+								m_pDiag->SetPosition(intRet);
+								rv = 1;
+							}
+						}
+// 改良No.21-0086,21-0529 cor <--
+					}
+				}
+				break;
+			// PageUp，PageDownキー
+			case VK_PRIOR:
+			case VK_NEXT:
+				if(m_DataKakutei == FALSE)	{
+// 修正No.168362 add -->
+					// ---- 登録番号一覧関連 ----->
+					if(pZmSel && pZmSel->IsDisplay() != FALSE)	{
+						if(pMsg->wParam == VK_NEXT) {
+							pZmSel->PageDown();
+						}
+						else if(pMsg->wParam == VK_PRIOR) {
+							pZmSel->PageUp();
+						}
+						rv = 1;
+					}
+					// <--- 登録番号一覧関連 ------
+					else {
+// 修正No.168362 add <--
+						// データ入力欄にフォーカスある場合のみ実行を許す
+						if (m_uInfo.intCurFocus != 1 && nG_MScroll == 0) {
+							// 何もせずに抜ける
+							break;
+						}
+
+						// カレントインデックスを保存
+						intOrgIndex = m_pDiag->GetPosition();
+
+						// カレント行を取得
+						if (m_uInfo.intCurCtlIndex < m_uInfo.intT1StartIndex) {
+							intMoveRow = CmnGetControlRow();		// データ行の場合
+							intMoveCol = m_uInfo.intCurCol;
+						}
+						else if (m_uInfo.intCurCtlIndex >= m_uInfo.intT2StartIndex) {
+							intMoveRow = m_uInfo.intRowMax;			// 合計行②の場合(24)
+							intMoveCol = m_uInfo.intCursolDefPos;	// 移動先がデータ行になるため、Combo以外へ移動したい
+						}
+						else {
+							intMoveRow = m_uInfo.intRowMax - 1;		// 合計行①の場合(23)
+							intMoveCol = m_uInfo.intCursolDefPos;	// 移動先がデータ行になるため、Combo以外へ移動したい
+						}
+
+						intCol = CmnGetControlCol();
+// 改良No.21-0086,21-0529 add -->
+						// 例外処理：移動前に【新規作成】が選ばれている場合は値を元に戻す
+						if(intCol == ID_COL_081I_KAMOKU) {
+							m_pDiag->GetData(m_uInfo.intCurCtlIndex, (LPUNKNOWN)&diadata);
+							if(diadata.data_combo > m_CmbCnt) {
+								m_pDiag->ComboDropDown(m_uInfo.intCurCtlIndex, FALSE);
+								CmnDiagSetCombo(m_pDiag, m_uInfo.intCurCtlIndex, m_uInfo.OldCombo);
+							}
+						}
+// 改良No.21-0086,21-0529 add <--
+
+						// 例外処理：登録番号(T)選択でPageUp，PageDownキーが押下された場合は値を元に戻す
+						if(intCol == ID_COL_081I_INVONOT) {
+							m_pDiag->ComboDropDown(m_uInfo.intCurCtlIndex, FALSE);
+							CmnDiagSetCombo(m_pDiag, m_uInfo.intCurCtlIndex, m_uInfo.OldCombo);
+						}
+
+						// Scroll＋フォーカス移動先を取得
+						if (pMsg->wParam == VK_PRIOR) {
+							// PageUpの場合：Scroll＋フォーカス移動（行－１１）
+							m_pDiag->ScrollPos(SB_PAGEUP , 0);
+							intMoveRow = intMoveRow - 9;
+							if (intMoveRow < 1) {
+								blnMove = FALSE;					// 移動しない
+							}
+						}
+						else {
+							// PageDownの場合：Scroll＋フォーカス移動（行＋１１）
+							m_pDiag->ScrollPos(SB_PAGEDOWN, 0);
+							intMoveRow = intMoveRow + 9;
+							// カレント頁の合計行の種別を取得
+							intTotalType = CmnGetControlTotalType();
+							// カレント頁で"頁計と累計"を表示する場合、対象行は"-1"となる
+							// 頁計と累計
+							if(intTotalType == ID_OUTKEI_BOTH)	nMaxDataCol = m_uInfo.intRowMaxData - 1;
+							else								nMaxDataCol = m_uInfo.intRowMaxData;
+
+							if (intMoveRow > nMaxDataCol) {
+								blnMove = FALSE;					// 移動しない
+							}
+						}
+
+						// カーソル移動処理
+						if (blnMove == TRUE) {
+							// 頁計/累計行の制御は、当処理で制御する
+							CmnDiagSetFocus(m_pDiag, intMoveRow, intMoveCol);
+						}
+						else {
+							// 移動しない場合でも同じ位置にカーソルを再設定
+							m_pDiag->SetPosition(intOrgIndex);
+						}
+						intCol = CmnGetControlCol();
+// 改良No.21-0086,21-0529 cor -->
+						//if(intCol == ID_COL_081I_SPDATE || intCol == ID_COL_081I_PMDATE || intCol == ID_COL_081I_INVONOT) {
+// ------------------------------
+						if(intCol == ID_COL_081I_KAMOKU || intCol == ID_COL_081I_SPDATE || intCol == ID_COL_081I_PMDATE || intCol == ID_COL_081I_INVONOT) {
+// 改良No.21-0086,21-0529 cor <--
+							rv = 1;
+						}
+// 修正No.168362 add -->
+					} 
+// 修正No.168362 add <--
+				}
+				else	{
+					// Scroll
+					if (pMsg->wParam == VK_PRIOR)	m_pDiag->ScrollPos(SB_PAGEUP , 0);
+					else							m_pDiag->ScrollPos(SB_PAGEDOWN, 0);
+				}
+				break;
+
+			// カーソル移動キー
+			case VK_TAB:
+			case VK_UP:
+			case VK_DOWN:
+			case VK_LEFT:
+			case VK_RIGHT:
+				if(nG_MScroll == 1)	{
+					rv = CursorControl((short)pMsg->wParam,1);
+				}
+				else if(m_DataKakutei == FALSE && (sw == 0 && m_Pagefocus == 0 && m_Titlefocus == 0 ))	{
+					intCol = CmnGetControlCol();
+					if (intCol == ID_COL_081I_SPDATE || intCol == ID_COL_081I_PMDATE) {
+						if(pMsg->wParam == VK_UP || pMsg->wParam == VK_DOWN)	{
+							if(intCol == ID_COL_081I_SPDATE)	{
+								m_uInfo.OldDate[0] = CmnDiagGetDate(m_pDiag, m_uInfo.intCurCtlIndex, DC_DATE_GWMD);
+								m_uInfo.OldGengo[0] = CmnDiagGetDate(m_pDiag, m_uInfo.intCurCtlIndex, DC_DATE_GENGOU);
+							}
+							else	{
+								m_uInfo.OldDate[1] = CmnDiagGetDate(m_pDiag, m_uInfo.intCurCtlIndex, DC_DATE_GWMD);
+								m_uInfo.OldGengo[1] = CmnDiagGetDate(m_pDiag, m_uInfo.intCurCtlIndex, DC_DATE_GENGOU);
+							}
+							m_uInfo.GenListSw = 0;
+						}
+
+						if(IsSpecialRow(m_ReadData[m_uInfo.intCurRow].m_FgFunc) == 1 || pMsg->wParam == VK_LEFT || pMsg->wParam == VK_RIGHT)	{
+							rv = CursorControl((short)pMsg->wParam,0);
+						}
+					}
+// 改良No.21-0086,21-0529 add -->
+					else if(intCol == ID_COL_081I_KAMOKU) {
+						if(pMsg->wParam == VK_LEFT || pMsg->wParam == VK_RIGHT) {
+							rv = CursorControl((short)pMsg->wParam, 0);
+						}
+					}
+// 改良No.21-0086,21-0529 add <--
+				}
+				break;
+
+// 修正No.168362 add -->
+			case VK_HOME:
+				// ---- 登録番号一覧関連 ----->
+				if(pZmSel && pZmSel->IsDisplay() != FALSE) {
+					pZmSel->PageChange();
+					rv = 1;
+				}
+				// <--- 登録番号一覧関連 ------
+				break;
+// 修正No.168362 add <--
+
+			case VK_ESCAPE:
+				// ---- 登録番号一覧関連 ----->
+				if(pZmSel && pZmSel->IsDisplay() != FALSE) {
+					pZmSel->DialogOFF();
+					rv = 1;
+				}
+				// <--- 登録番号一覧関連 ------
+				break;
+		}
+	}
+// 修正No.168362 add -->
+	else if(pMsg->message == WM_MOUSEWHEEL)	{
+		// ---- 登録番号一覧関連 ----->
+		if(pZmSel && pZmSel->IsDisplay() != FALSE)	{
+			rv = 1;
+		}
+		// <--- 登録番号一覧関連 ------
+	}
+// 修正No.168362 add <--
+
+	if(rv == 1)	{
+		return(TRUE);
+	}
+
+	return CfrmUc000Common::PreTranslateMessage(pMsg);
+}
+
+//********************************************************************************
+//	頁コントロール処理（Focus，EditOFF，Terminationイベント）
+//********************************************************************************
+
+// 頁コントロールのフォーカス設定
+void	CfrmUc081SiharaitegataI::FocusPagediag1()
+{
+}
+
+// 頁コントロールのゲットフォーカス
+void	CfrmUc081SiharaitegataI::EditONPagediag1( short index )
+{
+// 修正No.168443 add -->
+	// ---- 登録番号一覧関連 ----->
+	if(pZmSel && pZmSel->IsDisplay() != FALSE) {
+		pZmSel->DialogOFF();
+	}
+	// ---- 登録番号一覧関連 <-----
+// 修正No.168443 add <--
+
+	// スクロールフラグをクリアする
+	nG_MScroll = 0;
+	m_Pagefocus = 1;
+
+	// 1行登録
+	int intRet = virRecBufSaveData(m_uInfo.intCurPage, m_uInfo.intCurRow);
+	if ((intRet == FUNCTION_UPDATE) || ( intRet == FUNCTION_DISPUPDATE)) {
+		m_PageDiag.SetPosition(1);
+	}
+}
+
+// 頁コントロールのロストフォーカス
+void	CfrmUc081SiharaitegataI::EditOFFPagediag1( short index )
+{
+	// 会社切替時にメッセージを表示した場合、EditOffが走りDB書き込み時にエラーが発生していた
+	if(m_EndView != FALSE)	return;
+
+	// 頁入力値を取得
+	int	intTempPage = CmnDiagGetValue( &m_PageDiag, 1 );
+
+	m_Pagefocus = 0;
+	// 頁が変更された場合は画面更新が必要
+	if ( m_uInfo.intCurPage != intTempPage ) {
+		if ( ( intTempPage >= 1 ) && ( intTempPage <= m_uInfo.intMaxPage ) ) {
+			// 範囲内：新ページに更新
+			m_uInfo.intCurPage = intTempPage;
+
+			m_ChangeFont = TRUE;
+
+			// データを再描画してフォーカスをデータ入力欄に
+			PostMessage(WM_USER_REDRAWVIEW, 0, 0);
+
+			return;
+		}
+	}
+
+	// ページ情報のみ更新："0001"→"1"で表示したい
+	UpdateControlPage();
+}
+
+// 頁コントロールのキー操作
+void	CfrmUc081SiharaitegataI::TerminationPagediag1( short index, short nChar, short length, LPUNKNOWN data )
+{
+	int nMaxDataCol = 0;
+	// カレント頁の合計行の種別を取得
+	int intTotalType = CmnGetControlTotalType();
+	
+	// カレント頁で"頁計と累計"を表示する場合、対象行は"-1"となる
+	switch (intTotalType) {
+		case ID_OUTKEI_BOTH:			// 頁計と累計
+			nMaxDataCol = m_uInfo.intRowMaxData - 1;
+			break;
+		default:
+			nMaxDataCol = m_uInfo.intRowMaxData;
+			break;
+	}
+
+	// フォーカス移動
+	switch ( nChar ) {
+		case VK_RETURN:
+			// Return：頁確定のため
+			CmnDiagSetFocus( m_pDiag, 1, 1 );
+			break;
+		case VK_TAB:
+			// Tab/Shift+Tabにてフォーカス移動
+			if ( CmnCheckShiftKey() == FALSE ) {
+				// Tab：タイトルコントロールへ移動
+				if(m_DataKakutei == FALSE)	m_TitleDiag.SetPosition(0);
+			}
+			else {
+				// Shift+Tab：データ部の最終行へ移動（頁計/累計行の制御を行う）
+				CmnDiagSetFocus(m_pDiag, nMaxDataCol, ID_COL_081I_TEKI);
+			}
+			break;
+		case VK_DOWN:
+			// タイトルコントロールへ移動
+			if(m_DataKakutei == FALSE)	m_TitleDiag.SetPosition(0);
+			break;
+	}
+}
+
+//********************************************************************************
+//	タイトルコントロール処理（Focus，EditOFF，Terminationイベント）
+//********************************************************************************
+
+// タイトルコントロールのフォーカス設定
+void	CfrmUc081SiharaitegataI::FocusTitlediag1()
+{
+}
+
+// タイトルコントロールのゲットフォーカス
+void	CfrmUc081SiharaitegataI::EditONTitlediag1( short index )
+{
+// 修正No.168443 add -->
+	// ---- 登録番号一覧関連 ----->
+	if(pZmSel && pZmSel->IsDisplay() != FALSE) {
+		pZmSel->DialogOFF();
+	}
+	// ---- 登録番号一覧関連 <-----
+// 修正No.168443 add <--
+
+	// スクロールフラグをクリアする
+	nG_MScroll = 0;
+	m_Titlefocus = 1;
+	// 1行登録
+	int intRet = virRecBufSaveData(m_uInfo.intCurPage, m_uInfo.intCurRow);
+	if ((intRet == FUNCTION_UPDATE) || ( intRet == FUNCTION_DISPUPDATE)) {
+		m_TitleDiag.SetPosition(0);
+	}
+}
+
+// タイトルコントロールのロストフォーカス
+void	CfrmUc081SiharaitegataI::EditOFFTitlediag1 (short index )
+{
+	m_Titlefocus = 0;
+	virUpdateTitle();
+}
+
+//	タイトル更新
+void CfrmUc081SiharaitegataI::virUpdateTitle()
+{
+	// 帳表タイトル取得してuc_inf_subを更新
+	m_uInfo.strTitleName = m_clsFunc.DiagGetString( &m_TitleDiag, 0 );
+	CmnUcInfSubSetTitleInfo( TRUE );
+}
+
+// タイトルコントロールのキーイベント
+void	CfrmUc081SiharaitegataI::TerminationTitlediag1( short index, short nChar, short length, LPUNKNOWN data )
+{
+	// フォーカス移動
+	switch ( nChar ) {
+	case VK_RETURN:
+		// １行目の左上へ移動
+		CmnDiagSetFocus( m_pDiag, 1, 1 );
+		break;
+	case VK_TAB:
+		// Shiftキーの有無は？
+		if ( CmnCheckShiftKey() == FALSE ) {
+			// １行目の左上へ移動
+			CmnDiagSetFocus( m_pDiag, 1, 1 );
+		}
+		else {
+			// 頁コントロールへ移動
+			m_PageDiag.SetPosition(1);
+		}
+		break;
+	case VK_UP:
+		// 頁コントロールへ移動
+		m_PageDiag.SetPosition( 1 );
+		break;
+	case VK_DOWN:
+		// データ部の初期位置へ移動
+		CmnDiagSetFocus( m_pDiag, 1, m_uInfo.intCursolDefPos );
+		break;
+	case VK_DELETE:
+		// タイトル削除
+		m_TitleDiag.DataClear( 0 , TRUE );
+		break;
+	}
+}
+
+//********************************************************************************
+//	「支払手形」データコントロール処理（EditON，EditOFF，Terminationイベント）
+//********************************************************************************
+
+// 「支払手形」データコントロールのゲットフォーカス
+void	CfrmUc081SiharaitegataI::EditONYoushikidiag1( short index )
+{
+	DIAGRAM_DATA	diadata;
+	int				intRet = -1;
+
+	// スクロールフラグをクリアする
+	nG_MScroll = 0;
+	m_ComboSgn = 0;			// 改良No.21-0086,21-0529 add
+
+	// フォーカスフラグON
+	m_uInfo.intCurFocus = 1;
+
+	// ポジション取得
+	m_uInfo.intCurCtlIndex = m_pDiag->GetPosition();
+
+	// 行・列取得
+	CmnGetControlPosition( &m_uInfo.intCurRow , &m_uInfo.intCurCol, &m_uInfo.OldCol );
+
+	// 頁、行、列のいずれかが変わったらEditOFF発行カウントをクリア
+	if(m_uInfo.OldPage != m_uInfo.intCurPage || m_uInfo.intCurRow != m_uInfo.OldRow || m_uInfo.intCurCol != m_uInfo.OldCol)	{
+		m_uInfo.GenListSw = 0;
+	}
+
+	if(m_uInfo.intCurCol == ID_COL_081I_SPDATE || m_uInfo.intCurCol == ID_COL_081I_PMDATE)	m_uInfo.EditSign = 1;
+	else																					m_uInfo.EditSign = -1;
+
+	switch(m_uInfo.intCurCol) {
+// 改良No.21-0086,21-0529 add -->
+		case ID_COL_081I_KAMOKU:	// 科目
+			// コンボボックスのオフセット値取得
+			m_pDiag->GetData(m_uInfo.intCurCtlIndex, (LPUNKNOWN)&diadata);
+			if(diadata.data_combo <= m_CmbCnt)	{
+				// 選択しているのが【新規作成】であれば保存しない
+				// 1.キー操作で【新規作成】までもっていく。
+				// 2.欄外の例えば今回追加したガイド等をクリックする（コンボは閉じるが【新規作成】のまま）
+				// 3.ウインドウの右下をドラッグして少し小さくする（【新規作成】のまま）
+				// 4.[Ins 様式切替] 等、EditOff が発生する動作を行う
+				// 5.科目追加ダイアログが開かれていて閉じるともう一度表示される
+				// ※3の操作でEditOnが発生して OldCombo に【新規作成】が保存される
+				m_uInfo.OldCombo = diadata.data_combo;
+			}
+			break;
+// 改良No.21-0086,21-0529 add <--
+
+		case ID_COL_081I_INVONOT:	// 登録番号(T選択)
+			// コンボボックスのオフセット値取得
+			m_pDiag->GetData(m_uInfo.intCurCtlIndex, (LPUNKNOWN)&diadata);
+			m_uInfo.OldCombo = diadata.data_combo;
+			break;
+
+		case ID_COL_081I_SPDATE:	// 振出年月日
+			if(m_uInfo.GenListSw == 0) {
+				m_uInfo.OldDate[0] = 0;
+				m_uInfo.OldGengo[0] = 0;
+			}
+			break;
+		case ID_COL_081I_PMDATE:	// 支払期日
+			if(m_uInfo.GenListSw == 0) {
+				m_uInfo.OldDate[1] = 0;
+				m_uInfo.OldGengo[1] = 0;
+			}
+			break;
+		default:
+			// 現在の入力値を取得
+			m_uInfo.OldstrDiag = m_clsFunc.DiagGetString(m_pDiag, m_uInfo.intCurCtlIndex);
+			break;
+	}
+
+	// 行移動確認
+	if ( ( m_uInfo.OldRow > 0 ) ) {
+		if ( m_uInfo.OldPage == m_uInfo.intCurPage && m_uInfo.OldPage > 0 ) {
+			BOOL isSaveInv = IsSaveMoveReference(ID_COL_081I_INVONOT, ID_COL_081I_INVONO);		// 登録番号(法人番号)
+			BOOL isSaveBk1 = IsSaveMoveReference(ID_COL_081I_BKNAME1, ID_COL_081I_BKNAME2);		// 支払銀行名
+			//  銀行名⇔支店名、T選択⇔登録番号は保存しない
+			// データ保存
+			if((isSaveInv != FALSE) && (isSaveBk1 != FALSE)) {
+				// カレント行登録＋再表示
+				intRet = virRecBufSaveData(m_uInfo.intCurPage , m_uInfo.OldRow );
+				if ((intRet == FUNCTION_UPDATE) || (intRet == FUNCTION_DISPUPDATE)) {
+					// カーソル移動処理
+					CmnDiagSetFocus(m_pDiag, m_uInfo.intCurRow, m_uInfo.intCurCol);
+				}
+			}
+			else {
+				BankCellChg(m_uInfo.OldRow,m_uInfo.OldCol);
+			}
+		}
+	}
+
+	// ボタン操作
+	CmnChangeButtonEnable(1);
+
+	// ---- 登録番号一覧関連 ----->
+	int		sw=0;
+	// 登録番号(T選択)にカーソルがあるとき、登録番号一覧を表示する
+	if(m_uInfo.intCurCol == ID_COL_081I_INVONO && m_EndSyorityu == 0)	{
+// 修正No.168377 del -->
+		//// 登録番号一覧は、空行、データ行、一括金額(手動)の時に表示
+		//if(m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_NULL || m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_DATA ||
+		//   m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_IKKATUMANUAL) {
+// 修正No.168377 del <--
+// 修正No.168377 add -->
+		// 登録番号のT選択の値を取得
+		int pos = CmnGetControlIndex(m_uInfo.intCurRow, ID_COL_081I_INVONOT);
+		m_pDiag->GetData(pos, (LPUNKNOWN)&diadata);
+
+		// 登録番号一覧は、「T」が選択されている空行、データ行、一括金額(手動)の時に表示
+		if((m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_NULL || m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_DATA ||
+		   m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_IKKATUMANUAL) && diadata.data_combo == 0) {
+// 修正No.168377 add <--
+			// 処理終了中は表示しない（m_EndSyorityu = 1）
+			// 進捗確認ダイアログと、処理終了確認ダイアログの間にEditONが発生するため
+			sw = 1;
+		}
+	}
+	PostMessage(WM_ZMSEL_MESSAGE, (WPARAM)sw, (LPARAM)index);
+	// ---- 登録番号一覧関連 <-----
+}
+
+// データコントロールのロストフォーカス
+void	CfrmUc081SiharaitegataI::EditOFFYoushikidiag1( short index )
+{
+	if( m_EndView != FALSE )	return;
+
+// 修正No.168443 add -->
+	// ---- 登録番号一覧関連 ----->
+	if(m_uInfo.intCurCol != ID_COL_081I_INVONO) {
+		if(pZmSel && pZmSel->IsDisplay() != FALSE) {
+			pZmSel->DialogOFF();
+		}
+	}
+	// ---- 登録番号一覧関連 <-----
+// 修正No.168443 add <--
+
+	// 入力確定
+	virInputDecisionEditOFF();
+
+// 改良No.21-0086,21-0529 add -->
+	if(m_uInfo.intCurCol == ID_COL_081I_KAMOKU)	{
+		if(m_ComboSgn != 1) {
+			ComboNew(index);
+		}
+	}
+	m_ComboSgn = 0;
+// 改良No.21-0086,21-0529 add <--
+
+	// 振出年月日 支払期日
+	if(m_uInfo.intCurCol == ID_COL_081I_SPDATE || m_uInfo.intCurCol == ID_COL_081I_PMDATE)	{
+		// 元号+年月日の入力状況を取得
+		Date_ChkAndSet(index, m_uInfo.intCurCol, 1);
+		m_uInfo.EditSign = 0;
+	}
+	else {
+		m_uInfo.EditSign = -1;
+	}
+
+// 修正No.168443 del -->
+	//// ---- 登録番号一覧関連 ----->
+	//if(pZmSel && m_uInfo.intCurCol != ID_COL_081I_INVONO) {
+	//	if(pZmSel->IsDisplay() != FALSE) {
+	//		pZmSel->DialogOFF();
+	//	}
+	//}
+	//// ---- 登録番号一覧関連 <-----
+
+	//if(m_uInfo.intCurCol == ID_COL_081I_INVONO)		{
+	//	// 入力された登録番号から参照ダイアログを検索し、登録済みの場合はデータを取得して画面に表示
+	//	if(ChkInvoiceNum(m_pDB, 2, m_uInfo.intCurPage, m_uInfo.intCurRow) == -1) {
+	//		//// カーソル移動処理
+	//		//CmnDiagSetFocus( m_pDiag, m_uInfo.intCurRow, ID_COL_081I_INVONO );
+	//	}
+	//}
+// 修正No.168443 del <--
+// 修正No.168443 add -->
+	if(m_uInfo.intCurCol == ID_COL_081I_INVONO)		{
+		// 入力された登録番号をチェック
+		ChkInvoiceNum(m_pDB, 2, m_uInfo.intCurPage, m_uInfo.intCurRow);
+	}
+// 修正No.168443 add <--
+}
+
+//	入力確定
+void CfrmUc081SiharaitegataI::virInputDecisionEditOFF()
+{
+	// フォーカスフラグOFF
+	m_uInfo.intCurFocus = 0;
+
+	// 入力項目を強制的に確定
+	CmnDiagSetEnterReDraw( m_pDiag, m_pDiag->GetPosition() );
+
+// 改良No.21-0086,21-0529 add -->
+	// 自動一括集計行なら、変更できてしまうComboBoxの値を元に戻す
+	if(KamokuRowEnableSgn(m_pDB, 0, m_uInfo.intFormSeq) == 0 && m_ReadData[m_uInfo.intCurRow].m_FgFunc == ID_FGFUNC_IKKATUAUTO)		{
+		if(m_uInfo.intCurCol == ID_COL_081I_KAMOKU)	{
+			//	前回の値に戻す
+			CmnDiagSetCombo(m_pDiag, CmnGetControlIndex(m_uInfo.intCurRow, ID_COL_081I_KAMOKU), m_uInfo.OldCombo);
+		}
+	}
+// 改良No.21-0086,21-0529 add <--
+
+	// 行取得
+	if ( m_uInfo.intCurCtlIndex < m_uInfo.intT1StartIndex ) {
+		m_uInfo.OldRow = CmnGetControlRow();
+	}
+	else{
+		m_uInfo.OldRow = -1;
+	}
+
+	// ページ番号取得
+	m_uInfo.OldPage = m_uInfo.intCurPage;
+
+	// ボタン操作
+	CmnChangeButtonEnable(0);
+}
+
+// 支払手形データコントロールのキーイベント
+void	CfrmUc081SiharaitegataI::TerminationYoushikidiag1( short index, short nChar, short length, LPUNKNOWN data )
+{
+	//--------------------------------------------------------------------------------
+	//	キー操作仕様
+	//		Deleteキー		: カレントの項目をクリア（ComboBoxはクリアしない）
+	//		Tab/Shift+Tab	: １つ前/次の項目へ移動
+	//						先頭の項目（左上）で"Shift+Tab"は、タイトルへ移動
+	//						最後の項目（合計行②）で"Tab"は、前頁ボタンor頁項目へ移動
+	//		Return：		次の項目へ移動
+	//						最後の項目（合計行②）では移動しない
+	//		矢印キー：		←/→キーで１つ前/次の項目へ移動
+	//						↑/↓キーで１つ上/下の項目へ移動
+	//						なお、矢印キーでは先頭/最後のセルでも別のコントロールへ移動しない
+	//		例外処理：		ComboBoxで←/→キーが押されると値を戻す
+	//
+	//	カーソル移動における前提条件
+	//		1.合計欄①，②行は、頁計/累計の名称欄のみ移動可能（ただし入力不可）
+	//		2.小計などの特殊行は対象項目へ移動可能（ただし入力不可）
+	//--------------------------------------------------------------------------------
+
+	// 現在の列番号を取得
+	int intCol = CmnGetControlCol();
+
+	switch ( nChar ) {
+		// Deleteキー
+		case VK_DELETE:
+			switch (m_ReadData[m_uInfo.intCurRow].m_FgFunc) {
+// 改良No.21-0086,21-0529 cor -->
+				//case ID_FGFUNC_SYOKEI:				// 小計
+				//case ID_FGFUNC_SYOKEINULL:			// 小計（空行）
+				//case ID_FGFUNC_CHUKEI:				// 中計
+				//case ID_FGFUNC_CHUKEINULL:			// 中計（空行）
+				//case ID_FGFUNC_RUIKEI:				// 累計行
+				//case ID_FGFUNC_PAGEKEI:				// 頁計行
+				//case ID_FGFUNC_IKKATUAUTO:			// 一括集計金額行（自動）
+				//	break;
+				//default:
+				//	// 項目をクリア（ただしComboBoxはクリアしない）
+				//	if(intCol != ID_COL_081I_INVONOT) {
+				//		m_pDiag->DataClear(m_uInfo.intCurCtlIndex, TRUE);
+				//	}
+
+				//	if(intCol == ID_COL_081I_SPDATE)	{
+				//		m_uInfo.OldDate[0] = 0;
+				//		m_uInfo.OldGengo[0] = 0;
+				//	}
+				//	else if(intCol == ID_COL_081I_PMDATE)	{
+				//		m_uInfo.OldDate[1] = 0;
+				//		m_uInfo.OldGengo[1] = 0;
+				//	}
+
+				//	m_uInfo.GenListSw = 0;
+
+				//	if(intCol == ID_COL_081I_SPDATE || intCol == ID_COL_081I_PMDATE)	{
+				//		SendMessage(WM_USER_FOCUSSET,0,0);
+				//	}
+				//	break;
+// ------------------------------
+				case ID_FGFUNC_SYOKEI:				// 小計
+				case ID_FGFUNC_CHUKEI:				// 中計
+				case ID_FGFUNC_KAMOKU:				// 科目行
+					// 項目をクリア（ただしComboBoxはクリアしない）
+					if(KamokuRowEnableSgn(m_pDB, 1, m_uInfo.intFormSeq) == 1 && intCol == ID_COL_081I_ADNAME1) {
+						m_pDiag->DataClear(m_uInfo.intCurCtlIndex, TRUE);
+					}
+					break;
+
+				case ID_FGFUNC_SYOKEINULL:			// 小計（空行）				
+				case ID_FGFUNC_CHUKEINULL:			// 中計（空行）
+				case ID_FGFUNC_RUIKEI:				// 累計行
+				case ID_FGFUNC_PAGEKEI:				// 頁計行
+				case ID_FGFUNC_IKKATUAUTO:			// 一括集計金額行（自動）
+					break;
+
+				default:
+					// 項目をクリア（ただしComboBoxはクリアしない）
+					if(intCol != ID_COL_081I_KAMOKU && intCol != ID_COL_081I_INVONOT) {
+						m_pDiag->DataClear(m_uInfo.intCurCtlIndex, TRUE);
+					}
+
+					if(intCol == ID_COL_081I_SPDATE)	{
+						m_uInfo.OldDate[0] = 0;
+						m_uInfo.OldGengo[0] = 0;
+					}
+					else if(intCol == ID_COL_081I_PMDATE)	{
+						m_uInfo.OldDate[1] = 0;
+						m_uInfo.OldGengo[1] = 0;
+					}
+
+					m_uInfo.GenListSw = 0;
+
+					if(intCol == ID_COL_081I_SPDATE || intCol == ID_COL_081I_PMDATE)	{
+						SendMessage(WM_USER_FOCUSSET, 0, 0);
+					}
+					break;
+// 改良No.21-0086,21-0529 cor <--
+			}
+			break;
+
+		// カーソル移動キー
+		case VK_TAB:
+		case VK_RETURN:
+		case VK_UP:
+		case VK_DOWN:
+		case VK_LEFT:
+		case VK_RIGHT:
+			CursorControl(nChar,0);
+			break;
+	}
+}
+
+void CfrmUc081SiharaitegataI::VScrollYoushikidiag1(short mode)
+{
+// 修正No.168430 del -->
+	//if(mode == 8 && m_DataKakutei == FALSE && m_Pagefocus == 0 && m_Titlefocus == 0)	{
+	//	virInputDecisionEditOFF();
+	//	nG_MScroll=1;
+	//}
+// 修正No.168430 del <--
+// 修正No.168430 add -->
+	if(m_DataKakutei == FALSE && m_Pagefocus == 0 && m_Titlefocus == 0)	{
+		if(m_InvnoErrFlg == 0) {	// 修正No.168480 add
+			if(mode == 8) {
+// 修正No.168532 add -->
+				// ----- 登録番号一覧関連 ----->
+				if(pZmSel && pZmSel->IsDisplay() != FALSE) {
+					pZmSel->DialogOFF();
+				}
+				// <---- 登録番号一覧関連 ------
+// 修正No.168532 add <--
+
+				virInputDecisionEditOFF();
+				nG_MScroll = 1;
+			}
+// 修正No.168532 del -->
+			//else if(mode == 5) {
+			//	// ----- 登録番号一覧関連 ----->
+			//	if(pZmSel && pZmSel->IsDisplay() != FALSE) {
+			//		pZmSel->DialogOFF();
+			//	}
+			//	// <---- 登録番号一覧関連 ------
+			//}
+// 修正No.168532 del <--
+		}							// 修正No.168480 add
+	}
+// 修正No.168430 add <--
+}
+
+//********************************************************************************
+//	フォーカス移動処理（メイン）
+//		IN		int		キーコード（VK_UP，VK_RIGHT，VK_DOWN，VK_LEFT，VK_RETURN，VK_TAB）
+//		RET		int		0～:移動先コントロールのインデックス番号
+//						-1: 先頭項目で"Shift+Tab"のためタイトルへ移動
+//						-2: 最終項目で"Shift"のため別コントロールへ移動
+//						-3: ComboBoxで"↑/↓"はキー操作を無視する
+//						-4: 先頭行で↑or先頭項目で←はタイトルへ移動
+//********************************************************************************
+int	CfrmUc081SiharaitegataI::GetFocusPosition( int nChar )
+{
+	int		intRow;				// カレント行番号
+	int		intCol;				// カレント列番号
+	int		intVector[4];		// 矢印キーの移動先（0:↑，1:→，2:↓，3:←）
+	int		intNext = 0;		// フォーカス移動先
+	int		intRowChange = 0;	// 行をまたぐ場合のインデックス増減数
+
+	// カレント行＋列番号を取得
+	CmnGetControlPosition( &intRow, &intCol );
+
+	// 行をまたぐ場合のインデックス増減数（摘要→次の行の金融機関名）
+	// ★★★★★カスタマイズ "2"は破線コントロールの数です。帳表毎に異なるため、変更して下さい。
+// 改良No.21-0086,21-0529 cor -->
+	//intRowChange = m_uInfo.intCtlStartIndex + 1;	// ここの値は検討が必要
+// ------------------------------
+	intRowChange = ID_BACKCOLMAX_081I + ID_LINECOLMAX_081I + 1;
+// 改良No.21-0086,21-0529 cor <--
+
+	//	計行じゃない？
+	if(CmnCheckTotalRow() == FALSE) {
+		// 「登録番号(T選択)」はComboBoxのため、「↑，↓」キーではカーソルを移動しない
+// 改良No.21-0086,21-0529 cor -->
+		//if(intCol == ID_COL_081I_INVONOT) {
+// ------------------------------
+		if(intCol == ID_COL_081I_KAMOKU || intCol == ID_COL_081I_INVONOT) {
+// 改良No.21-0086,21-0529 cor <--
+			if((nChar == VK_UP) || (nChar == VK_DOWN)) {
+				// キー操作を無視する
+				return -3;
+			}
+		}
+	}
+
+	//----------------------------------------------------------------
+	//	矢印キーによる移動先を取得（合計欄は次のステップで対応）
+	//	基本的にReturn，Tab，Shift+Tabは、←，→キーと同じなので省略
+	//----------------------------------------------------------------
+// 改良No.21-0086,21-0529 cor -->
+	//	// カレント列が「支払先:1行目」の場合
+	//if ( intCol == ID_COL_081I_INVONOT ) {
+	//	// カレント列が「登録番号:1行目」の場合
+	//	intVector[0] = m_uInfo.intCurCtlIndex - m_uInfo.intColMax;		// ↑
+	//	intVector[1] = m_uInfo.intCurCtlIndex + 1;						// →
+	//	intVector[2] = m_uInfo.intCurCtlIndex + m_uInfo.intColMax;		// ↓
+	//	intVector[3] = m_uInfo.intCurCtlIndex - intRowChange;			// ←
+	//}
+// ------------------------------
+	if(intCol == ID_COL_081I_KAMOKU)	{
+		// カレント列が「科目」の場合
+		intVector[0] = m_uInfo.intCurCtlIndex;							// ↑
+		intVector[1] = m_uInfo.intCurCtlIndex + 1;						// →
+		intVector[2] = m_uInfo.intCurCtlIndex + 1;						// ↓
+		intVector[3] = m_uInfo.intCurCtlIndex - intRowChange;			// ←
+	}
+	else if(intCol == ID_COL_081I_INVONOT)	{
+		// カレント列が「登録番号(T選択):1行目」の場合
+		intVector[0] = m_uInfo.intCurCtlIndex - 1;						// ↑
+		intVector[1] = m_uInfo.intCurCtlIndex + 1;						// →
+		intVector[2] = m_uInfo.intCurCtlIndex + m_uInfo.intColMax - 1;	// ↓
+		intVector[3] = m_uInfo.intCurCtlIndex - 1;						// ←
+	}
+	else if(intCol == ID_COL_081I_INVONO)	{
+		// カレント列が「登録番号:1行目」の場合
+		intVector[0] = m_uInfo.intCurCtlIndex - 1;						// ↑
+		intVector[1] = m_uInfo.intCurCtlIndex + 1;						// →
+		intVector[2] = m_uInfo.intCurCtlIndex + m_uInfo.intColMax - 2;	// ↓
+		intVector[3] = m_uInfo.intCurCtlIndex - 1;						// ←
+	}
+// 改良No.21-0086,21-0529 cor <--
+	else if(intCol == ID_COL_081I_TEKI)	{
+		// カレント列が「摘要」の場合
+		intVector[0] = m_uInfo.intCurCtlIndex - m_uInfo.intColMax;		// ↑
+		intVector[1] = m_uInfo.intCurCtlIndex + intRowChange;			// →
+		intVector[2] = m_uInfo.intCurCtlIndex + m_uInfo.intColMax;		// ↓
+		intVector[3] = m_uInfo.intCurCtlIndex - 1;						// ←
+	}
+	else	{
+		// カレント列が上記以外の場合
+		intVector[0] = m_uInfo.intCurCtlIndex - m_uInfo.intColMax;		// ↑
+		intVector[1] = m_uInfo.intCurCtlIndex + 1;						// →
+		intVector[2] = m_uInfo.intCurCtlIndex + m_uInfo.intColMax;		// ↓
+		intVector[3] = m_uInfo.intCurCtlIndex - 1;						// ←
+	}
+
+	//----------------------------------------------------------------
+	//	押下キーから移動先を取得（合計欄は次のステップで対応）
+	//	基本的にReturn，Tab，Shift+Tabは、←，→キーと同じ
+	//----------------------------------------------------------------
+	switch(nChar)	{
+		case VK_UP:
+			intNext = intVector[0];		// 「↑」キー押下時
+			break;
+		case VK_RIGHT:
+			intNext = intVector[1];		// 「→」キー押下時
+			break;
+		case VK_DOWN:
+			intNext = intVector[2];		// 「↓」キー押下時
+			break;
+		case VK_LEFT:
+			intNext = intVector[3];		// 「←」キー押下時
+			break;
+		case VK_RETURN:	// Enterキーでカーソルを下に移動するモード対応
+			if(m_ReturnMoveDown)	{
+				if(intCol == ID_COL_081I_INVONOT)	intNext = intVector[1];		//	カレント列が「登録番号(T表示)」欄の場合「→」キーと同じ
+				else								intNext = intVector[2];		//	Enterキーでカーソルを下に移動するチェック時は「↓」キーと同じ
+			}
+			else									intNext = intVector[1];		// 「Return」キー押下時：「→」キーと同じ
+			break;
+		case VK_TAB:
+			if(CmnCheckShiftKey() == FALSE)	{
+				intNext = intVector[1];		// 「Tab」キー押下時：「→」キーと同じ
+			}
+			else	{
+				// 例外処理：先頭項目で"Shift+Tab"は別コントロールへ移動
+				// それ以外は「←」キーと同じ
+				intNext = intVector[3];		// 「Shift+Tab」キー押下時：「→」キーと同じ
+			}
+			break;
+	}
+
+	if(intNext >= 0)	{
+		// 当処理で合計行を考慮したカーソル移動先を確定させる
+		intNext = GetTotalRowIndex(nChar, m_uInfo.intCurCtlIndex, intNext);
+	}
+	else	{
+		// コントロールのフィールド外（上へ）へはタイトルに移動する
+		return -4;
+	}
+
+	return intNext;
+}
+
+//********************************************************************************
+//	フォーカス移動処理（合計欄を考慮）
+//		IN		int		キーコード（VK_UP，VK_RIGHT，VK_DOWN，VK_LEFT，VK_RETURN，VK_TAB）
+//				int		カレントのコントロールインデックス
+//				int		合計欄を考慮していない移動先のインデックス番号
+//		RET		int		合計欄を考慮した移動先ののインデックス番号
+//********************************************************************************
+int	CfrmUc081SiharaitegataI::GetTotalRowIndex( int nCharOrg, int intIndex, int intNext )
+{
+	int		nCharTemp;				// キーコード（VK_RETURN，VK_TABを矢印キーに置き換え）
+	int		nNowRow;				//	現在の行
+	int		nNextRow;				//	移動先の行
+	int		nBorder[3];				//	境界
+	int		nRet;					//	戻値
+
+	// キーコード置き換え（VK_RETURN，VK_TABを矢印キーに置き換え）
+	switch( nCharOrg ){
+		case VK_RETURN:			// Returnキーなら→キーと同じ
+			nCharTemp = VK_RIGHT;
+			break;
+
+		case VK_TAB:			// Tabキーなら→キーと同じ，Shift+Tabなら←キーと同じ
+			nCharTemp = VK_RIGHT;
+			if ( CmnCheckShiftKey() == TRUE ) {
+				nCharTemp = VK_LEFT;
+			}
+			break;
+
+		default:
+			nCharTemp = nCharOrg;
+			break;
+	}
+	
+	nNowRow = CmnGetControlRow( intIndex );	//	カレント行を取得
+	nNextRow = CmnGetControlRow( intNext );	//	移動先行を取得（暫定）
+	nRet = intNext;							//	次の移動先を戻値として取得
+	
+	//	現在の頁の計の種別で分岐
+	switch( CmnGetControlTotalType() ){
+		case ID_OUTKEI_OFF:			//	オフ
+		case ID_OUTKEI_PAGEKEI:		//	頁計
+		case ID_OUTKEI_RUIKEI:		//	累計
+			//	現在行が計行？
+			if ( intIndex >= m_uInfo.intT1StartIndex ){
+				nNowRow = m_uInfo.intRowMax;
+			}
+		
+			//	移動先行が計行？
+			if ( intNext >= m_uInfo.intT1StartIndex ){
+				nNextRow = m_uInfo.intRowMax;
+			}
+
+			nBorder[0] = m_uInfo.intRowMax - 1;		//	データ行
+			nBorder[1] = m_uInfo.intRowMax;			//	頁計
+			nBorder[2] = 0;							//	累計（なし）
+			break;
+
+		case ID_OUTKEI_BOTH:		//	頁計＆累計
+			//	現在行が計２？
+			if ( intIndex >= m_uInfo.intT2StartIndex ){
+				nNowRow = m_uInfo.intRowMax;
+			}
+			//	現在行が計１？
+			else if ( intIndex >= m_uInfo.intT1StartIndex ){
+				nNowRow = m_uInfo.intRowMax - 1;
+			}
+		
+			//	移動先行が計２？
+			if ( intNext >= m_uInfo.intT2StartIndex ){
+				nNextRow = m_uInfo.intRowMax;
+			}
+			//	移動先行が計１？
+			else if ( intNext >= m_uInfo.intT1StartIndex ){
+				nNextRow = m_uInfo.intRowMax - 1;
+			}
+
+			nBorder[0] = m_uInfo.intRowMax - 2;		//	データ行
+			nBorder[1] = m_uInfo.intRowMax - 1;		//	頁計
+			nBorder[2] = m_uInfo.intRowMax;			//	累計
+			break;
+	}
+
+	//	現在、データ行に居る
+	if ( nNowRow <= nBorder[0] ){
+		//	データ行を超えた？
+		if ( nNextRow > nBorder[0] ){
+			//	計行に移動
+			if (nCharOrg == VK_TAB) {
+				return -2;
+			}
+		}
+	}
+	//	現在、頁計に居る
+	else if ( nNowRow == nBorder[1] ){
+		// すでに合計行にいるので、"intNext"は無視する
+		switch ( nCharTemp ){
+			case VK_UP:			// ↑：23行目のデータ行の支店名項目へ移動
+				nRet = CmnGetControlIndex( nBorder[0], ID_COL_081I_ADNAME1 );
+				break;
+
+			case VK_LEFT:		// ←/Shift+Tab：23行目のデータ行の摘要項目へ移動
+				nRet = CmnGetControlIndex( nBorder[0], ID_COL_081I_TEKI );
+				break;
+
+			default:			// →/↓/Return/Tab：25行目の合計行②へ移動			
+				//	累計なし？
+				if ( nBorder[2] == 0 ){
+					// 例外処理：最終項目で"Tab"は別コントロールへ移動
+					// それ以外は「→」キーと同じ
+					if (nCharOrg == VK_TAB) {
+						return -2;
+					}
+				}
+				//	累計あり
+				else{
+					nRet = CmnGetControlIndex( ( nBorder[2] + 1 ), ID_COL_081I_ADNAME1 );
+				}
+				break;
+			}
+	}
+	//	現在、累計に居る場合
+	else if ( nNowRow == nBorder[2] ){
+		// すでに合計行にいるので、"intNext"は無視する
+		switch ( nCharTemp ){
+			case VK_UP:			// ↑：24行目の合計行① or 24行目のデータ行の支店名項目へ移動
+			case VK_LEFT:		// ←/Shift+Tab：24行目の合計行① or 24行目のデータ行の摘要項目へ移動
+				nRet = CmnGetControlIndex( ( nBorder[1] + 1 ), ID_COL_081I_ADNAME1 );
+				break;
+			default:			// →/↓：移動できない
+				// 例外処理：最終項目で"Tab"は別コントロールへ移動
+				// それ以外は「→」キーと同じ
+				if (nCharOrg == VK_TAB) {
+					return -2;
+				}
+				break;
+		}
+	}
+	
+	//	戻値を返す
+	return( nRet );
+}
+
+//********************************************************************************
+//	一括集計金額行のデータ設定
+//		IN		int					呼び出し元（0:ソート，1:一括金額参照，2:特殊行挿入）
+//				CfrmUc000Common*	テーブル情報
+//				CString				名称
+//				CALCKEI_INFO		一括集計金額情報
+//				SORTKAMOKU_INFO		科目情報
+//		RET		なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virTblEditIkkatuLine( int nType, CdbUc000Common* rsData,
+									CString strName, CALCKEI_INFO uCalcKei, SORTKAMOKU_INFO uKamoku )
+{
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+
+	switch (nType) {
+		case 0:
+			// ソートの一括集計処理
+			rs->m_AdName1 = strName;				// 名称：支払先(下)
+			rs->m_Val = uCalcKei.strKei[0];			// 金額："0:Val"固定
+// 改良No.21-0086,21-0529 add -->
+			rs->m_KnSeq = uKamoku.intKnSeq;			// 科目情報
+			rs->m_KnOrder = uKamoku.intKnOrder;		// 科目情報
+			rs->m_KnName = uKamoku.strKnName;		// 科目情報
+			rs->m_KnKana = uKamoku.strKnKana;		// 科目情報（カナ)
+// 改良No.21-0086,21-0529 add <--
+			break;
+		case 1:
+			// 一括金額参照の戻す処理
+			rs->m_AdName1 = strName;				// 名称：支払先(下)
+			rs->m_Val = uCalcKei.strKei[0];			// 金額："0:Val"固定
+			break;
+		case 2:
+			// 特殊行挿入の一括金額選択時
+			rs->m_AdName1 = strName;				// 名称：金融機関名
+			break;
+	}
+}
+
+// 改良No.21-0086,21-0529 add -->
+//********************************************************************************
+//	科目行（見出し）のデータ設定
+//		IN		CfrmUc000Common*	テーブル情報
+//				int					ページNo
+//				int					行No
+//		RET		なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virTblEditKamokuLine(CdbUc000Common* rsData, int pPage, int pRow, CString strName)
+{
+	CALCKEI_INFO			calcKei;
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+	CUcFunctionCommon		clsfunc;
+	CString					strKnName1 = _T("");
+	CString					strKnName2 = _T("");
+
+	// 追加した科目行(特殊行)にデータをセット
+	rs->m_Val = calcKei.strKei[0];	// 金額："0:Val"固定
+	// 全角１０文字を超えていれば改行マークを挿入して取り込む
+	if(strName.GetLength() > 20)	{
+		strKnName2 = clsfunc.GetSpritString(strName, &strKnName1, 20);
+		strName = strKnName1 + _T("\r\n") + strKnName2;
+	}
+	rs->m_KeiStr = strName;			// 科目行名称
+}
+
+//********************************************************************************
+//	科目行（見出し）に挿入する科目名の取得
+//		IN		CfrmUc000Common*	テーブル情報
+//		RET		なし
+//********************************************************************************
+CString CfrmUc081SiharaitegataI::virTblSortGetKamokuName(CdbUc000Common* rsData)
+{
+	CString					ret = _T("");
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+
+	ret = rs->m_KnName;
+	return(ret);
+}
+
+//********************************************************************************
+//	取引先コードの取得
+//		IN		CfrmUc000Common*	テーブル情報
+//		RET		int					取引先コード
+//********************************************************************************
+int CfrmUc081SiharaitegataI::virTblSortGetTorihikisakiCode( CdbUc000Common* rsData )
+{
+	int						ret=0;
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+
+	ret = rs->m_AdOrder;
+	return(ret);
+}
+
+//********************************************************************************
+//	取引先名称の取得
+//		IN		CfrmUc000Common*	テーブル情報
+//		RET		CString				取引先名称
+//********************************************************************************
+CString CfrmUc081SiharaitegataI::virTblSortGetTorihikisakiName( CdbUc000Common* rsData )
+{
+	CString					ret=_T("");
+	CString					cs1=_T(""),cs2=_T("");
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+
+	cs1 = rs->m_AdName1;
+	cs2 = rs->m_AdName2;
+	cs1.TrimRight();
+	cs2.TrimRight();
+	return(cs1 + cs2);
+}
+
+//********************************************************************************
+//	科目コードの取得
+//		IN		CfrmUc000Common*	テーブル情報
+//		RET		int					取引先コード
+//********************************************************************************
+int CfrmUc081SiharaitegataI::virTblSortGetKamokuCode(CdbUc000Common* rsData)
+{
+	int						ret = 0;
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+
+	ret = rs->m_KnOrder;
+	return(ret);
+}
+// 改良No.21-0086,21-0529 add <--
+
+//********************************************************************************
+//	ソート項目を再設定後に、ソートを実行する
+//		IN		CdlgSort*			ソートダイアログ情報
+//				CdbUc000Common*		テーブル情報
+//		RET		int					実行結果（FUNCTION_OK, FUNCTION_NG）
+//********************************************************************************
+int	CfrmUc081SiharaitegataI::virTblSortSubSortProc( CdlgSort* pCdlgSort, CdbUc000Common* rsData )
+{
+	CdbUc081Siharaitegata*	rs;
+	CString				strFilter;
+	CString				strSort;
+
+// 改良No.21-0086,21-0529 add -->
+	// ソート項目の再設定（科目）		→ 帳表により実行有無が異なる
+	CdbUcLstKamoku	rsKmk(m_pDB);
+	rsKmk.UpdateDataTable(m_uInfo.intFormSeq);
+	rsKmk.Fin();
+// 改良No.21-0086,21-0529 add <--
+
+	// ソート項目の再設定（取引先）
+	CdbUcLstAddress		rsAddress( m_pDB );
+	rsAddress.UpdateDataTable( m_uInfo.intFormSeq, m_RegAutoRef );
+	rsAddress.Fin();
+
+	// ソート項目の再設定（金融機関）
+	CdbUcLstBank	rsBank( m_pDB );
+	rsBank.UpdateDataTable( m_uInfo.intFormSeq, m_RegAutoRef );
+	rsBank.Fin();
+
+	// ソート条件取得
+	CmnTblSortSubGetSortParam( pCdlgSort, &strFilter, &strSort) ;
+
+	rs = (CdbUc081Siharaitegata*)rsData;
+
+	// 対象フィールドがNULLならNULL文字列にする：文字列連結のソート時は必須
+	rs->UpdateDataTableWork();
+
+	// ソート実行
+	return rs->RequerySortParameter( strFilter, strSort );
+}
+
+/**********************************************************************
+	RecBufSetData(CdbUc081Siharaitegata* prmDbRec)
+		ローカルのレコードバッファに、1行分のデータを格納する
+
+	引数
+		CdbUc081Siharaitegata*	prmDbRec	レコードセット(データがあること）
+	戻値
+		int		成功/失敗
+				FUNCTION_OK
+***********************************************************************/
+int	CfrmUc081SiharaitegataI::RecBufSetData( CdbUc081Siharaitegata* prmDbRec )
+{
+	// 1ページ分のレコードバッファの該当行にデータを格納する
+	int	trgRow = prmDbRec->m_NumRow;
+	m_ReadData[trgRow].m_Seq			= prmDbRec->m_Seq;			// シーケンス番号
+	m_ReadData[trgRow].m_NumPage		= prmDbRec->m_NumPage;		// 頁番号
+	m_ReadData[trgRow].m_NumRow			= prmDbRec->m_NumRow;		// 行番号
+	m_ReadData[trgRow].m_FgFunc			= prmDbRec->m_FgFunc;		// 特殊行フラグ
+	m_ReadData[trgRow].m_FgShow			= prmDbRec->m_FgShow;		// 表示フラグ
+	m_ReadData[trgRow].m_KeiStr			= prmDbRec->m_KeiStr;		// 計
+	m_ReadData[trgRow].m_NumGroup		= prmDbRec->m_NumGroup;		// グループ番号
+	m_ReadData[trgRow].m_AdSeq			= prmDbRec->m_AdSeq;		// 支払先：取引先（シーケンス番号）
+	m_ReadData[trgRow].m_AdOrder		= prmDbRec->m_AdOrder;		// 支払先：取引先（並び順）
+	m_ReadData[trgRow].m_AdName1		= prmDbRec->m_AdName1;		// 支払先（名称：上段）
+	m_ReadData[trgRow].m_AdName2		= prmDbRec->m_AdName2;		// 支払先（名称：下段）
+	m_ReadData[trgRow].m_SpDate			= prmDbRec->m_SpDate;		// 振出年月日
+	m_ReadData[trgRow].m_PmDate			= prmDbRec->m_PmDate;		// 支払期日
+	m_ReadData[trgRow].m_BkSeq			= prmDbRec->m_BkSeq;		// 金融機関（シーケンス番号）
+	m_ReadData[trgRow].m_BkOrder		= prmDbRec->m_BkOrder;		// 金融機関（並び順）
+	m_ReadData[trgRow].m_BkName1		= prmDbRec->m_BkName1;		// 支払銀行名（銀行名）
+	m_ReadData[trgRow].m_BkName2		= prmDbRec->m_BkName2;		// 支払銀行名（支店名）
+	m_ReadData[trgRow].m_Val			= prmDbRec->m_Val;			// 金額
+	m_ReadData[trgRow].m_Teki			= prmDbRec->m_Teki;			// 摘要
+	m_ReadData[trgRow].m_AdKana			= prmDbRec->m_AdKana;		// 支払先
+	m_ReadData[trgRow].m_InvNo			= prmDbRec->m_InvNo;		// 登録番号（法人番号）
+// 改良No.21-0086,21-0529 add -->
+	m_ReadData[trgRow].m_KnSeq			= prmDbRec->m_KnSeq;		// 科目シーケンス
+	m_ReadData[trgRow].m_KnOrder		= prmDbRec->m_KnOrder;		// 科目オーダー
+	m_ReadData[trgRow].m_KnName			= prmDbRec->m_KnName;		// 科目名
+	m_ReadData[trgRow].m_KnKana			= prmDbRec->m_KnKana;		// 科目カナ
+	m_ReadData[trgRow].m_ShowKeiZero	= prmDbRec->m_ShowKeiZero;
+// 改良No.21-0086,21-0529 add <--
+
+	return FUNCTION_OK;
+}
+
+/**********************************************************************
+	RecBufClearAllData()
+		ローカルの1ページ分のレコードバッファを初期化する
+
+	引数
+		なし
+	戻値
+		int		成功/失敗
+				FUNCTION_OK
+***********************************************************************/
+int	CfrmUc081SiharaitegataI::RecBufClearAllData()
+{
+	// 1ページ分のレコードバッファを初期化する
+	// 1行目から、最終行(計行も含む)までクリア
+	// 配列の添え字は、行番号をそのまま使用
+	// 使用していないが配列[0]も初期化している
+	for ( int trgRow = 0; trgRow <= m_uInfo.intRowMax; trgRow++ ) {
+		RecBufClearData( &m_ReadData[trgRow] );
+	}
+
+	return FUNCTION_OK;
+}
+
+/**********************************************************************
+	RecBufClearAllData()
+		1レコード分のデータを初期化する
+
+	引数
+		P_REC_UC_081_SIHARAITEGATA inRecData レコードへのポインタ
+	戻値
+		int		成功/失敗
+				FUNCTION_OK
+***********************************************************************/
+int	CfrmUc081SiharaitegataI::RecBufClearData( P_REC_UC_081_SIHARAITEGATA inRecData )
+{
+	inRecData->m_Seq			= 0;			// シーケンス番号
+	inRecData->m_NumPage		= 0;			// 頁番号
+	inRecData->m_NumRow			= 0;			// 行番号
+	inRecData->m_FgFunc			= 0;			// 特殊行フラグ
+	inRecData->m_FgShow			= 0;			// 表示フラグ
+	inRecData->m_KeiStr			= _T("");		// 計
+	inRecData->m_NumGroup		= 0;			// グループ番号
+	inRecData->m_AdSeq			= 0;			// 支払先：取引先（シーケンス番号）
+	inRecData->m_AdOrder		= 0;			// 支払先：取引先（並び順）
+	inRecData->m_AdName1		= _T("");		// 支払先（名称：上段）
+	inRecData->m_AdName2		= _T("");		// 支払先（名称：下段）
+	inRecData->m_SpDate			= 0;			// 振出年月日
+	inRecData->m_PmDate			= 0;			// 支払期日
+	inRecData->m_BkSeq			= 0;			// 金融機関（シーケンス番号）
+	inRecData->m_BkOrder		= 0;			// 金融機関（並び順）
+	inRecData->m_BkName1		= _T("");		// 支払銀行名（銀行名）
+	inRecData->m_BkName2		= _T("");		// 支払銀行名（支店名）
+	inRecData->m_Val			= _T("");		// 金額
+	inRecData->m_Teki			= _T("");		// 摘要
+	inRecData->m_ShowKeiZero	= 0;			// ０円計表示フラグ
+	inRecData->m_AdKana			= _T("");		// 支払先
+	inRecData->m_InvNo			= _T("");		// 登録番号（法人番号）
+// 改良No.21-0086,21-0529 add -->
+	inRecData->m_KnSeq			= 0;			// 科目シーケンス
+	inRecData->m_KnOrder		= 0;			// 科目オーダー
+	inRecData->m_KnName			= _T("");		// 科目名
+	inRecData->m_KnKana			= _T("");		// 科目カナ
+// 改良No.21-0086,21-0529 add <--
+
+	return FUNCTION_OK;
+}
+
+/**********************************************************************
+	virRecBufSaveData()
+		指定された行のデータをテーブルに保存
+
+	引数
+		int		inPage	登録するレコードのページ番号
+		int		inRow	登録するレコードの行番号
+	戻値
+		int				成功(更新あり)/成功(更新なし)/失敗
+						FUNCTION_UPDATE	: 成功(更新あり)
+						FUNCTION_OK		: 成功(更新なし)
+						FUNCTION_NG		: 失敗
+***********************************************************************/
+int	CfrmUc081SiharaitegataI::virRecBufSaveData( int inPage, int inRow )
+{
+	REC_UC_081_SIHARAITEGATA	tmpSaveData;	// 画面データ1レコード格納用
+	BOOL	blnSpDate = FALSE;					// 「振出年月日」入力更新フラグ
+	BOOL	blnPmDate = FALSE;					// 「支払期日」入力更新フラグ
+
+	RecBufClearData( &tmpSaveData );	// レコードを初期化
+
+	// 頁計/累計行は登録しない
+	if ((m_ReadData[inRow].m_FgFunc == ID_FGFUNC_PAGEKEI) || (m_ReadData[inRow].m_FgFunc == ID_FGFUNC_RUIKEI)) {
+		return FUNCTION_OK;
+	}
+
+	///////////////////////////////////////////////////////////////
+	// コンポーネント(画面上の1レコード分の情報)を仮変数へ格納
+	DIAGRAM_DATA	diadata;	// ICSDiag構造体
+	int				intIndex;	// 対象行の各インデックス
+	int				tsel = 0;
+	CString			cst,ino;
+	CString			cst2;		// 修正No.168553 add
+
+	// 初期化
+	m_clsFunc.DiagInit( &diadata );
+
+// 改良No.21-0086,21-0529 add -->
+	// 科目
+	intIndex = CmnGetControlIndex(inRow, ID_COL_081I_KAMOKU);
+	m_pDiag->GetData(intIndex, (LPUNKNOWN)&diadata);
+	// コンボボックスの値をキーにKnOrder（科目順序）を取得
+	m_SortMap2.Lookup(diadata.data_combo, tmpSaveData.m_KnOrder);
+// 改良No.21-0086,21-0529 add <--
+
+	// 登録番号（T選択）
+	intIndex = CmnGetControlIndex(inRow, ID_COL_081I_INVONOT);
+	m_pDiag->GetData(intIndex, (LPUNKNOWN)&diadata);
+	tsel = diadata.data_combo;
+
+	// 登録番号（法人番号）
+	intIndex = CmnGetControlIndex(inRow, ID_COL_081I_INVONO);
+	ino = m_clsFunc.DiagGetString(m_pDiag, intIndex);
+	cst.Empty();
+	if(ino.IsEmpty() == FALSE)	{
+		if(tsel == 0)	cst.Format(_T("T%s"), ino);
+		else			cst.Format(_T(" %s"), ino);
+// 修正No.168553 add -->
+		cst2.Format(_T("T%s"), ino);
+		// 並べて表示の際に何度かEditONが発生してしまい、ChkInvoiceNum()を介さないでここにきてしまうことがあるため、
+		// ここでも入力された登録番号のチェックを行う。
+		if(cst2.IsEmpty() == FALSE)	{
+			if(cst2.GetLength() < 14)	{
+				cst.Empty();
+			}
+			else if(pSyzInvoice.CheckInvoiceNumber(cst2) == -1)	{
+				cst.Empty();
+			}
+		}
+// 修正No.168553 add <--
+	}
+	tmpSaveData.m_InvNo = cst;
+
+// 修正No.168402,168405 add -->
+	// 登録番号をF9参照で確認する際に必要なので、AdSeqもセット
+	if(m_ReadData[inRow].m_AdSeq > 0) {
+		tmpSaveData.m_AdSeq = m_ReadData[inRow].m_AdSeq;
+	}
+// 修正No.168402,168405 add <--
+
+	// 支払先1
+	CStringArray strArray;
+	intIndex = CmnGetControlIndex(inRow, ID_COL_081I_ADNAME1);
+// 改良No.21-0086,21-0529 cor -->
+	//// 1行目が空行の場合は繰り上げる
+	//m_clsFunc.StrDivision(m_clsFunc.DiagGetString(m_pDiag,intIndex),&strArray,2,FALSE,TRUE);
+	//tmpSaveData.m_AdName1 = strArray.GetAt( 0 );
+	//tmpSaveData.m_AdName2 = strArray.GetAt( 1 );
+	//// 2行目が空行なら1行目のみを再表示
+	//if ( tmpSaveData.m_AdName2.IsEmpty() ){
+	//	if(m_uInfo.intCurCol == ID_COL_081I_ADNAME1 && m_uInfo.intCurRow != m_uInfo.OldRow){	// 各カラムごとにvirRecBufSaveData()がコールされるようになり、かつタイミングがEditOffからEditOnに移ったことによりCmnDiagSetString()でカレットが末尾から先頭に移ってしまう為、制御
+	//		CmnDiagSetString( m_pDiag, intIndex, tmpSaveData.m_AdName1, 0 );
+	//	}
+	//}
+// ------------------------------
+	if(m_ReadData[inRow].m_FgFunc == ID_FGFUNC_SYOKEI || m_ReadData[inRow].m_FgFunc == ID_FGFUNC_CHUKEI || m_ReadData[inRow].m_FgFunc == ID_FGFUNC_KAMOKU)	{
+		tmpSaveData.m_KeiStr = m_clsFunc.DiagGetString(m_pDiag, intIndex);
+	}
+	else	{
+		// 1行目が空行の場合は繰り上げる
+		m_clsFunc.StrDivision(m_clsFunc.DiagGetString(m_pDiag, intIndex), &strArray, 2, FALSE, TRUE);
+		tmpSaveData.m_AdName1 = strArray.GetAt(0);
+		tmpSaveData.m_AdName2 = strArray.GetAt(1);
+		// 2行目が空行なら1行目のみを再表示
+		if(tmpSaveData.m_AdName2.IsEmpty())	{
+			if(m_uInfo.intCurCol == ID_COL_081I_ADNAME1 && m_uInfo.intCurRow != m_uInfo.OldRow)	{	// 各カラムごとにvirRecBufSaveData()がコールされるようになり、かつタイミングがEditOffからEditOnに移ったことによりCmnDiagSetString()でカレットが末尾から先頭に移ってしまう為、制御
+				CmnDiagSetString(m_pDiag, intIndex, tmpSaveData.m_AdName1, 0);
+			}
+		}
+	}
+// 改良No.21-0086,21-0529 cor <--
+
+	// 振出年月日
+	intIndex = CmnGetControlIndex( inRow, ID_COL_081I_SPDATE );
+	tmpSaveData.m_SpDate = CmnDiagGetDateGWMD( m_pDiag, intIndex, m_ReadData[inRow].m_SpDate );
+	blnSpDate = CmnCheckDate( m_pDiag, intIndex, DC_DATE_GWMD, m_ReadData[inRow].m_SpDate );
+
+	// 支払期日
+	intIndex = CmnGetControlIndex( inRow, ID_COL_081I_PMDATE );
+	tmpSaveData.m_PmDate = CmnDiagGetDateGWMD( m_pDiag, intIndex, m_ReadData[inRow].m_PmDate );
+	blnPmDate = CmnCheckDate( m_pDiag, intIndex, DC_DATE_GWMD, m_ReadData[inRow].m_PmDate );
+
+	// 支払銀行名
+	intIndex = CmnGetControlIndex( inRow, ID_COL_081I_BKNAME1 );
+	tmpSaveData.m_BkName1 = m_clsFunc.DiagGetString( m_pDiag, intIndex );
+
+	// 支払支店名
+	intIndex = CmnGetControlIndex( inRow, ID_COL_081I_BKNAME2 );
+	tmpSaveData.m_BkName2 = m_clsFunc.DiagGetString( m_pDiag, intIndex );
+
+	// 金額
+	intIndex = CmnGetControlIndex( inRow, ID_COL_081I_VAL );
+	tmpSaveData.m_Val = CmnDiagGetKingaku( m_pDiag, intIndex );
+
+	// 摘要
+	intIndex = CmnGetControlIndex( inRow, ID_COL_081I_TEKI );
+	tmpSaveData.m_Teki = m_clsFunc.DiagGetString( m_pDiag, intIndex );
+
+	///////////////////////////////////////////////////////////////
+	// 登録処理呼び出し
+	int	intRet = RecBufSaveDataSub( inPage, inRow, &tmpSaveData );
+
+	// 登録処理が更新あり&エラー以外かつ日付入力値が更新必要な場合、画面更新
+	if ((( intRet != FUNCTION_UPDATE ) && ( intRet != FUNCTION_NG )) &&
+		(( blnSpDate == TRUE ) || ( blnPmDate == TRUE ))){
+		intRet = FUNCTION_DISPUPDATE;
+	}
+
+	// 行登録した場合、計再計算を行う
+	if (intRet == FUNCTION_UPDATE){
+		// 計再計算
+		CmnTblCalcKei();
+	}
+	// 行登録 or 入力値の更新があった場合、1頁再表示を行う
+	if ((intRet == FUNCTION_UPDATE) || (intRet == FUNCTION_DISPUPDATE)){
+		// 1頁再表示
+		virUpdateControlTblData();
+	}
+
+	return intRet;
+}
+
+/**********************************************************************
+	virRecBufSaveDataForPasteInsert()
+		指定された行のデータをテーブルに保存（挿入貼付作業用）
+
+	引数
+		int		inPage		登録するレコードのページ番号
+		int		inRow		登録するレコードの行番号
+	戻値
+		int			成功(更新あり)/成功(更新なし)/失敗
+					FUNCTION_UPDATE	: 成功 (更新あり)
+					FUNCTION_OK		: 成功 (更新なし)
+					FUNCTION_NG		: 失敗
+
+【コメント】
+	ローカルの1ページバッファが、「挿入貼付」の場合
+	更新がされていない状態なので、貼付該当行を強制的にクリアする
+	(1レコードのデータを初期化する)
+	データクリア状態で、FgFunc=データ行 なので、
+	必ず RecBufSaveDataSub() の登録が実施されるはず。
+	「行貼付」の時も、新しいデータに置き換えるので、この対応でOK
+	RecBufSaveDataSub() の登録の際に、m_ReadData[] のシーケンス番号など
+	重要な列のデータを必要とする場合は、この処理ではNG。
+	(現時点2006/02/01では、問題無い)
+	問題が発生するようであれば、該当のレコードをテーブルから読みだし、
+	m_ReadData[] の該当行にセットするように変更する。
+***********************************************************************/
+int	CfrmUc081SiharaitegataI::virRecBufSaveDataForPasteInsert( int inPage, int inRow )
+{
+	RecBufClearData( &m_ReadData[inRow] );			// レコードを初期化
+	m_ReadData[inRow].m_FgFunc = ID_FGFUNC_DATA;	// データ行とする
+
+	///////////////////////////////////////////////////////////////
+	// 登録処理呼び出し
+	return RecBufSaveDataSub( inPage, inRow, &m_CopyData );
+}
+
+/**********************************************************************
+	virRecBufSaveDataForPaste()
+		指定された行のデータをテーブルに保存(上書き貼付作業用)
+***********************************************************************/
+int	CfrmUc081SiharaitegataI::virRecBufSaveDataForPaste( int inPage, int inRow )
+{
+	///////////////////////////////////////////////////////////////
+	// 登録処理呼び出し
+	return RecBufSaveDataSub( inPage, inRow, &m_CopyData );
+}
+
+/**********************************************************************
+	RecBufSaveDataSub()
+		指定された行のデータをテーブルに保存(補助ルーチン)
+		※ShowKeiZeroはUpdateCalcKeiで保存している
+
+	引数
+			int		inPage		登録するレコードのページ番号
+			int		inRow		登録するレコードの行番号
+			REC_UC_081_SIHARAITEGATA
+					inSaveData	登録するデータレコードへのポインタ
+	戻値
+			int					成功(更新あり)/成功(更新なし)/失敗
+								FUNCTION_UPDATE	: 成功(更新あり)
+								FUNCTION_OK		: 成功(更新なし)
+								FUNCTION_NG		: 失敗
+***********************************************************************/
+int	CfrmUc081SiharaitegataI::RecBufSaveDataSub( 
+							int inPage,
+							int inRow,
+							P_REC_UC_081_SIHARAITEGATA inSaveData )
+{
+    REC_UC_081_SIHARAITEGATA	udtTemp;
+	CString						cst;
+	CString						tno1, tno2;		// 登録番号比較用
+
+// 改良No.21-0086,21-0529 add -->
+	udtTemp.m_KnSeq = 0;
+	udtTemp.m_KnOrder = 0;
+	udtTemp.m_KnName = "";
+	udtTemp.m_KnKana = _T("");	// 科目
+// 改良No.21-0086,21-0529 add <--
+	udtTemp.m_BkOrder = 0;
+	udtTemp.m_BkSeq = 0;
+	udtTemp.m_FgFunc = 0;
+	udtTemp.m_AdKana = _T("");	// 支払先
+	udtTemp.m_InvNo = _T("");	// 登録番号（法人番号）
+
+	// 変更があったかのフラグ（変更あり:TRUE、なし:FALSE)
+	BOOL	ufgUpData = FALSE;	// 変更確認フラグ(全体用データ行/空行)
+	BOOL	ufgInvNo = FALSE;	// 変更確認フラグ(登録番号)
+	BOOL	ufgUpToku = FALSE;	// 変更確認フラグ(全体用特殊行)
+	BOOL	ufgKn = FALSE;		// 変更確認フラグ(科目)					// 改良No.21-0086,21-0529 add
+	BOOL	ufgAdName = FALSE;	// 変更確認フラグ(支払先)
+	BOOL	ufgSpDate = FALSE;	// 変更確認フラグ(振出年月日)
+	BOOL	ufgPmDate = FALSE;	// 変更確認フラグ(支払期日)
+	BOOL	ufgBk = FALSE;		// 変更確認フラグ(支払銀行名・支店名)
+	BOOL	ufgVal = FALSE;		// 変更確認フラグ(金額)
+	BOOL	ufgTeki = FALSE;	// 変更確認フラグ(摘要)
+	BOOL	ufgFunc = FALSE;	// 変更確認フラグ(特殊行)
+	BOOL	ufgkeistr = FALSE;	// 変更確認フラグ(小計、科目行　名称)	// 改良No.21-0086,21-0529 add
+	// レコード更新したことを示すフラグ
+	BOOL	ufgRsUpdate = FALSE;
+
+	// テーブルアクセスクラス
+	CdbUc081Siharaitegata	rs( m_pDB );
+
+	///////////////////////////////////////////////////////////////
+	// 作業用変数へ 登録対象のフィールド値を代入
+	udtTemp.m_KnOrder = inSaveData->m_KnOrder;									// (科目)					// 改良No.21-0086,21-0529 add
+	udtTemp.m_InvNo = inSaveData->m_InvNo;										// (登録番号)
+	udtTemp.m_AdSeq = inSaveData->m_AdSeq;										// (取引先シーケンス番号)	// 修正No.168402,168405 add
+	udtTemp.m_AdName1 = m_clsFunc.DeleteRightSpace( inSaveData->m_AdName1 );	// (支払先1)
+	udtTemp.m_AdName2 = m_clsFunc.DeleteRightSpace( inSaveData->m_AdName2 );	// (支払先2)
+	udtTemp.m_SpDate = inSaveData->m_SpDate;									// (振出年月日)
+	udtTemp.m_PmDate = inSaveData->m_PmDate;									// (支払期日)
+	udtTemp.m_BkName1 = m_clsFunc.DeleteRightSpace( inSaveData->m_BkName1 );	// (支払銀行名)
+	udtTemp.m_BkName2 = m_clsFunc.DeleteRightSpace( inSaveData->m_BkName2 );	// (支払銀行名（支店名）)
+	udtTemp.m_Val = inSaveData->m_Val;											// (金額)
+	udtTemp.m_Teki = inSaveData->m_Teki;										// (摘要)
+// 改良No.21-0086,21-0529 add -->
+	if(m_ReadData[inRow].m_FgFunc == ID_FGFUNC_SYOKEI || m_ReadData[inRow].m_FgFunc == ID_FGFUNC_CHUKEI || m_ReadData[inRow].m_FgFunc == ID_FGFUNC_KAMOKU)	{
+		udtTemp.m_KeiStr = m_clsFunc.DeleteRightSpace(inSaveData->m_KeiStr);	// 小計名称
+	}
+// 改良No.21-0086,21-0529 add <--
+
+	///////////////////////////////////////////////////////////////
+	// データ行か、空行かのチェック
+	udtTemp.m_FgFunc = m_ReadData[inRow].m_FgFunc;
+	if(udtTemp.m_FgFunc <= ID_FGFUNC_DATA)	{	// データ行 または、空行なら
+		// コンポーネントをチェックして、データがあるかを調べる
+		// (仮変数に入れた値でチェックしてもいいのかも？)
+
+// 改良No.21-0086,21-0529 cor -->
+		//if( (udtTemp.m_InvNo == "")			// 画面上のデータ格納用(登録番号)
+// ------------------------------
+		if( (udtTemp.m_KnOrder == 0)		// 画面上のデータ格納用(科目)
+		 && (udtTemp.m_InvNo == "")			// 画面上のデータ格納用(登録番号)
+// 改良No.21-0086,21-0529 cor <--
+		 && (udtTemp.m_AdName1 == "")		// 画面上のデータ格納用(支払先1)
+		 && (udtTemp.m_AdName2 == "")		// 画面上のデータ格納用(支払先2)
+		 && (udtTemp.m_SpDate == 0)			// 画面上のデータ格納用(振出年月日)
+		 && (udtTemp.m_PmDate == 0)			// 画面上のデータ格納用(支払期日)
+		 && (udtTemp.m_BkName1 == "")		// 画面上のデータ格納用(支払銀行名)
+		 && (udtTemp.m_BkName2 == "")		// 画面上のデータ格納用(支払支店名)
+		 && (udtTemp.m_Val == "")			// 画面上のデータ格納用(金額)
+		 && (udtTemp.m_Teki == "") )	{	// 画面上のデータ格納用(摘要)
+			// 空行なら
+			udtTemp.m_FgFunc = ID_FGFUNC_NULL;
+		}
+		else	{
+			// データが入っていれば
+			udtTemp.m_FgFunc = ID_FGFUNC_DATA;
+		}
+	}
+
+	///////////////////////////////////////////////////////////////
+	// 更新状況のチェック
+// 改良No.21-0086,21-0529 add -->
+	// (1) 科目（Order番号管理になっている)
+	if(udtTemp.m_KnOrder != m_ReadData[inRow].m_KnOrder)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgKn = TRUE;			// 科目用
+	}
+// 改良No.21-0086,21-0529 add <--
+
+	//(2)登録番号
+	if(udtTemp.m_InvNo != m_ReadData[inRow].m_InvNo)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgInvNo = TRUE;		// 登録番号用
+	}
+
+	//(3) 支払先1
+	if(udtTemp.m_AdName1 != m_ReadData[inRow].m_AdName1)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgUpToku = TRUE;		// 全体(特殊行)
+		ufgAdName = TRUE;		// 「支払先1」用
+	}
+
+	//(4) 支払先2
+	if(udtTemp.m_AdName2 != m_ReadData[inRow].m_AdName2)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgAdName = TRUE;		// 「支払先2」用
+	}
+
+	//(5) 振出年月日
+	if(udtTemp.m_SpDate != m_ReadData[inRow].m_SpDate)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgSpDate = TRUE;		// 「振出年月日」用
+	}
+
+	//(6) 支払期日
+	if(udtTemp.m_PmDate != m_ReadData[inRow].m_PmDate)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgPmDate = TRUE;		// 「支払期日」用
+	}
+
+	//(7) 支払銀行名
+	if(udtTemp.m_BkName1 != m_ReadData[inRow].m_BkName1)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgBk = TRUE;			// 「支払銀行名」用
+	}
+
+	//(8) 支払銀行名（支店名）
+	if(udtTemp.m_BkName2 != m_ReadData[inRow].m_BkName2)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgBk = TRUE;			// 「支払銀行名(支店名)」用
+	}
+
+	//(9) 金額
+	if(udtTemp.m_Val != m_ReadData[inRow].m_Val)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgVal = TRUE;			// 「金額」用
+	}
+
+	//(10) 摘要
+	if(udtTemp.m_Teki != m_ReadData[inRow].m_Teki)	{
+		ufgUpData = TRUE;		// 全体(データ行/空行)
+		ufgTeki = TRUE;			// 「摘要」用
+	}
+
+	//(11) 特殊行フラグ(基本的には、空行/データ行のチェックになるはず)
+	if(m_ReadData[inRow].m_FgFunc <= ID_FGFUNC_DATA)	{
+		// 元が空行orデータ行の場合、入力内容により空行orデータ行となる
+		// 元が特殊行の場合、FgFuncは更新しない
+		if ( udtTemp.m_FgFunc != m_ReadData[inRow].m_FgFunc ) {
+			ufgUpData = TRUE;	// 全体(データ行/空行)
+			ufgFunc = TRUE;     // ufgFunc用
+		}
+	}
+
+// 改良No.21-0086,21-0529 add -->
+	if(KamokuRowEnableSgn(m_pDB, 1, m_uInfo.intFormSeq) == 1)	{
+		// 小計名称
+		if(udtTemp.m_FgFunc == ID_FGFUNC_SYOKEI)	{
+			if(udtTemp.m_KeiStr != m_ReadData[inRow].m_KeiStr)	{
+				ufgkeistr = TRUE;		// 小計、科目行名称用
+			}
+		}
+		// 中計名称
+		if(udtTemp.m_FgFunc == ID_FGFUNC_CHUKEI)	{
+			if(udtTemp.m_KeiStr != m_ReadData[inRow].m_KeiStr)	{
+				ufgkeistr = TRUE;		// 小計、中計、科目行名称用
+			}
+		}
+		// 科目行名称
+		if(udtTemp.m_FgFunc == ID_FGFUNC_KAMOKU)	{
+			if(udtTemp.m_KeiStr != m_ReadData[inRow].m_KeiStr)	{
+				ufgkeistr = TRUE;		// 小計、科目行名称用
+			}
+		}
+	}
+// 改良No.21-0086,21-0529 add <--
+
+	///////////////////////////////////////////////////////////////////
+	// 1 レコード更新処理
+	if((udtTemp.m_FgFunc == ID_FGFUNC_DATA) || (udtTemp.m_FgFunc == ID_FGFUNC_IKKATUMANUAL))	{	// データ行or一括集計金額行（手動）
+		///////////////////////////////////////////////////////////////////
+		// データ行or一括集計金額行（手動）の場合の処理
+
+// 改良No.21-0086,21-0529 add -->
+		// 科目について KnOrder に関連する、名称、シーケンスを取得
+		if((ufgKn == TRUE) && (udtTemp.m_KnOrder > 0))	{
+			// 科目インデックスがNULLなら登録しない
+			CdbUcLstKamoku		rsKamo(m_pDB);
+			int					intRet = rsKamo.RequeryKnOrder(m_uInfo.intFormSeq, udtTemp.m_KnOrder);
+			if(intRet != DB_ERR_OK)		{	// 失敗
+				return(FUNCTION_NG);
+			}
+			udtTemp.m_KnSeq = rsKamo.m_KnSeq;
+			udtTemp.m_KnName = rsKamo.m_KnName;
+			udtTemp.m_KnKana = rsKamo.m_KnKana;
+
+			rsKamo.Fin();
+		}
+// 改良No.21-0086,21-0529 add <--
+
+// 修正No.168402,168405 add -->
+		// 支払先：取引先名称リストへの登録チェック
+		//if((udtTemp.m_FgFunc == ID_FGFUNC_DATA) && (ufgInvNo == TRUE))	{	// 変更ありの場合						// 修正No.168443 del
+		if((udtTemp.m_FgFunc == ID_FGFUNC_DATA) && (m_InvnoErrFlg == 0 && ufgInvNo == TRUE))	{	// 変更ありの場合	// 修正No.168443 add
+			CdbUcLstAddress		rsAdd(m_pDB);
+
+			if(m_RegAutoRef)	udtTemp.m_AdSeq = rsAdd.CheckAdSeqEntry_Inv(udtTemp.m_AdSeq, udtTemp.m_AdName1, udtTemp.m_AdName2, "", "", udtTemp.m_InvNo, ID_ADDRESSGR_KAI, FALSE, TRUE, 1);
+			else				udtTemp.m_AdSeq = rsAdd.GetSeqFromAdName_Inv(ID_ADDRESSGR_KAI, udtTemp.m_AdName1, udtTemp.m_AdName2, udtTemp.m_InvNo);
+
+			// エラー？
+			if(udtTemp.m_AdSeq < 0)	{
+				rsAdd.Fin();
+				return(FUNCTION_NG);
+			}
+
+			if(udtTemp.m_AdSeq == 0)	{
+				udtTemp.m_AdOrder = 0;
+			}
+			else	{
+				udtTemp.m_AdOrder = rsAdd.m_OrderNum;
+				udtTemp.m_AdKana = rsAdd.m_AdKana;
+			}
+
+			rsAdd.Fin();
+		}
+// 修正No.168402,168405 add <--
+
+		// 支払先：取引先名称リストへの登録チェック
+// 修正No.168402,168405 del -->
+		////if((udtTemp.m_FgFunc == ID_FGFUNC_DATA) && (ufgAdName == TRUE))		{	// 変更ありの場合
+		//if((udtTemp.m_FgFunc == ID_FGFUNC_DATA) && (ufgAdName == TRUE || ufgInvNo == TRUE))		{	// 変更ありの場合
+// 修正No.168402,168405 del <--
+// 修正No.168402,168405 add -->
+		if((udtTemp.m_FgFunc == ID_FGFUNC_DATA) && (ufgAdName == TRUE))		{	// 変更ありの場合
+// 修正No.168402,168405 add <--
+			CdbUcLstAddress		rsAdd(m_pDB);
+
+			if(m_RegAutoRef)	udtTemp.m_AdSeq = rsAdd.CheckEntryAddNone_Inv(udtTemp.m_AdName1, udtTemp.m_AdName2, "", "", udtTemp.m_InvNo, ID_ADDRESSGR_KAI, FALSE, TRUE);
+			else				udtTemp.m_AdSeq = rsAdd.GetSeqFromAdName_Inv(ID_ADDRESSGR_KAI, udtTemp.m_AdName1, udtTemp.m_AdName2, udtTemp.m_InvNo);
+
+			// エラー？
+			if(udtTemp.m_AdSeq < 0)	{
+				rsAdd.Fin();
+				return(FUNCTION_NG);
+			}
+			
+			if(udtTemp.m_AdSeq == 0)	{
+				udtTemp.m_AdOrder = 0;
+			}
+			else	{
+				udtTemp.m_AdOrder = rsAdd.m_OrderNum;
+				udtTemp.m_AdKana = rsAdd.m_AdKana;
+			}
+
+			rsAdd.Fin();
+		}
+
+		// 支払銀行名：金融機関名称リストへの登録チェック
+		if((udtTemp.m_FgFunc == ID_FGFUNC_DATA) && (ufgBk == TRUE))		{  // 変更ありの場合
+			CdbUcLstBank		rsBank( m_pDB );
+			CString				cst,bk1,bk2;
+			CStringArray		strArray;
+
+			// 改行マークを取ったものでチェックする
+			m_clsFunc.StrDivision(udtTemp.m_BkName1, &strArray, 2);
+			bk1 = strArray.GetAt(0) + strArray.GetAt(1);
+			m_clsFunc.StrDivision(udtTemp.m_BkName2, &strArray, 2);
+			bk2 = strArray.GetAt(0) + strArray.GetAt(1);
+
+			if(m_RegAutoRef)	udtTemp.m_BkSeq = rsBank.CheckEntry(bk1, bk2);
+			else				udtTemp.m_BkSeq = rsBank.GetSeqFromBkName(bk1, bk2);
+
+			if(udtTemp.m_BkSeq < 0)	{
+				rsBank.Fin();
+				return(FUNCTION_NG);
+			}
+
+			if(udtTemp.m_BkSeq == 0)	udtTemp.m_BkOrder = 0;
+			else						udtTemp.m_BkOrder = rsBank.m_OrderNum;
+
+			rsBank.Fin();
+		}
+
+		// 更新処理
+		if(ufgUpData == TRUE)	{		// テーブルへ更新(1レコード更新)
+			// ページ、行 で抽出し、必要なデータを更新
+			rs.RequeryPageRow(inPage, inRow);
+
+			if( !rs.IsEOF() )	{		// レコードが取得できた(取得できないことはないはず)
+				rs.Edit();
+
+// 改良No.21-0086,21-0529 add -->
+				// 科目
+				if(ufgKn == TRUE)	{	// 変更ありの場合
+					rs.m_KnSeq = udtTemp.m_KnSeq;
+					rs.m_KnName = udtTemp.m_KnName;
+					rs.m_KnOrder = udtTemp.m_KnOrder;
+					rs.m_KnKana = udtTemp.m_KnKana;
+				}
+// 改良No.21-0086,21-0529 add <--
+
+				// 登録番号
+				if(ufgInvNo == TRUE)	{	// 変更ありの場合
+					rs.m_InvNo = udtTemp.m_InvNo;
+				}
+
+				// 支払先
+				//if(ufgAdName == TRUE)	{	// 変更ありの場合
+				if(ufgAdName == TRUE || ufgInvNo == TRUE)	{	// 変更ありの場合
+					rs.m_AdSeq = udtTemp.m_AdSeq;
+					rs.m_AdOrder = udtTemp.m_AdOrder;
+					// 末尾スペース削除後に空行削除処理
+					udtTemp.m_AdName1 = m_clsFunc.DeleteRightSpace( udtTemp.m_AdName1 );
+					udtTemp.m_AdName2 = m_clsFunc.DeleteRightSpace( udtTemp.m_AdName2 );
+					m_clsFunc.DeleteNullRow( &udtTemp.m_AdName1, &udtTemp.m_AdName2 );
+					rs.m_AdName1 = udtTemp.m_AdName1;
+					rs.m_AdName2 = udtTemp.m_AdName2;
+					rs.m_AdKana = udtTemp.m_AdKana;
+				}
+
+				// 振出年月日
+				if(ufgSpDate = TRUE)	{	// 変更ありの場合
+					rs.m_SpDate = udtTemp.m_SpDate;
+				}
+
+				// 支払期日
+				if(ufgPmDate = TRUE)	{	// 変更ありの場合
+					rs.m_PmDate = udtTemp.m_PmDate;
+				}
+
+				// 支払銀行名
+				if(ufgBk == TRUE)	{		// 変更ありの場合
+					rs.m_BkSeq = udtTemp.m_BkSeq;
+					rs.m_BkName1 = m_clsFunc.DeleteRightSpace(udtTemp.m_BkName1);
+					rs.m_BkName2 = m_clsFunc.DeleteRightSpace(udtTemp.m_BkName2);
+					rs.m_BkOrder = udtTemp.m_BkOrder;
+				}
+
+				// 金額
+				if(ufgVal == TRUE)	{		// 変更ありの場合
+					rs.m_Val = udtTemp.m_Val;
+				}
+			
+				// 摘要
+				if(ufgTeki == TRUE)	{		// 変更ありの場合
+					CStringArray	strArray;
+					m_clsFunc.StrDivision(udtTemp.m_Teki, &strArray, 3, TRUE, TRUE);
+					rs.m_Teki = m_clsFunc.StrDocking( &strArray );
+				}
+
+				// 特殊行フラグは、強制的に書き込む
+				rs.m_FgFunc = udtTemp.m_FgFunc;
+
+				rs.Update();
+				ufgRsUpdate = TRUE;		// レコード更新したので ON
+			}
+		}
+	}
+// 改良No.21-0086,21-0529 add -->
+	else if(udtTemp.m_FgFunc == ID_FGFUNC_IKKATUAUTO && ufgKn == TRUE)	{
+		if(KamokuRowEnableSgn(m_pDB, 0, m_uInfo.intFormSeq) == 1)	{
+			// 科目について KnOrder に関連する、名称、シーケンスを取得
+			if(udtTemp.m_KnOrder > 0)	{
+				// 科目インデックスがNULLなら登録しない
+				CdbUcLstKamoku		rsKamo(m_pDB);
+				int					intRet = rsKamo.RequeryKnOrder(m_uInfo.intFormSeq, udtTemp.m_KnOrder);
+				if(intRet != DB_ERR_OK)		{	// 失敗
+					return(FUNCTION_NG);
+				}
+				udtTemp.m_KnSeq = rsKamo.m_KnSeq;
+				udtTemp.m_KnName = rsKamo.m_KnName;
+				udtTemp.m_KnKana = rsKamo.m_KnKana;
+
+				rsKamo.Fin();
+			}
+			// ページ、行 で抽出し、必要なデータを更新
+			rs.RequeryPageRow(inPage, inRow);
+
+			if(!rs.IsEOF())		{		// レコードが取得できた(取得できないことはないはず)
+				rs.Edit();
+
+				//	科目
+				rs.m_KnSeq = udtTemp.m_KnSeq;
+				rs.m_KnName = udtTemp.m_KnName;
+				rs.m_KnOrder = udtTemp.m_KnOrder;
+				rs.m_KnKana = udtTemp.m_KnKana;
+				rs.Update();
+				ufgRsUpdate = TRUE;		// レコード更新したので ON
+			}
+		}
+	}
+	// 小計、中計、科目行名称
+	else if(udtTemp.m_FgFunc == ID_FGFUNC_SYOKEI || udtTemp.m_FgFunc == ID_FGFUNC_CHUKEI || udtTemp.m_FgFunc == ID_FGFUNC_KAMOKU)	{
+		if(ufgkeistr == TRUE)	{
+			// ページ、行 で抽出し、必要なデータを更新
+			rs.RequeryPageRow(inPage, inRow);
+			if(!rs.IsEOF())		{
+				rs.Edit();
+				rs.m_KeiStr = udtTemp.m_KeiStr;
+				rs.Update();
+				ufgRsUpdate = TRUE;		// レコード更新したので ON
+			}
+		}
+	}
+// 改良No.21-0086,21-0529 add <--
+	else if(udtTemp.m_FgFunc == ID_FGFUNC_NULL)		{	// 空行
+		///////////////////////////////////////////////////////////////////
+		// 空行の場合の処理
+
+		// 更新処理
+		if(ufgUpData == TRUE)	{		// テーブルへ更新(1レコード更新)
+			// ページ、行 で抽出し、必要なデータを更新
+			rs.RequeryPageRow(inPage, inRow);
+
+			if( !rs.IsEOF() )	{		// レコードが取得できた(取得できないことはないはず)
+				rs.Edit();
+				rs.m_FgFunc		= udtTemp.m_FgFunc;
+				rs.m_KeiStr		= _T("");	// 計
+				rs.m_NumGroup	= 0;		// グループ番号
+				rs.m_AdSeq		= 0;		// 支払先：取引先（シーケンス番号）
+				rs.m_AdOrder	= 0;		// 支払先：取引先（並び順）
+				rs.m_AdName1	= _T("");	// 支払先（名称：上段）
+				rs.m_AdName2	= _T("");	// 支払先（名称：下段）
+				rs.m_SpDate		= 0;		// 振出年月日
+				rs.m_PmDate		= 0;		// 支払期日
+				rs.m_BkSeq		= 0;		// 金融機関（シーケンス番号）
+				rs.m_BkOrder	= 0;		// 金融機関（並び順）
+				rs.m_BkName1	= _T("");	// 支払銀行名（銀行名）
+				rs.m_BkName2	= _T("");	// 支払銀行名（支店名）
+				rs.m_Val		= _T("");	// 金額
+				rs.m_Teki		= _T("");	// 摘要
+				rs.m_AdKana		= _T("");	// 支払先カナ
+				rs.m_InvNo		= _T("");	// 登録番号
+// 改良No.21-0086,21-0529 add -->
+				rs.m_KnSeq		= 0;		// 科目シーケンス
+				rs.m_KnOrder	= 0;		// 科目順序
+				rs.m_KnName		= _T("");	// 科目名
+				rs.m_KnKana		= _T("");	// 科目カナ
+// 改良No.21-0086,21-0529 add <--
+
+				rs.Update();
+
+				ufgRsUpdate = TRUE;		// レコード更新したので ON
+			}
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////
+	// 内部 1ページバッファも更新する
+	int		retFunc = FUNCTION_OK;		//戻り値：成功（変更なし)
+	if(ufgRsUpdate == TRUE)		{
+		retFunc = FUNCTION_UPDATE;		//戻り値：成功（変更あり)
+		if( !rs.IsEOF() )	{		// レコードが取得できた(取得できないことはないはず)
+			RecBufSetData( &rs );
+		}
+	}
+
+	rs.Fin();
+
+	return(retFunc);
+}
+
+//********************************************************************************
+//	「支払手形」テーブルのオブジェクトを生成し、ポインタを返す
+//********************************************************************************
+CdbUc000Common*	CfrmUc081SiharaitegataI::virGetDataTableObject()
+{
+	// 「支払手形」テーブルのオブジェクトを生成し、ポインタを返す
+	return (CdbUc000Common*)( new CdbUc081Siharaitegata( m_pDB ) );
+}
+
+//********************************************************************************
+//	行コピー処理
+//	IN	なし
+//	RET	なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virRowButtonCopyProc()
+{
+	// カレント行のデータを、コーピー用バッファに格納
+	m_CopyData = m_ReadData[m_uInfo.intCurRow];
+
+	// コピーフラグON
+	m_nCopyFlag = 1;
+}
+
+//********************************************************************************
+//	共通処理から帳表のカレント情報を取得
+//	IN	CURRENT_INFO	取得する情報の格納領域
+//	RET	なし
+//********************************************************************************
+void	CfrmUc081SiharaitegataI::virGetCurrentInfo( CURRENT_INFO* uCurInfo )
+{
+	uCurInfo->intFgFunc = m_ReadData[m_uInfo.intCurRow].m_FgFunc;
+	uCurInfo->intNumGroup = m_ReadData[m_uInfo.intCurRow].m_NumGroup;
+	uCurInfo->intCopyFlag = m_nCopyFlag;
+}
+
+//**************************************************
+//	入力不可モードの設定/解除
+//	【引数】	nRow	…	行
+//				nMode	…	入力不可モードフラグ
+//								DIAG_MDFY_NOINPUT	…	エディットアイテムで全てのWM_CHARを無効とする
+//								DIAG_MDFY_INPUT		…	DIAG_MDFY_NOINPUTモード解除
+//	【戻値】	なし
+//**************************************************
+void CfrmUc081SiharaitegataI::SetInputMode( int nRow, long nMode )
+{
+// 改良No.21-0086,21-0529 add -->
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_KAMOKU), nMode);	//	科目
+// 改良No.21-0086,21-0529 add <--
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_INVONOT), nMode);	//	登録番号（T選択）
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_INVONO), nMode);	//	登録番号（法人番号）
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_ADNAME1), nMode);	//	支払先（上段）
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_SPDATE), nMode);	//	振出年月日
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_PMDATE), nMode);	//	支払期日
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_BKNAME1), nMode);	//	銀行名
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_BKNAME2), nMode);	//	支店名
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_VAL), nMode);		//	金額
+	m_pDiag->ModifyItem(CmnGetControlIndex(nRow, ID_COL_081I_TEKI), nMode);		//	摘要
+}
+
+//**************************************************
+//	各Diagの背景色(BackColor)に色を設定
+//	【引数】	なし
+//	【戻値】	なし
+//**************************************************
+void CfrmUc081SiharaitegataI::SetDiagBackColor()
+{
+	// 入力画面の各Diagの背景色を共通設定色に合わせる
+	m_PageDiag.SetBackColor( m_ViewColor );
+	m_TitleDiag.SetBackColor( m_ViewColor );
+	m_NumberDiag.SetBackColor( m_ViewColor );
+	m_HeadDiag.SetBackColor( m_ViewColor );
+	m_Diag->SetBackColor( m_ViewColor );
+	m_DiagKei->SetBackColor( m_ViewColor );
+	m_SaveDataDiag.SetBackColor( m_ViewColor );
+}
+
+//********************************************************************************
+//	財務連動：連動データの作成（新規作成）
+//		IN		CdbUc000Common*		内訳書テーブル情報
+//				RENTEMP_INFO*		財務連動情報
+//		RET		なし					
+//********************************************************************************
+void CfrmUc081SiharaitegataI::virRendoCreateData(CdbUc000Common* rsData, RENTEMP_INFO* uRenInfo)
+{
+	CString			strTemp;
+	CStringArray	strArry;
+	int				intSeq;
+	int				sw = 0;
+	CdbUcLstAddress	rsLstAdd(m_pDB);	// rs_lst_Address
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+
+	// 頁番号/行番号の加算
+	CmnGetNextPageRow(&uRenInfo->nPage, &uRenInfo->nRow);
+
+	// 新規レコード作成
+	rs->CreateNewRecord();					// 新規レコード追加（初期化済み）
+
+	rs->Edit();
+	rs->m_NumPage	= uRenInfo->nPage;		// 頁番号
+	rs->m_NumRow	= uRenInfo->nRow;		// 行番号
+	rs->m_FgFunc	= ID_FGFUNC_DATA;		// 特殊行フラグ
+	rs->m_FgShow	= ID_FGSHOW_OFF;		// 表示フラグ
+
+	switch (uRenInfo->intOpRenType) {
+		case ID_RENDATA_KZ:
+		case ID_RENDATA_EZ:
+			rs->m_RenKcd	= uRenInfo->strRenKcd;		// 財務連動元（科目）
+			rs->m_RenEcd	= uRenInfo->lngRenEcd;		// 財務連動元（枝番）
+			rs->m_RenFgTemp	= ID_RENFGTEMP_UPDATE;		// 財務連動テンポラリ情報
+			break;
+	}
+
+// 改良No.21-0086,21-0529 add -->
+	// 科目情報：uc_lst_kamokuより詳細を取得
+	CdbUcLstKamoku		rsLstKmk(m_pDB);								// rs_lst_kamoku
+	if(rsLstKmk.RequeryKnSeq(m_uInfo.intFormSeq, uRenInfo->lngKnSeq) == DB_ERR_OK)	{
+		if(rsLstKmk.m_KnSeq > 0)	{
+			rs->m_KnSeq = rsLstKmk.m_KnSeq;
+			rs->m_KnOrder = rsLstKmk.m_KnOrder;
+			rs->m_KnName = rsLstKmk.m_KnName;
+			rs->m_KnKana = rsLstKmk.m_KnKana;
+		}
+	}
+	rsLstKmk.Fin();
+// 改良No.21-0086,21-0529 add <--
+
+	// 取引先情報：取引先登録チェック(買)
+	sw = 0;
+	// 仕訳データ
+	if(uRenInfo->intOpRenType == ID_RENDATA_DA)	{
+		sw = 1;
+	}
+	// 科目残高、枝番残高
+	else	{
+		// 「科目残高かつ科目名称を取引先に転記するにチェックあり」
+		// または「枝番残高かつ枝番未登録・未入力のデータかつ科目名称を取引先に転記するにチェックあり」
+		if((uRenInfo->intOpRenType == ID_RENDATA_KZ && uRenInfo->byteKmkName == TRUE) ||
+			(uRenInfo->intOpRenType == ID_RENDATA_EZ && uRenInfo->byteEdasgn == FALSE && uRenInfo->byteKmkName == TRUE))	{
+			// 取引先、金融機関を自動で登録するにチェックあり
+			if(m_RegAutoRef != FALSE)	{
+				// 取引先、金融機関の[F9 参照]に登録する
+				sw = 1;
+			}
+			else	{
+				// 取引先、金融機関の[F9 参照]に登録する
+				if(uRenInfo->byteF9Upd == TRUE)		sw = 1;
+				// 取引先、金融機関の[F9 参照]に登録しない
+				else								sw = 2;
+			}
+		}
+
+		// 枝番残高かつ枝番取込の場合
+		if(uRenInfo->intOpRenType == ID_RENDATA_EZ && uRenInfo->byteEdasgn == TRUE)	{
+			// 取引先、金融機関の[F9 参照]に登録する
+			sw = 1;
+		}
+	}
+
+	if(sw != 0)	{
+		m_clsFunc.StrDivisionEx( uRenInfo->strAdName , &strArry , ( MAX_KETA_081_ADNAME1 / 2 ) , 2 );
+		if(sw == 1)	{
+			intSeq = rsLstAdd.CheckEntryAddNoneRen_Inv(strArry.GetAt(0), strArry.GetAt(1), _T(""), _T(""), uRenInfo->strAdKana, uRenInfo->strInvNo, ID_ADDRESSGR_KAI, FALSE, TRUE);
+
+			if (intSeq > 0) {
+				rs->m_AdSeq		= rsLstAdd.m_AdSeq;
+				rs->m_AdOrder	= rsLstAdd.m_OrderNum;
+				rs->m_AdName1	= rsLstAdd.m_AdName1;
+				rs->m_AdName2	= rsLstAdd.m_AdName2;
+				rs->m_AdKana	= rsLstAdd.m_AdKana;
+				rs->m_InvNo		= rsLstAdd.m_InvNo;
+			}
+			rsLstAdd.Fin();
+		}
+		else if(sw == 2)	{
+			if(strArry.GetAt(0).IsEmpty() == FALSE || strArry.GetAt(1).IsEmpty() == FALSE)	{
+				rs->m_AdSeq		= 0;
+				rs->m_AdOrder	= 0;
+				rs->m_AdName1	= strArry.GetAt(0);
+				rs->m_AdName2	= strArry.GetAt(1);
+				rs->m_AdKana	= _T("");
+				rs->m_InvNo		= _T("");
+			}
+		}
+	}
+
+	// 金額
+	rs->m_Val = uRenInfo->strVal;		
+
+	rsData->Update();
+}
+
+//********************************************************************************
+//	財務連動：連動データの作成（金額のみ更新）
+//		IN		CdbUc000Common*		内訳書テーブル情報（更新対象データ）
+//				RENTEMP_INFO*		財務連動情報
+//		RET		なし					
+//********************************************************************************
+void CfrmUc081SiharaitegataI::virRendoUpdateData(CdbUc000Common* rsData, RENTEMP_INFO* uRenInfo)
+{
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+
+	rs->Edit();
+
+	rs->m_RenFgTemp	= ID_RENFGTEMP_UPDATE;		// 財務連動テンポラリ情報
+	rs->m_Val		= uRenInfo->strVal;			// 金額
+
+	rs->Update();
+}
+
+
+//***************************************************************************
+//（2009.09.08 TS自動ログオフ対応）
+//	Viewの終了処理
+//		・デストラクタで行っていた処理をここに移動
+//
+//	IN		なし
+//	RET		BOOL				TRUE=エラー，FALSE=正常
+//***************************************************************************
+BOOL CfrmUc081SiharaitegataI::virEndProc(void)
+{
+	TRACE(_T("***** CfrmUc081SiharaitegataI::virEndProc\n"));
+
+	// ↓この処理でコントロールが破棄されているが、当関数が実行される時点では、
+	// 　そのコントロールを持つView自体は生きている。
+	// 　このため、コントロールに対する処理（セル位置の取得）でエラーになってしまう。
+	// 　もともとはデストラクタにあったため、コントロールを破棄した後、
+	// 　すぐにView自体も殺していたので問題なかった。
+	// 　処理自体も特に意味がないので、コメントアウトする。
+
+	//m_pDiag = NULL;
+	//m_pTitleDiag = NULL;
+
+	// ---- 登録番号一覧関連 ----->
+	if(pZmSel) {
+		if(pZmSel->IsDisplay() != FALSE) {
+			pZmSel->DialogOFF();
+		}
+		//delete pZmSel;
+		pZmSel = NULL;
+	}
+	// ---- 登録番号一覧関連 <-----
+
+	// 親Viewの終了処理
+	return CfrmUc000Common::virEndProc();
+}
+
+// 改良No.21-0086,21-0529 add -->
+//********************************************************************************
+//	テーブルから科目情報を取得
+//	IN	Cdb000Common* rsData	テーブル情報
+//		SORTKAMOKU_INFO*		科目情報
+//	RET	なし
+//********************************************************************************
+void CfrmUc081SiharaitegataI::virTblGetKamokuInfo( CdbUc000Common* rsData, SORTKAMOKU_INFO* uKamoku )
+{
+	CdbUc081Siharaitegata*	rs = (CdbUc081Siharaitegata*)rsData;
+
+	// 本当ならGetFieldValue()で取得する予定だったが、時間も無いのであきらめた
+	uKamoku->intKnSeq = rs->m_KnSeq;
+	uKamoku->intKnOrder = rs->m_KnOrder;
+	uKamoku->strKnName = rs->m_KnName;
+	uKamoku->strKnKana = rs->m_KnKana;
+}
+
+void CfrmUc081SiharaitegataI::ComboNew(short index)
+{
+	short			sv_sel=0;
+	short			sv_sel2=0;		// 変更前のコンボボックスの値を取得
+	int				sv_cnt=0;
+	int				sv_index=0;
+	int				intCol=0;
+	DIAGRAM_DATA	diadata;
+
+	m_F9OnSw = FALSE;
+	// ポジション取得
+	m_uInfo.intCurCtlIndex = m_pDiag->GetPosition();
+	sv_index = m_pDiag->GetPosition();
+	// 行・列取得
+	CmnGetControlPosition( &m_uInfo.intCurRow , &m_uInfo.intCurCol, &m_uInfo.OldCol );
+	// 「科目」列ならコンボボックスのオフセット値取得
+	if(m_uInfo.intCurCol == ID_COL_081I_KAMOKU)	{
+		m_pDiag->GetData(m_uInfo.intCurCtlIndex, (LPUNKNOWN)&diadata);
+		if(diadata.data_combo > m_CmbCnt)	{
+			// 実際に登録された科目の件数と選択されたIndexが異なる場合は、「新規作成」が選択されたとする
+			m_F9OnSw = TRUE;
+			sv_sel = diadata.data_combo;
+			sv_cnt = m_CmbCnt;
+			sv_sel2 = GetKnOrder(m_uInfo.intFormSeq,m_uInfo.intCurPage,m_uInfo.intCurRow);
+
+			// F9参照
+			OnButtonF9();
+
+			m_F9OnSw = FALSE;
+			// 選択されたものを再取得
+			m_pDiag->GetData(m_uInfo.intCurCtlIndex, (LPUNKNOWN)&diadata);
+			// 何も変わってなかったらキャンセル
+			if(sv_sel == diadata.data_combo && sv_cnt == m_CmbCnt)	{
+				// sv_sel2が新規追加の場合、クリアする
+				if(sv_sel2 > m_CmbCnt)	sv_sel2 = 0;
+
+				diadata.data_combo = sv_sel2;
+				m_uInfo.OldCombo = sv_sel2;
+				m_pDiag->SetData( m_uInfo.intCurCtlIndex , (LPUNKNOWN)&diadata );
+			}
+			PostMessage(WM_USER_FOCUSSET,0,0);
+		}
+	}
+}
+// 改良No.21-0086,21-0529 add <--
+
+int CfrmUc081SiharaitegataI::CursorControl(short nChar, int sw)
+{
+	int				rv=0;
+	int				intCol=0;
+	int				pos=0;
+	char			key=0x00;
+
+	// 現在の列番号を取得
+	intCol = CmnGetControlCol();
+
+// 改良No.21-0086,21-0529 add -->
+	DIAGRAM_DATA	diadata;
+
+	// 例外処理：移動前に【新規作成】を選び、Tabキー、左矢印キー、右矢印キーを押下された場合は値を元に戻す
+	if(nChar == VK_TAB || nChar == VK_LEFT || nChar == VK_RIGHT)	{
+		if(intCol == ID_COL_081I_KAMOKU)	{
+			int		sw = 0;
+			m_pDiag->GetData(m_uInfo.intCurCtlIndex, (LPUNKNOWN)&diadata);
+			if(diadata.data_combo > m_CmbCnt)	{
+				sw = 1;
+			}
+			else if(diadata.data_combo != m_uInfo.OldCombo)		{
+				if(nChar == VK_LEFT || nChar == VK_RIGHT)	{
+					sw = 1;
+				}
+			}
+			if(sw == 1)		{
+				m_pDiag->ComboDropDown(m_uInfo.intCurCtlIndex, FALSE);
+				CmnDiagSetCombo(m_pDiag, m_uInfo.intCurCtlIndex, m_uInfo.OldCombo);
+			}
+		}
+	}
+// 改良No.21-0086,21-0529 add <--
+
+	key = (char)GetKeyState(VK_SHIFT);				//	Shiftキー状態取得
+	// 例外処理：移動前にComnoBoxで←/→キーが押下された場合は値を元に戻す
+	if((nChar == VK_TAB && (key & 0x80) == 0x80) || (nChar == VK_LEFT) || (nChar == VK_RIGHT)) {
+		// ComboBoxは選択内容を確定させない
+		if(intCol == ID_COL_081I_INVONOT)	{	// 登録番号(T選択)
+			m_pDiag->ComboDropDown(m_uInfo.intCurCtlIndex, FALSE);
+			CmnDiagSetCombo(m_pDiag, m_uInfo.intCurCtlIndex, m_uInfo.OldCombo);
+		}
+	}
+
+	// フォーカス移動先を取得
+	int intRet = GetFocusPosition(nChar);
+	switch (intRet) {
+		case -1:		// 先頭項目でShift+Tabキーのため、タイトルへ移動
+		case -4:		// 先頭行で↑or先頭項目で←は、タイトルへ移動
+			m_TitleDiag.SetPosition(0);
+			rv = 1;
+			break;
+		case -2:		// 最終項目でTabキーのため、頁コントロールへ移動
+			m_PageDiag.SetPosition(1);
+			rv = 1;
+			break;
+		case -3:		// スクロールで無く、ComboBoxで↑↓キーを押された場合何もしない
+			if(nG_MScroll == 1)	{
+				pos = m_pDiag->GetPosition();
+				m_pDiag->SetPosition(pos);
+				rv = 1;
+			}
+			break;
+		default:		// フォーカス移動を行う
+			m_pDiag->SetPosition(intRet);
+			rv = 1;
+			break;
+	}
+
+	// ポジション取得
+	m_uInfo.intCurCtlIndex = m_pDiag->GetPosition();
+	if(sw == 1)	nG_MScroll = 0;
+
+	return(rv);
+}
+
+// 改良No.21-0086,21-0529 add -->
+void CfrmUc081SiharaitegataI::ComboSelYoushikidiag1(short index, LPUNKNOWN data)
+{
+	char	key1 = 0x00;		// Enterキー状態取得
+	char	key2 = 0x00;		// マウス左クリック状態取得
+	char	key3 = 0x00;		// 右矢印キー状態取得
+
+	key1 = (char)GetKeyState(VK_RETURN);			// Enterキー状態取得
+	key2 = (char)GetAsyncKeyState(VK_LBUTTON);		// マウス左クリック状態取得
+	key3 = (char)GetKeyState(VK_RIGHT);			// 右矢印キー状態取得
+
+	m_ComboSgn = 0;
+	// 右矢印キーで来た時は抜ける
+	if((key3 & 0x80) == 0x80)	{
+		return;
+	}
+	// マウスクリックされた時のみ
+	// Enter押下の処理はEditOFFでしているのでここでは入れないようにする
+	if(((key1 & 0x80) != 0x80) && ((key2 & 0xff) == 0x01))	{
+		if(m_uInfo.intCurCol == ID_COL_081I_KAMOKU)	{
+			ComboNew(index);
+			m_ComboSgn = 1;
+		}
+	}
+}
+// 改良No.21-0086,21-0529 add <--
+
+// ------------------------------------------------------------------------------------------------------------------------
+// 金融機関名 → 支店名にカーソルが移動する場合、
+// データの保存、再読み込みが発生しないため、
+// 電子申告の桁数チェックを行い、文字色を変更する
+// ------------------------------------------------------------------------------------------------------------------------
+void CfrmUc081SiharaitegataI::BankCellChg(int nRow,int nCol)
+{
+	int				sign=0;
+	int				index=0;
+	int				nCharOver=0;
+	int				nCharOver2[5]={0};
+	CString			cst=_T(""), cst2=_T("");
+	CString			strData=_T("");
+	CString			strSQL=_T("");
+	CString			strSQL2=_T("");
+	CString			strSQL3=_T("");
+	CStringArray	strArray;
+	CRecordset		rs(m_pDB);
+
+	// 支払銀行、支払銀行支店でない場合処理を行わない
+	if(nCol != ID_COL_081I_BKNAME1 && nCol != ID_COL_081I_BKNAME2)	{
+		return;
+	}
+	// 画面から名称を取得
+	index = CmnGetControlIndex(nRow , nCol);
+	cst = m_clsFunc.DiagGetString(m_pDiag, index);
+
+	// 改行マークを取ったものでチェックする
+	m_clsFunc.StrDivision(cst, &strArray, 2);
+	cst2 = strArray.GetAt(0) + strArray.GetAt(1);
+
+	// 入力した金融機関名または支店名の文字色を変更する
+	sign = CmnInitialControlFgStringCell(m_pDiag, nRow, nCol, m_ReadData[nRow].m_FgFunc, UC_BANK_LEN, cst2);
+	nCharOver = sign;
+	if(nCharOver == 0)	{
+		// 銀行名
+		if(nCol == ID_COL_081I_BKNAME1)	{
+			strSQL.Format(_T("select max(oversgn) from (select CASE when len(%s) > %d then 1 else 0 end as oversgn "),MakeReplaceSent(_T("BkName1")),UC_BANK_LEN);
+			strSQL2.Format(_T("from uc_081_siharaitegata where FgShow=%d AND NOT(NumPage <> %d AND NumRow <> %d)) tbl1 "),ID_FGSHOW_OFF,m_ReadData[nRow].m_NumPage,nRow);
+			strSQL3 = strSQL + strSQL2;
+			rs.Open(CRecordset::forwardOnly, strSQL3);
+			rs.GetFieldValue((short)0, strData);
+			rs.Close();
+			if(_tstoi(strData) != 0)	{
+				nCharOver = 1;
+			}
+		}
+		// 支店名
+		else	{
+			strSQL.Format(_T("select max(oversgn) from (select CASE when len(%s) > %d then 1 else 0 end as oversgn "),MakeReplaceSent(_T("BkName2")),UC_BANK_LEN);
+			strSQL2.Format(_T("from uc_081_siharaitegata where FgShow=%d AND NOT(NumPage <> %d AND NumRow <> %d)) tbl1 "),ID_FGSHOW_OFF,m_ReadData[nRow].m_NumPage,nRow);
+			strSQL3 = strSQL + strSQL2;
+			rs.Open(CRecordset::forwardOnly, strSQL3);
+			rs.GetFieldValue((short)0, strData);
+			rs.Close();
+			if(_tstoi(strData) != 0)	{
+				nCharOver = 1;
+			}
+		}
+	}
+
+// 改良No.21-0086,21-0529 cor -->
+	//if(nCol == ID_COL_081I_BKNAME1)	{
+	//	if(nCharOver == 1)	CmnHeadDiagSetTitle(&m_HeadDiag, 5, _T("名称(11)"), 1);
+	//	else				CmnHeadDiagSetTitle(&m_HeadDiag, 5, _T("名称"), 0);
+	//}
+	//else	{
+	//	if(nCharOver == 1)	CmnHeadDiagSetTitle(&m_HeadDiag, 6, _T("支店名(11)"), 1);
+	//	else				CmnHeadDiagSetTitle(&m_HeadDiag, 6, _T("支店名"), 0);
+	//}
+// ------------------------------
+	if(nCol == ID_COL_081I_BKNAME1)	{
+		if(nCharOver == 1)	CmnHeadDiagSetTitle(&m_HeadDiag, 6, _T("名称(11)"), 1);
+		else				CmnHeadDiagSetTitle(&m_HeadDiag, 6, _T("名称"), 0);
+	}
+	else	{
+		if(nCharOver == 1)	CmnHeadDiagSetTitle(&m_HeadDiag, 7, _T("支店名(11)"), 1);
+		else				CmnHeadDiagSetTitle(&m_HeadDiag, 7, _T("支店名"), 0);
+	}
+// 改良No.21-0086,21-0529 cor <--
+
+	// 欄外ガイドの表示のために他の項目が電子申告の文字数をオーバーしていないかどうか確認する
+
+	// 支払銀行名称
+	if(nCol == ID_COL_081I_BKNAME2)	{
+		strSQL.Format(_T("select max(oversgn) from (select CASE when len(%s) > %d then 1 else 0 end as oversgn from uc_081_siharaitegata where FgShow=%d) tbl1"),
+			MakeReplaceSent(_T("BkName1")), UC_BANK_LEN, ID_FGSHOW_OFF);
+		rs.Open(CRecordset::forwardOnly, strSQL);
+		rs.GetFieldValue((short)0, strData);
+		rs.Close();
+		nCharOver2[0] = 0;
+		if(_tstoi(strData) != 0) {
+			nCharOver2[0] = 1;
+		}
+	}
+
+	// 支払銀行支店名
+	if(nCol == ID_COL_081I_BKNAME1)	{
+		strSQL.Format(_T("select max(oversgn) from (select CASE when len(%s) > %d then 1 else 0 end as oversgn from uc_081_siharaitegata where FgShow=%d) tbl1"),
+			MakeReplaceSent(_T("BkName2")), UC_BANK_LEN, ID_FGSHOW_OFF);
+		rs.Open(CRecordset::forwardOnly, strSQL);
+		rs.GetFieldValue((short)0, strData);
+		rs.Close();
+		nCharOver2[0] = 0;
+		if(_tstoi(strData) != 0) {
+			nCharOver2[0] = 1;
+		}
+	}
+
+	// 摘要
+	strSQL.Format(_T("select max(oversgn) from (select CASE when len(%s) > %d then 1 else 0 end as oversgn from uc_081_siharaitegata where FgShow=%d) tbl1"),
+		MakeReplaceSent(_T("Teki")),UC_081_TEKI_LEN,ID_FGSHOW_OFF);
+	rs.Open( CRecordset::forwardOnly, strSQL);
+	rs.GetFieldValue((short)0, strData);
+	rs.Close();
+	nCharOver2[1] = 0;
+	if(_tstoi(strData) != 0) {
+		nCharOver2[1] = 1;
+	}
+
+	// 欄外ガイドの表示
+	if(nCharOver == 1 || nCharOver2[0] == 1 || nCharOver2[1] == 1) {
+		m_Guide1.ShowWindow(TRUE);
+	}
+	else {
+		m_Guide1.ShowWindow(FALSE);
+	}
+}
+
+// ------------------------------------------------------------------------------------------------------------------------
+// 全頁の電子申告の桁数チェックを行い、タイトルの文字色を変更する
+// ------------------------------------------------------------------------------------------------------------------------
+void CfrmUc081SiharaitegataI::TitleColorChg(void)
+{
+	int					nCharOver[3]={0};		// 電子申告の文字数を超えたかどうかのサイン		1:電子申告の文字数を超えた
+												// 様式⑧		[0]:支払銀行名称(11文字)	[1]:支払銀行支店名(11文字)
+												//				[2]:摘要
+	CRecordset			rs(m_pDB);
+	CString				strSQL=_T("");
+	CString				strData=_T("");
+
+	// 支払銀行名称
+	strSQL.Format(_T("select max(oversgn) from (select CASE when len(%s) > %d then 1 else 0 end as oversgn from uc_081_siharaitegata where FgShow=%d) tbl1"),
+		MakeReplaceSent(_T("BkName1")),UC_BANK_LEN,ID_FGSHOW_OFF);
+	rs.Open( CRecordset::forwardOnly, strSQL);
+	rs.GetFieldValue((short)0, strData);
+	rs.Close();
+	nCharOver[0] = 0;
+	if(_tstoi(strData) != 0) {
+		nCharOver[0] = 1;
+	}
+
+	// 支払銀行支店名
+	strSQL.Format(_T("select max(oversgn) from (select CASE when len(%s) > %d then 1 else 0 end as oversgn from uc_081_siharaitegata where FgShow=%d) tbl1"),
+		MakeReplaceSent(_T("BkName2")),UC_BANK_LEN,ID_FGSHOW_OFF);
+	rs.Open( CRecordset::forwardOnly, strSQL);
+	rs.GetFieldValue((short)0, strData);
+	rs.Close();
+	nCharOver[1] = 0;
+	if(_tstoi(strData) != 0) {
+		nCharOver[1] = 1;
+	}
+
+	// 摘要
+	strSQL.Format(_T("select max(oversgn) from (select CASE when len(%s) > %d then 1 else 0 end as oversgn from uc_081_siharaitegata where FgShow=%d) tbl1"),
+		MakeReplaceSent(_T("Teki")),UC_081_TEKI_LEN,ID_FGSHOW_OFF);
+	rs.Open( CRecordset::forwardOnly, strSQL);
+	rs.GetFieldValue((short)0, strData);
+	rs.Close();
+	nCharOver[2] = 0;
+	if(_tstoi(strData) != 0) {
+		nCharOver[2] = 1;
+	}
+
+	// 項目タイトル(ヘッダ部)の再設定
+// 改良No.21-0086,21-0529 cor -->
+	//if(nCharOver[0] == 1)	CmnHeadDiagSetTitle(&m_HeadDiag,5,_T("名称(11)"),1);
+	//else					CmnHeadDiagSetTitle(&m_HeadDiag,5,_T("名称"),0);
+
+	//if(nCharOver[1] == 1)	CmnHeadDiagSetTitle(&m_HeadDiag,6,_T("支店名(11)"),1);
+	//else					CmnHeadDiagSetTitle(&m_HeadDiag,6,_T("支店名"),0);
+
+	//if(nCharOver[2] == 1)	CmnHeadDiagSetTitle(&m_HeadDiag,8,_T("摘      要(50)"),1);
+	//else					CmnHeadDiagSetTitle(&m_HeadDiag,8,_T("摘　　　要"),0);
+// ------------------------------
+	if(nCharOver[0] == 1)	CmnHeadDiagSetTitle(&m_HeadDiag,6,_T("名称(11)"),1);
+	else					CmnHeadDiagSetTitle(&m_HeadDiag,6,_T("名称"),0);
+
+	if(nCharOver[1] == 1)	CmnHeadDiagSetTitle(&m_HeadDiag,7,_T("支店名(11)"),1);
+	else					CmnHeadDiagSetTitle(&m_HeadDiag,7,_T("支店名"),0);
+
+	if(nCharOver[2] == 1)	CmnHeadDiagSetTitle(&m_HeadDiag,9,_T("摘      要(50)"),1);
+	else					CmnHeadDiagSetTitle(&m_HeadDiag,9,_T("摘　　　要"),0);
+// 改良No.21-0086,21-0529 cor <--
+
+	// 欄外ガイドの表示
+	if(nCharOver[0] == 1 || nCharOver[1] == 1 || nCharOver[2] == 1)	{
+		m_Guide1.ShowWindow(TRUE);
+	}
+	else {
+		m_Guide1.ShowWindow(FALSE);
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------
+//	「振出年月日 支払期日」列なら入力された日付をチェック
+// --------------------------------------------------------------------------------------------------------
+//	【引数】	short index	インデックス値
+//				short sign	呼ばれた処理	0:PreTranslateMessage
+//											1:EditOFFYoushikidiag1
+//											2:TerminationYoushikidiag1
+// --------------------------------------------------------------------------------------------------------
+void CfrmUc081SiharaitegataI::Date_ChkAndSet(short index, int col, short sign)
+{
+	short			sv_sel=0;
+	int				sv_index=0;
+	int				day=0,gen=0;
+	DIAGRAM_DATA	diadata;
+	CdateConvert	cDC;			// 日付変換クラス
+
+	if(m_DataKakutei == TRUE)									return;
+	if(col != ID_COL_081I_SPDATE && col != ID_COL_081I_PMDATE)	return;
+
+	if(m_uInfo.EditSign == -1)									return;
+
+	// 「振出年月日 支払期日」列なら入力された日付を取得
+
+	// ポジション取得
+	m_uInfo.intCurCtlIndex = m_pDiag->GetPosition();
+	sv_index = m_pDiag->GetPosition();
+
+	// 行・列取得
+	CmnGetControlPosition( &m_uInfo.intCurRow , &m_uInfo.intCurCol, &m_uInfo.OldCol );
+
+	// 初期化
+	m_clsFunc.DiagInit( &diadata );
+
+	m_pDiag->GetData(m_uInfo.intCurCtlIndex , (LPUNKNOWN)&diadata );
+
+	gen = diadata.data_day[0];
+	day = cDC.Convert(diadata.data_day[0], diadata.data_day[1], diadata.data_day[2], diadata.data_day[3]);
+
+	// EditOFFYoushikidiag1
+	if(sign == 1)	{
+		if(col == ID_COL_081I_SPDATE)	{		// 振出年月日
+			if(m_uInfo.OldDate[0] > 0 || m_uInfo.OldGengo[0] > 0)	{
+				// 初期化
+				m_clsFunc.DiagInit( &diadata );
+
+				if(m_uInfo.GenListSw == 0 && m_uInfo.OldDate[0] > 0 && day == 0)	{
+					// 元号リストが表示されたことにより日付がクリアされるので、
+					// 保存している日付を再セット
+					m_uInfo.GenListSw++;
+
+					cDC.Convert( m_uInfo.OldDate[0], diadata.data_day, DC_DATE_GWMD );
+					if(cDC.m_nDate != 0)	m_pDiag->SetData(index, ( LPUNKNOWN )&diadata);
+					else					m_pDiag->DataClear(index, TRUE);
+				}
+				else if(m_uInfo.GenListSw > 0)	{
+					if(gen == 0 || m_uInfo.EditSign == 0)	{
+						m_uInfo.OldDate[0] = 0;
+						m_uInfo.OldGengo[0] = 0;
+						m_uInfo.GenListSw = 0;
+
+						m_pDiag->DataClear(index, TRUE);
+					}
+					else if(m_uInfo.OldDate[0] != day)	{
+						m_uInfo.OldDate[0] = 0;
+						m_uInfo.OldGengo[0] = 0;
+						m_uInfo.GenListSw = 0;
+
+						// 日付、もしくは元号が変更された
+						cDC.Convert(day, diadata.data_day, DC_DATE_GWMD);
+						if(cDC.m_nDate != 0)	m_pDiag->SetData(index, (LPUNKNOWN)&diadata);
+						else					m_pDiag->DataClear(index, TRUE);
+					}
+				}
+			}
+		}
+		else if(col == ID_COL_081I_PMDATE)	{	// 支払期日
+			if(m_uInfo.OldDate[1] > 0 || m_uInfo.OldGengo[1] > 0)	{
+				// 初期化
+				m_clsFunc.DiagInit( &diadata );
+
+				if(m_uInfo.GenListSw == 0 && m_uInfo.OldDate[1] > 0 && day == 0)	{
+					// 元号リストが表示されたことにより日付がクリアされるので、
+					// 保存している日付を再セット
+					m_uInfo.GenListSw++;
+
+					cDC.Convert( m_uInfo.OldDate[1], diadata.data_day, DC_DATE_GWMD );
+					if(cDC.m_nDate != 0)	m_pDiag->SetData(index, ( LPUNKNOWN )&diadata);
+					else					m_pDiag->DataClear(index, TRUE);
+				}
+				else if(m_uInfo.GenListSw > 0)	{
+					if(gen == 0 || m_uInfo.EditSign == 0)	{
+						m_uInfo.OldDate[1] = 0;
+						m_uInfo.OldGengo[1] = 0;
+						m_uInfo.GenListSw = 0;
+
+						m_pDiag->DataClear(index, TRUE);
+					}
+					else if(m_uInfo.OldDate[1] != day)	{
+						m_uInfo.OldDate[1] = 0;
+						m_uInfo.OldGengo[1] = 0;
+						m_uInfo.GenListSw = 0;
+
+						// 日付、もしくは元号が変更された
+						cDC.Convert(day, diadata.data_day, DC_DATE_GWMD);
+						if(cDC.m_nDate != 0)	m_pDiag->SetData(index, (LPUNKNOWN)&diadata);
+						else					m_pDiag->DataClear(index, TRUE);
+					}
+				}
+			}
+		}
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+LRESULT CfrmUc081SiharaitegataI::OnUserReDrawView(WPARAM wParam, LPARAM lParam)
+{
+	virUpdateControlTblData();
+	CmnDiagSetFocus(m_pDiag, 1, 1);
+
+	return(0);
+}
+
+// --------------------------------------------------------------------------------------------------------
+//	【Home:法人検索】法人検索ダイアログを利用してデータを取得する際に、入力済みのデータをとってくる
+// --------------------------------------------------------------------------------------------------------
+//		IN		HJN_REC_NEW		法人情報
+//		RET		なし
+// --------------------------------------------------------------------------------------------------------
+void CfrmUc081SiharaitegataI::virDiagGetHjnData(CDatabase* pDB, HJN_REC_NEW* phjnRec)
+{
+	int				nPage,nRow;
+	int				intIndex;	// 対象行の各インデックス
+	int				tsel=0;
+	int				ret=0;
+	char			buf[256];
+	CString			cst,ino;
+	CStringArray	strArray;
+	DIAGRAM_DATA	diadata;	// ICSDiag構造体
+
+	nPage = m_uInfo.intCurPage;
+	nRow = m_uInfo.intCurRow;
+
+	// ---- 今選択中の行に入力されているデータを取得 ----
+	// 登録番号（法人番号）
+	cst.Empty();
+	intIndex = CmnGetControlIndex(nRow, ID_COL_081I_INVONO);
+	cst = m_clsFunc.DiagGetString(m_pDiag, intIndex);
+	if(cst.IsEmpty() == FALSE)	{
+		memset(buf, 0, sizeof(buf));
+		sprintf_s(buf, _T("%s"), cst);
+		memcpy(phjnRec->wHjnNo1, buf, 13);
+	}
+
+	// 名称1(氏名)
+	intIndex = CmnGetControlIndex(nRow, ID_COL_081I_ADNAME1);
+	m_clsFunc.StrDivision(m_clsFunc.DiagGetString(m_pDiag, intIndex), &strArray, 2, FALSE, TRUE);
+	cst.Empty();
+	if(strArray.GetAt(0).IsEmpty() == FALSE && strArray.GetAt(1).IsEmpty() == FALSE) {
+		cst.Format(_T("%s%s"), strArray.GetAt(0), strArray.GetAt(1));
+	}
+	else if(strArray.GetAt(0).IsEmpty() == FALSE) {
+		cst.Format(_T("%s"), strArray.GetAt(0));
+	}
+	else if(strArray.GetAt(1).IsEmpty() == FALSE) {
+		cst.Format(_T("%s"), strArray.GetAt(1));
+	}
+	cst.TrimRight();
+	if(cst.IsEmpty() == FALSE) {
+		memset(buf, 0, sizeof(buf));
+		sprintf_s(buf, _T("%s"), cst);
+		memcpy(phjnRec->wHjnName, buf, strlen(buf));
+	}
+
+	// カナをuc_lst_adressから取得
+	if(m_ReadData[nRow].m_AdSeq != 0) {
+		CdbUcLstAddress		rsAdd(pDB);
+		ret = rsAdd.RequeryAdInfo(ID_ADDRESSGR_URI, m_ReadData[nRow].m_AdSeq);
+		if(ret == 0) {
+			// カナ
+			memset(buf, 0, sizeof(buf));
+			sprintf_s(buf, _T("%s"), rsAdd.m_AdKana);
+			memcpy(phjnRec->wHjnKana, buf, strlen(buf));
+		}
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------
+//	【Home:法人検索】法人検索ダイアログを利用してデータを取得
+//	もしくは、登録番号一覧からデータを取得してきた時の処理
+//	F9:参照ダイアログ（uc_lst_adress）に登録しているデータかどうかを検索し、未登録なら取得したデータをセット
+//	登録済みの場合は、F9:参照の登録データをセット
+// --------------------------------------------------------------------------------------------------------
+//		IN		int			pSw		0:法人検索、1:登録番号一覧
+//				CString*	rtInvNo	法人番号または登録番号
+//				CString*	rtName	名称
+//				CString*	rtAdrs1	住所（上段）
+//				CString*	rtAdrs2	住所（下段）
+//				CString*	rtKana	カナ
+//		RET		なし
+// --------------------------------------------------------------------------------------------------------
+void	CfrmUc081SiharaitegataI::virDiagSetHjnData(int pSw, CString rtInvNo, CString rtName, CString rtAdrs1, CString rtAdrs2, CString rtKana)
+{
+	int					ret = 0;
+	int					intIndex;
+	CString				strInvoNo, strName, strAdd1, strAdd2, strKana;
+	CString				cst, cs1, cs2, cs3;
+	CUcFunctionCommon	ufc;
+
+	if(pSw == 0)	strInvoNo.Format(_T(" %s"), rtInvNo);
+	else			strInvoNo.Format(_T("T%s"), rtInvNo);
+
+// 修正No.168361,168369,168371,168378 del -->
+//※法人番号検索、登録番号一覧から取得してきたものはそのままセットする
+//F9:参照に登録されているかのチェックも今回は見ない
+	//// F9:参照(取引先＝uc_lst_adress)に登録されているかチェック
+	//ret = ChkInvoiceNum(m_pDB, pSw, m_uInfo.intCurPage, m_uInfo.intCurRow, strInvoNo, rtName);
+	//if(ret == -1)	{		//  エラー
+	//	//// カーソル移動処理
+	//	//CmnDiagSetFocus( m_pDiag, m_uInfo.intCurRow, ID_COL_081I_INVONO );
+	//	return;
+	//}
+	//else if(ret == 1)	{	// 未登録
+// 修正No.168361,168369,168371,168378 del <--
+		// 登録番号（T選択）
+		intIndex = CmnGetControlIndex(m_uInfo.intCurRow, ID_COL_081I_INVONOT);
+		CmnDiagSetCombo3(m_pDiag, intIndex, strInvoNo);
+
+		// 登録番号
+		InvoNoSplit(strInvoNo, &cs1, &cs2);
+		intIndex = CmnGetControlIndex(m_uInfo.intCurRow, ID_COL_081I_INVONO);
+		CmnDiagSetString(m_pDiag, intIndex, cs2, 0);
+
+		m_pDiag->Refresh();
+
+		// カーソル再セット
+		CmnDiagSetFocus(m_pDiag, m_uInfo.intCurRow, m_uInfo.intCurCol);	// 修正No.168530 add
+// 修正No.168361,168369,168371,168378 del -->
+	//}
+// 修正No.168361,168369,168371,168378 del <--
+}
+
+// --------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+int CfrmUc081SiharaitegataI::virCallChkInvoiceNum(int pSw, int inPage, int inRow)
+{
+	//return(ChkInvoiceNum(m_pDB, 2, inPage, inRow));	// 修正No.168369,168371,168443 del
+	//return(ChkInvoiceNum(m_pDB, 3, inPage, inRow));	// 修正No.168369,168371,168443 add
+	return(ChkInvoiceNum(m_pDB, pSw, inPage, inRow));	// 修正No.168369,168371,168443 add
+}
+
+// --------------------------------------------------------------------------------------------------------
+//	入力された登録番号から参照ダイアログを検索し、登録済みの場合はデータを取得して画面に表示
+// --------------------------------------------------------------------------------------------------------
+//	【引数】	CDatabase*	pDB		データベース操作クラス
+//				int			pSw		呼び元　0:法人検索、1:登録番号一覧、2:EditOFF、3:virCallChkInvoiceNum
+//				int			inPage	頁番号
+//				int			inRow	選択行
+//				CString		pInvno	登録番号
+// --------------------------------------------------------------------------------------------------------
+int CfrmUc081SiharaitegataI::ChkInvoiceNum(CDatabase* pDB, int pSw, int inPage, int inRow, 
+											 CString pInvno/*=""*/, CString pName/*=""*/, CString pAdrs1/*=""*/, CString pAdrs2/*=""*/)
+{
+	int					intIndex;		// 対象行の各インデックス
+	int					tsel=0;
+	int					ret=0;
+	CString				invono, invono2;
+	CString				cst,cs1,cs2;
+	DIAGRAM_DATA		diadata;		// ICSDiag構造体
+	CdbUcLstAddress		rsAdd(pDB);
+	ZmselDBData			tmpzd;			// 修正No.168361,168369,168371,168378 add
+
+	//if(pSw != 2) {					// 修正No.168369,168371 del
+	if(pSw == 0 || pSw == 1)	{		// 修正No.168369,168371 add
+		InvoNoSplit(pInvno, &cs1, &cs2);
+		invono.Empty();
+		invono2.Empty();
+		if(cs2.IsEmpty() == FALSE) {
+			if(strcmp(cs1, _T("T")) == 0) {
+				invono = pInvno;
+				invono2 = invono;					// チェックディジット用
+			}
+			else {
+				invono = pInvno;
+				invono2.Format(_T("T%s"), cs2);		// チェックディジット用
+			}
+		}
+	}
+	else {
+		// 登録番号（T選択）
+		intIndex = CmnGetControlIndex(inRow, ID_COL_081I_INVONOT);
+		m_pDiag->GetData(intIndex, (LPUNKNOWN)&diadata);
+		tsel = diadata.data_combo;
+		// 登録番号（法人番号）
+		intIndex = CmnGetControlIndex(inRow, ID_COL_081I_INVONO);
+		cst = m_clsFunc.DiagGetString(m_pDiag, intIndex);
+		invono.Empty();
+		invono2.Empty();
+		if(cst.IsEmpty() == FALSE) {
+			if(tsel == 0) {
+				invono.Format(_T("T%s"), cst);
+				invono2 = invono;					// チェックディジット用
+			}
+			else {
+				invono.Format(_T(" %s"), cst);
+				invono2.Format(_T("T%s"), cst);		// チェックディジット用
+			}
+		}
+	}
+
+// 修正No.168361,168369,168371,168378 del -->
+	//if(invono.IsEmpty() == FALSE)	{
+	//	gErrMsg.Empty();
+
+	//	// 桁数チェック
+	//	if(invono2.GetLength() < 14) {
+	//		DIAGRAM_DATA	ddata;
+	//		ddata.data_combo = 0;
+	//		m_pDiag->SetData(CmnGetControlIndex(inRow, ID_COL_081I_INVONOT), (LPUNKNOWN)&ddata);
+	//		ddata.data_edit.Empty();
+	//		m_pDiag->DataClear(CmnGetControlIndex(inRow, ID_COL_081I_INVONO), TRUE);
+	//		// エラーメッセージを表示
+	//		gErrMsg  = _T("登録番号（法人番号）の文字数に誤りがあります。\r\n");
+	//		gErrMsg += _T("登録番号（法人番号）を再入力してください。");
+	//		ICSMessageBox(gErrMsg, MB_ICONSTOP | MB_OK, 0, 0, this);
+	//		return(-1);
+	//	}
+
+	//	// 指定された登録番号が正しいかどうかチェック
+	//	if(pSyzInvoice.CheckInvoiceNumber(invono2) == -1) {
+	//		DIAGRAM_DATA	ddata;
+	//		ddata.data_combo = 0;
+	//		m_pDiag->SetData(CmnGetControlIndex(inRow, ID_COL_081I_INVONOT), (LPUNKNOWN)&ddata);
+	//		ddata.data_edit.Empty();
+	//		m_pDiag->DataClear(CmnGetControlIndex(inRow, ID_COL_081I_INVONO), TRUE);
+	//		gErrMsg  = _T("登録番号（法人番号）に誤りがあります。\r\n誤った番号は保存されません。\r\n\r\n");
+	//		gErrMsg += _T("登録番号（法人番号）を再入力してください。");
+	//		ICSMessageBox(gErrMsg, MB_ICONSTOP | MB_OK, 0, 0, this);
+	//		return(-1);
+	//	}
+	//	else	{
+	//		// ※法人検索の表示や、データの取得等は今回取りやめになったが、今後対応するかもしれないので、コメントは残す（23/11/28）
+	//		//if(m_RegAutoRef) {
+	//		//	// 自動登録をする場合、uc_lst_address内の修復処理を行う
+	//		//	((CUCHIWAKEApp*)AfxGetApp())->AddressConvert(pDB);
+
+	//		//	// 登録番号入力時に、参照ダイアログにとうろくされているかチェックし、登録されていれば名称、所在地を返送する
+	//		//	ret = rsAdd.GetAddressInf_Inv(ID_ADDRESSGR_KAI, invono);
+	//		//	if(ret == 0) {			//	正常終了（データ取得済み）
+	//		//		// 登録番号（T選択）
+	//		//		intIndex = CmnGetControlIndex(inRow, ID_COL_081I_INVONOT);
+	//		//		CmnDiagSetCombo3(m_pDiag, intIndex, rsAdd.m_InvNo);
+
+	//		//		// 登録番号
+	//		//		InvoNoSplit(rsAdd.m_InvNo, &cs1, &cs2);
+	//		//		intIndex = CmnGetControlIndex(inRow, ID_COL_081I_INVONO);
+	//		//		CmnDiagSetString(m_pDiag, intIndex, cs2, 0);
+
+	//		//		// 名称
+	//		//		cst.Format(_T("%s\r\n%s"), rsAdd.m_AdName1,rsAdd.m_AdName2);
+	//		//		intIndex = CmnGetControlIndex(inRow, ID_COL_081I_ADNAME1);
+	//		//		CmnDiagSetString(m_pDiag, intIndex, cst, 0);
+
+	//		//		m_pDiag->Refresh();
+	//		//	}
+	//		//	rsAdd.Fin();
+
+	//		//	return(ret);
+	//		//}
+	//		//else {
+	//		//	if(m_ReadData[inRow].m_InvNo != invono && (pName.IsEmpty() == FALSE)) {
+	//		//		return(1);
+	//		//	}
+	//		//}
+	//		if(m_ReadData[inRow].m_InvNo != invono) {
+	//			return(1);
+	//		}
+	//	}
+	//}
+// 修正No.168361,168369,168371,168378 del <--
+// 修正No.168361,168369,168371,168378 add -->
+	if(cst.GetLength() > 0)	{
+		gErrMsg.Empty();
+
+		// EditOFF、virCallChkInvoiceNumから来た時は入力コードのチェックを行う
+		if(pSw == 2 || pSw == 3 || pSw == 4) {
+// 修正No.168443 add -->
+			if(pSw == 2) {
+				// データ部のDiagからカーソルが離れた場合、入力されたコードをクリアして戻す
+				CWnd *pWnd1 = AfxGetMainWnd();
+				if(pWnd1 != NULL) {
+					CWnd *pWnd2 = pWnd1->GetFocus();
+					if((pWnd2 != NULL && pWnd2 != m_pDiag) || (pWnd2 == NULL))	{
+						if(pSyzInvoice.CheckInvoiceNumber(invono2) == -1) {
+							m_pDiag->DataClear(CmnGetControlIndex(inRow, ID_COL_081I_INVONO), TRUE);
+							m_InvnoErrFlg = 0;
+							return(0);
+						}
+					}
+				}
+			}
+// 修正No.168443 add <--
+
+			if(pZmSel && pZmSel->IsDisplay() != FALSE && cst.GetLength() < 3) {
+				// 2桁の場合は科目選択から
+				int no = atoi(cst);
+				pZmSel->InputData(1, no, -1, ZSEL_INVNO);
+				pZmSel->ResultData(&tmpzd);
+				if(tmpzd.errflg != -1) {
+					DIAGRAM_DATA	ddata;
+					// T選択
+					m_clsFunc.DiagInit(&ddata);
+					ddata.data_combo = 0;
+					m_pDiag->SetData(CmnGetControlIndex(inRow, ID_COL_081I_INVONOT), (LPUNKNOWN)&ddata);
+					// 登録番号
+					m_clsFunc.DiagInit(&ddata);
+					ddata.data_edit.Format(tmpzd.sel_name);
+					m_pDiag->SetData(CmnGetControlIndex(inRow, ID_COL_081I_INVONO), (LPUNKNOWN)&ddata);
+					// 再描画
+					m_pDiag->Refresh();
+
+					m_InvnoErrFlg = 0;		// 修正No.168443 add
+
+					return(1);
+				}
+			}
+			else {
+				// ３桁以上は手入力なので桁数チェック
+				if(invono2.GetLength() < 14) {
+// 修正No.168425,168443 del -->
+					//if(pSw == 3) {
+					//	m_pDiag->DataClear(CmnGetControlIndex(inRow, ID_COL_081I_INVONO), TRUE);
+					//}
+					//else {
+					//	// エラーメッセージを表示
+					//	gErrMsg = _T("登録番号（法人番号）の文字数に誤りがあります。\r\n");
+					//	gErrMsg += _T("登録番号（法人番号）を再入力してください。");
+					//	ICSMessageBox(gErrMsg, MB_ICONSTOP | MB_OK, 0, 0, this);
+					//}
+// 修正No.168425,168443 del <--
+// 修正No.168425,168443 add -->
+					if(pSw == 3 || m_EndSyorityu == 1)	{
+						m_pDiag->DataClear(CmnGetControlIndex(inRow, ID_COL_081I_INVONO), TRUE);
+						m_InvnoErrFlg = 0;
+
+						return(0);
+					}
+					else {
+						m_InvnoErrFlg = 1;
+
+						m_uInfo.intCurCol = ID_COL_081I_INVONO;
+
+						// エラーメッセージを表示
+						gErrMsg = _T("登録番号（法人番号）の文字数に誤りがあります。\r\n");
+						gErrMsg += _T("登録番号（法人番号）を再入力してください。");
+						ICSMessageBox(gErrMsg, MB_ICONSTOP | MB_OK, 0, 0, this);
+
+						return(-1);
+					}
+// 修正No.168425,168443 add <--
+				}
+			}
+
+			// 指定された登録番号が正しいかどうかチェック
+			if(pSyzInvoice.CheckInvoiceNumber(invono2) == -1) {
+// 修正No.168425,168443 del -->
+				//if(pSw == 3) {
+				//	m_pDiag->DataClear(CmnGetControlIndex(inRow, ID_COL_081I_INVONO), TRUE);
+				//}
+				//else {
+				//	// エラーメッセージを表示
+				//	gErrMsg = _T("登録番号（法人番号）に誤りがあります。\r\n");
+				//	gErrMsg += _T("登録番号（法人番号）を再入力してください。");
+				//	ICSMessageBox(gErrMsg, MB_ICONSTOP | MB_OK, 0, 0, this);
+				//}
+// 修正No.168425,168443 del <--
+// 修正No.168425,168443 add -->
+				if(pSw == 3 || m_EndSyorityu == 1)	{
+					m_pDiag->DataClear(CmnGetControlIndex(inRow, ID_COL_081I_INVONO), TRUE);
+					m_InvnoErrFlg = 0;
+
+					return(0);
+				}
+				else {
+					m_InvnoErrFlg = 1;
+
+					m_uInfo.intCurCol = ID_COL_081I_INVONO;
+
+					// エラーメッセージを表示
+					gErrMsg = _T("登録番号（法人番号）に誤りがあります。\r\n");
+					gErrMsg += _T("登録番号（法人番号）を再入力してください。");
+					ICSMessageBox(gErrMsg, MB_ICONSTOP | MB_OK, 0, 0, this);
+
+					return(-1);
+				}
+// 修正No.168425,168443 add <--
+			}
+		}
+
+		m_InvnoErrFlg = 0;		// 修正No.168443 add
+
+		if(m_ReadData[inRow].m_InvNo != invono) {
+			return(1);
+		}
+	}
+// 修正No.168361,168369,168371,168378 add <--
+
+	m_InvnoErrFlg = 0;		// 修正No.168443 add
+
+	return(0);
+}
+// インボイス登録番号追加対応_23/09/11 add <--

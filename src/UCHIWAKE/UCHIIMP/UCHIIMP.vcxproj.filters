@@ -1,0 +1,572 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\UCHIWAKE\CharController.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\CtrlMainGeneralVar.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\CtrlSubGeneralVar.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\FuriganaConverter.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SortStringArray.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\UcFunctionCommon.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="UCHIIMP.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dateConvert.cpp">
+      <Filter>ソースファイル\date</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbBase.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbIcsVtbl.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbKamokuSitei.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbPrtWork.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbPrtWork2.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbPrtWork3.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbPrtWorkAd.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbPrtWorkBk.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc000Common.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc011Yotyokin.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc021Uketoritegata.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc031Urikakekin.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc041Karibarai.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc042Kasituke.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc051Tanaoroshi.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc052Tanaoroshi2.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc061Yuukasyouken.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc071Koteishisan.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc081Siharaitegata.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc091Kaikakekin.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc092Kaikakekin2.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc101Kariukekin.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc102Gensen.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc111Kariirekin.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc121Totiuriage.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc131Uriagedaka.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc141Yakuin.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc142Jinkenhi.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc151Tidaiyatin.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc152Kenrikin.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc153Kougyou.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc161Zatueki.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc162Zatuson.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc171Sonota1.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUc181Sonota2.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcInfFormType.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcInfMain.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcInfSonotaItem.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcInfSub.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcInfYokuki.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcLstAddress.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcLstBank.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcLstHokan.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcLstItemSort.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UCHIWAKE\dbUcLstKamoku.cpp">
+      <Filter>ソースファイル\db</Filter>
+    </ClCompile>
+    <ClCompile Include="dlgImpOpt.cpp">
+      <Filter>ソースファイル\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="dlgImport.cpp">
+      <Filter>ソースファイル\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="dlgYokukiMain.cpp">
+      <Filter>ソースファイル\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc000Common.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc011Yotyokin.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc021Uketoritegata.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc031Urikakekin.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc041Karibarai.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc042Kasituke.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc051Tanaoroshi.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc052Tanaoroshi2.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc061Yuukasyouken.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc071Koteisisan.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc081Siharaitegata.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc091Kaikakekin.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc092Kaikakekin2.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc101Kariukekin.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc102Gensan.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc111Kariirekin.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc121Totiuriage.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc131Uriagedaka.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc141Yakuin.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc142Jinkenhi.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc151Tidaiyatin.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc152Kenrikin.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc153Kougyou.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc161Zatueki.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc162Zatuson.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc171Sonota1.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+    <ClCompile Include="impUc181Sonota2.cpp">
+      <Filter>ソースファイル\imp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\UCHIWAKE\CharController.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\CtrlMainGeneralVar.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\CtrlSubGeneralVar.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DBUchiImp8.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DBUchiImpDEF.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\FuriganaConverter.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SortStringArray.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\UcCommon.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="UcCsvCommon.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\UcFunctionCommon.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dateConvert.h">
+      <Filter>ヘッダーファイル\date</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbBase.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbErrCode.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbIcsVtbl.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbKamokuSitei.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbPrtWork.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbPrtWork2.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbPrtWork3.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbPrtWorkAd.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbPrtWorkBk.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc000Common.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc011Yotyokin.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc021Uketoritegata.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc031Urikakekin.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc041Karibarai.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc042Kasituke.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc051Tanaoroshi.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc052Tanaoroshi2.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc061Yuukasyouken.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc071Koteishisan.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc081Siharaitegata.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc091Kaikakekin.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc092Kaikakekin2.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc101Kariukekin.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc102Gensen.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc111Kariirekin.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc121Totiuriage.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc131Uriagedaka.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc141Yakuin.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc142Jinkenhi.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc151Tidaiyatin.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc152Kenrikin.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc153Kougyou.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc161Zatueki.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc162Zatuson.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc171Sonota1.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUc181Sonota2.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcInfFormType.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcInfMain.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcInfSonotaItem.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcInfSub.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcInfYokuki.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcLstAddress.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcLstBank.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcLstHokan.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcLstItemSort.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UCHIWAKE\dbUcLstKamoku.h">
+      <Filter>ヘッダーファイル\db</Filter>
+    </ClInclude>
+    <ClInclude Include="dlgImpOpt.h">
+      <Filter>ヘッダーファイル\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="dlgImport.h">
+      <Filter>ヘッダーファイル\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="dlgYokukiMain.h">
+      <Filter>ヘッダーファイル\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc000Common.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc011Yotyokin.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc021Uketoritegata.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc031Urikakekin.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc041Karibarai.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc042Kasituke.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc051Tanaoroshi.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc052Tanaoroshi2.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc061Yuukasyouken.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc071Koteisisan.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc081Siharaitegata.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc091Kaikakekin.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc092Kaikakekin2.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc101Kariukekin.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc102Gensan.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc111Kariirekin.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc121Totiuriage.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc131Uriagedaka.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc141Yakuin.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc142Jinkenhi.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc151Tidaiyatin.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc152Kenrikin.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc153Kougyou.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc161Zatueki.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc162Zatuson.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc171Sonota1.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+    <ClInclude Include="impUc181Sonota2.h">
+      <Filter>ヘッダーファイル\imp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="res\UCHIIMP.rc2">
+      <Filter>リソースファイル</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ソースファイル">
+      <UniqueIdentifier>{3693ee02-71cb-4290-bc89-02d1ee5e0c16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル">
+      <UniqueIdentifier>{b6f1bc61-c46b-49bc-9f0f-7486819abfa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソースファイル">
+      <UniqueIdentifier>{c5ef64c3-faed-4792-846d-91a1bdaadf40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\date">
+      <UniqueIdentifier>{9cc47992-0f1c-4dd4-9ee2-e9b2e368416b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\db">
+      <UniqueIdentifier>{49a7160c-3341-457b-80e3-f571a13d3d69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\imp">
+      <UniqueIdentifier>{79aa1812-1445-453e-9099-8aee78bb04fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\dlg">
+      <UniqueIdentifier>{257ba019-c916-41c8-8fd6-cb622b26d7e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\date">
+      <UniqueIdentifier>{0aa0b388-5ce3-421f-80e0-092c460654af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\db">
+      <UniqueIdentifier>{00461ccc-7036-497d-bd5b-35f3fed3dfba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\dlg">
+      <UniqueIdentifier>{dc3c064b-bb44-49c4-8357-2793b4dbb382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\imp">
+      <UniqueIdentifier>{3d169327-d30e-429c-9684-415bcdb44bfe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UCHIIMP.rc">
+      <Filter>リソースファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

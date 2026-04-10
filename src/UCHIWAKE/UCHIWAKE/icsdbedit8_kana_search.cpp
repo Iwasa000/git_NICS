@@ -1,0 +1,19 @@
+// Microsoft Visual C++ で作成された IDispatch ラッパー クラスを生成しました。
+
+// メモ: このファイルの内容を変更しないでください。このクラスが
+//  Microsoft Visual C++ で再生成された場合、変更は上書きされます。
+
+
+#include "stdafx.h"
+#include "icsdbedit8_kana_search.h"
+
+/////////////////////////////////////////////////////////////////////////////
+// CIcsdbedit8_kana_search
+
+IMPLEMENT_DYNCREATE(CIcsdbedit8_kana_search, CWnd)
+
+/////////////////////////////////////////////////////////////////////////////
+// CIcsdbedit8_kana_search プロパティ
+
+/////////////////////////////////////////////////////////////////////////////
+// CIcsdbedit8_kana_search 操作

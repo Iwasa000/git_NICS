@@ -1,0 +1,225 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
+    "LANGUAGE 17, 1\r\n"
+    "#pragma code_page(932)\r\n"
+    "#include ""res\\UCHIIMP.rc2""  // Microsoft Visual C++ 以外で編集されたリソース\r\n"
+    "#include ""afxres.rc""     // 標準コンポーネント\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,1,23
+ PRODUCTVERSION 1,0,1,23
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041103a4"
+        BEGIN
+            VALUE "Comments", "勘定科目内訳書データインポートライブラリ"
+            VALUE "CompanyName", "日本ICS株式会社"
+            VALUE "FileDescription", "勘定科目内訳書データインポート 機能拡張 DLL"
+            VALUE "FileVersion", "1.0.1.23"
+            VALUE "InternalName", "DBUchiImp8"
+            VALUE "LegalCopyright", "Copyright(C) 日本ICS株式会社 2009-2011"
+            VALUE "OriginalFilename", "DBUchiImp8.dll"
+            VALUE "ProductName", "ICS会計ｱﾌﾟﾘｹｰｼｮﾝｼｽﾃﾑ"
+            VALUE "ProductVersion", "1.0.1.23"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x411, 932
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_DLGIMPORT DIALOGEX 0, 0, 252, 102
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ダイアログ"
+FONT 11, "ＭＳ ゴシック", 400, 0, 0x80
+BEGIN
+    LTEXT           "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０\r\n１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０\r\n１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",IDC_STATIC_MESSAGE,6,6,246,24
+    LTEXT           "フォルダ",IDC_STATIC_FOLDER,6,42,36,8
+    EDITTEXT        IDC_EDIT_FOLDER,6,54,198,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "参照",IDC_BUTTON_REFERENCE,210,53,36,14
+    DEFPUSHBUTTON   "OK",IDC_BUTTON_OK,120,80,60,16
+    PUSHBUTTON      "ｷｬﾝｾﾙ[ESC]",IDC_BUTTON_CANCEL,186,80,60,16
+END
+
+IDD_DIALOG_IMP_OPT DIALOGEX 0, 0, 375, 258
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "タイトル未設定"
+FONT 11, "ＭＳ ゴシック", 400, 0, 0x80
+BEGIN
+    CONTROL         "カスタム1",IDC_CUSTOM1,"ICSReport",WS_TABSTOP,7,7,361,176
+    PUSHBUTTON      "ボタン名未設定",IDC_BUTTON_IMP_START,241,227,67,24
+    PUSHBUTTON      "キャンセル",IDC_BUTTON_CANCEL,315,227,53,24
+    PUSHBUTTON      "全選択",IDC_BUTTON_ALLON,7,227,53,24
+    PUSHBUTTON      "全解除",IDC_BUTTON_ALLOFF,67,227,53,24
+    PUSHBUTTON      "転送方式切替",IDC_BUTTON_CHG_TRANS,127,227,53,24,NOT WS_VISIBLE
+    LTEXT           "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",IDC_STATIC_OPT_MESSAGE,7,190,242,8
+    LTEXT           "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",IDC_STATIC_OPT_MESSAGE2,7,202,368,8
+    LTEXT           "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",IDC_STATIC_OPT_MESSAGE3,7,212,368,8
+END
+
+IDD_DIALOG_YOKUKI_MAIN DIALOGEX 0, 0, 483, 364
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "翌期更新"
+FONT 11, "ＭＳ ゴシック", 400, 0, 0x80
+BEGIN
+    LTEXT           "\n勘定科目内訳書の翌期更新を行います。",IDC_STATIC1,15,4,452,16
+    LTEXT           "「金額等を０クリア」について\n チェックを付けて更新すると、その様式のデータはすべて金額が０円になります。\n「金額等を空欄にする」について\n チェックを付けて更新すると、その様式のデータはすべて金額が空欄になります。\n「データを保管へ移動」について\n チェックを付けて更新すると、その様式のデータはすべて保管データになり入力画面には表示されません。\n 保管されたデータは、メニューバーの保管の保管参照から入力画面に戻すことができます。",IDC_STATIC_HOKAN_MSG,11,304,466,58
+    CONTROL         "カスタム1",IDC_CUSTOM_REPORT2,"ICSReport",WS_TABSTOP,13,24,456,232
+    PUSHBUTTON      "様式全選択/解除",ID_HYOCHK_BUTTON,13,258,66,21
+    PUSHBUTTON      "0クリア\n全選択/解除",ID_CLEARCHK_BUTTON,302,258,50,21,BS_MULTILINE
+    PUSHBUTTON      "空欄\n全選択/解除",ID_NULLCLEARCHK_BUTTON,356,258,50,21,BS_MULTILINE
+    PUSHBUTTON      "保管データ\n全選択/解除",ID_HOKANCHK_BUTTON,410,258,50,21,BS_MULTILINE
+    CONTROL         "『⑮－１地代家賃等の内訳書』の支払対象期間を＋１年して更新する（一年契約）",IDC_CHECK1,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,284,328,10
+    PUSHBUTTON      "実行",ID_OK_BUTTON,356,282,50,21
+    PUSHBUTTON      "ｷｬﾝｾﾙ[ESC]",IDCANCEL,410,282,50,21
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG_DLGIMPORT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 95
+    END
+
+    IDD_DIALOG_IMP_OPT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 368
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 251
+    END
+
+    IDD_DIALOG_YOKUKI_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 476
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 357
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DIALOG_YOKUKI_MAIN AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_IMP_OPT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE 17, 1
+#pragma code_page(932)
+#include "res\UCHIIMP.rc2"  // Microsoft Visual C++ 以外で編集されたリソース
+#include "afxres.rc"     // 標準コンポーネント
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

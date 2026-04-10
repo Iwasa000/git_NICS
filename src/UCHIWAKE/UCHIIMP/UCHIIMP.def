@@ -1,0 +1,6 @@
+; UCHIIMP.def : DLL のモジュール パラメータを宣言します。
+
+LIBRARY      "DBUCHIIMP8"
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます
